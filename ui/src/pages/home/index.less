@@ -1,0 +1,120 @@
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column; /* 改为垂直布局 */
+    justify-content: center;
+    align-items: center;
+}
+
+/* 新增标题样式 */
+.title {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-image: linear-gradient(to right, #f9f9fa, #3b82f6, #f9f9fa) 1;
+    border-radius: 8px;
+    padding: 1rem 2rem;
+    margin-bottom: 10rem;
+    font-size: 4rem;
+    font-weight: bold;
+    color: rgba(255,193,7,1);
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.5); /* 蓝色发光效果 */
+}
+
+.menuGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto 1fr auto;
+    height: 50vh;
+    width: 50vw;
+    gap: 1rem;
+}
+
+.menuItem {
+    height: 100%;
+    min-height: 120px;
+    background: rgba(0,151,167, 0.9);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column; /* 改为垂直布局 */
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    padding: 1.5rem;
+    box-shadow: inset 0 0 10px 3px rgba(255, 255, 255, 0.5); /* 向内发光效果 */
+    color: #e3f2fd;
+    /* 图标样式 */
+    .anticon {
+        font-size: 2.5rem;  // 从2rem加大到2.5rem
+        margin-bottom: 1.5rem; // 从1rem加大到1.5rem
+        color: #3b82f6;
+    }
+    
+    /* 文字样式 */
+    div {
+        font-size: 1.2rem;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 0.5rem; // 新增文字上边距
+    }
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.center {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    min-height: 280px;
+    background: rgba(0,145,234, 0.9) !important;
+    
+    .anticon {
+        color: white;
+        font-size: 3rem; // 从2.5rem加大到3rem
+        margin-bottom: 1.8rem; // 加大间距
+    }
+    
+    span {
+        color: white;
+        font-size: 1.5rem;
+        margin-top: 0.8rem; // 新增文字上边距
+    }
+
+    &:hover {
+        background: #2563eb !important;
+    }
+}
+
+.topLeft, .topRight {
+    grid-row: 1;
+    min-height: 23vh;
+    margin-bottom: 0.5rem; /* 顶部菜单下边距 */
+}
+
+.bottomLeft, .bottomRight {
+    grid-row: 2;
+    margin-top: 0.5rem; /* 底部菜单上边距 */
+}
+
+.menuButton {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: inherit;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.5rem;
+    &:hover {
+        text-decoration: underline;
+    }
+}

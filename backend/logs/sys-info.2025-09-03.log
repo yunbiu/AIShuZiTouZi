@@ -1,0 +1,18 @@
+2025-09-03 21:15:32 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-09-03 21:15:32 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 16604 (D:\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in D:\LessonRyWithReact\backend)
+2025-09-03 21:15:32 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-09-03 21:15:36 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-09-03 21:15:36 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-09-03 21:15:36 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...
+2025-09-03 21:27:59 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-09-03 21:27:59 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 19380 (D:\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in D:\LessonRyWithReact\backend)
+2025-09-03 21:27:59 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-09-03 21:28:03 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-09-03 21:28:04 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-09-03 21:28:04 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...
+2025-09-03 22:11:49 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-09-03 22:11:49 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 2792 (C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend)
+2025-09-03 22:11:49 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-09-03 22:11:56 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-09-03 22:11:56 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-09-03 22:11:56 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...

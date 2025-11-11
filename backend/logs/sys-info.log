@@ -1,0 +1,18 @@
+2025-10-14 14:28:22 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-10-14 14:28:23 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 8144 (C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend)
+2025-10-14 14:28:23 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-10-14 14:28:27 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-10-14 14:28:28 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-10-14 14:28:28 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...
+2025-10-14 16:17:12 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-10-14 16:17:12 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 13824 (C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend)
+2025-10-14 16:17:12 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-10-14 16:17:16 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-10-14 16:17:16 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-10-14 16:17:16 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...
+2025-10-14 16:17:32 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2025-10-14 16:17:32 [main] INFO  com.ruoyi.RuoYiApplication - Starting RuoYiApplication using Java 17.0.12 with PID 11344 (C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend\ruoyi-admin-wms\target\classes started by ADMIN in C:\Users\ADMIN\Desktop\importantTools\LessonRyWithReact\backend)
+2025-10-14 16:17:32 [main] INFO  com.ruoyi.RuoYiApplication - The following 1 profile is active: "dev"
+2025-10-14 16:17:36 [main] INFO  io.undertow.servlet - Initializing Spring embedded WebApplicationContext
+2025-10-14 16:17:36 [main] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource detect P6SPY plugin and enabled it
+2025-10-14 16:17:36 [main] INFO  com.zaxxer.hikari.HikariDataSource - master - Starting...
