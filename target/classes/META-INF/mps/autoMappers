@@ -1,0 +1,3 @@
+com.ruoyi.wms.domain.bo.ReceiptOrderDetailBo
+com.ruoyi.wms.domain.bo.InventoryDetailBo
+com.ruoyi.wms.domain.bo.ShipmentOrderDetailBo

@@ -22,6 +22,13 @@ const HomePage = () => {
                     </button>
                 </div>
 
+                      <div className={`${styles.menuItem} ${styles.topLeft}`}>
+                    <button onClick={() => navigateToBasicInfo("crypto-ai")} className={styles.menuButton}>
+                        <FileTextOutlined style={{ fontSize: '5rem' }} />
+                        <div>AI驱动数字货币投资辅助系统</div>
+                    </button>
+                </div>
+
                 {/* 中间：业务操作管理 */}
                 <div className={`${styles.menuItem} ${styles.center}`}>
                     <button onClick={() => navigateToBasicInfo("warehouse-mng")} className={styles.menuButton}>
@@ -29,6 +36,7 @@ const HomePage = () => {
                         <div>业务操作管理</div>
                     </button>
                 </div>
+                
 
                 {/* 右上：可视化查询管理 */}
                 <div className={`${styles.menuItem} ${styles.topRight}`}>

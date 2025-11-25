@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @name umi 的路由配置
  * @description 只支持 path,component,routes,redirect,wrappers,name,icon 的配置
  * @param path  path 只支持两种占位符配置，第一种是动态参数 :id 的形式，第二种是 * 通配符，通配符只能出现路由字符串的最后。
@@ -16,6 +16,37 @@ export default [
     name: '首页',
     layout: false,
     component: './home/HomePage',
+  },
+  {
+    path: '/crypto-ai',
+    name: '加密货币AI分析',
+    icon: 'area-chart',
+    routes: [
+      {
+        path: '/crypto-ai',
+        redirect: '/crypto-ai/dashboard',
+      },
+      {
+        path: '/crypto-ai/dashboard',
+        name: '系统概览',
+        component: '@/pages/crypto-ai/Dashboard',
+      },
+      {
+        path: '/crypto-ai/message-list',
+        name: '消息列表',
+        component: '@/pages/crypto-ai/MessageList',
+      },
+      {
+        path: '/crypto-ai/portfolio-data',
+        name: '持仓数据',
+        component: '@/pages/crypto-ai/PortfolioData',
+      },
+      {
+        path: '/crypto-ai/suggestion-report',
+        name: '建议报告',
+        component: '@/pages/crypto-ai/SuggestionReport',
+      },
+    ],
   },
   {
     path: '*',
