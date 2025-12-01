@@ -11,9 +11,8 @@ import { getRemoteMenu, getRoutersInfo, getUserInfo, patchRouteWithRemoteMenus, 
 import { PageEnum } from './enums/pagesEnums';
 import routes from 'config/routes';
 
-
+//1111测试1
 const isDev = process.env.NODE_ENV === 'development';
-
 
 
 /**
