@@ -1,4 +1,5 @@
 import React from 'react';
+import { history } from 'umi';
 import { Card, Statistic, Row, Col, Button, Table, Space, Tag } from 'antd';
 import { BellOutlined, FileTextOutlined, PieChartOutlined, DownloadOutlined, EyeOutlined } from '@ant-design/icons';
 import { Pie } from '@ant-design/plots';
@@ -134,9 +135,14 @@ const Dashboard = () => {
         <Col lg={6} md={12} sm={24}>
           <Card title="快速入口" bordered={false}>
             <Space direction="vertical" style={{ width: '100%' }}>
-              <Button type="default" icon={<BellOutlined />} block>查看消息列表</Button>
-              <Button type="default" icon={<PieChartOutlined />} block>查看持仓数据</Button>
-              <Button type="default" icon={<FileTextOutlined />} block>审核建议报告</Button>
+              <Button
+                type="default"
+                icon={<BellOutlined />}
+                block
+                onClick={() => history.push('/crypto-ai/message-list')}
+              >查看消息列表</Button>
+              <Button type="default" icon={<PieChartOutlined />} block onClick={() => history.push('/crypto-ai/portfolio-data')}>查看持仓数据</Button>
+              <Button type="default" icon={<FileTextOutlined />} block onClick={() => history.push('/crypto-ai/suggestion-report')}>审核建议报告</Button>
               <Button type="default" icon={<DownloadOutlined />} block>导出数据报表</Button>
             </Space>
           </Card>

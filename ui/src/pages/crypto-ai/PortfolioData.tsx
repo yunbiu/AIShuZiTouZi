@@ -68,7 +68,12 @@ const PortfolioData = () => {
     radius: 0.8,
     label: {
       type: 'outer',
-      formatter: (datum: any) => `${datum.type}: ${datum.value}%`,
+      formatter: (datum: any) => {
+        if (!datum || typeof datum.type === 'undefined' || typeof datum.value === 'undefined') {
+          return '';
+        }
+        return `${datum.type}: ${datum.value}%`;
+      },
     },
     legend: {
       position: 'right',
@@ -84,7 +89,12 @@ const PortfolioData = () => {
       min: 0,
       max: 50,
       label: {
-        formatter: (v: number) => `${v}%`,
+        formatter: (v: number) => {
+          if (typeof v === 'undefined' || v === null) {
+            return '';
+          }
+          return `${v}%`;
+        },
       },
     },
     line: {

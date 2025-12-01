@@ -1,120 +1,486 @@
+/* 简化的容器样式 - 确保内容可滚动 */
 .container {
-    position: fixed;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+  padding: 20px;
+
+  /* 简单的渐变叠加层，确保文字可读性 */
+  &::before {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    display: flex;
-    flex-direction: column; /* 改为垂直布局 */
-    justify-content: center;
-    align-items: center;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.9) 100%);
+    z-index: 1;
+  }
+
+  >* {
+    position: relative;
+    z-index: 2;
+    max-width: 100%;
+  }
 }
 
-/* 新增标题样式 */
+/* 标题样式 - 简洁明了，确保文字完整显示 */
 .title {
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid transparent;
-    border-image: linear-gradient(to right, #f9f9fa, #3b82f6, #f9f9fa) 1;
-    border-radius: 8px;
-    padding: 1rem 2rem;
-    margin-bottom: 10rem;
-    font-size: 4rem;
-    font-weight: bold;
-    color: rgba(255,193,7,1);
-    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.5); /* 蓝色发光效果 */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 20px 30px;
+  margin-bottom: 40px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  text-align: center;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  word-wrap: break-word;
+  max-width: 90vw;
+  white-space: normal;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+  }
 }
 
+/* 菜单网格 - 简化布局，确保每个项目有足够空间 */
 .menuGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: auto 1fr auto;
-    height: 50vh;
-    width: 50vw;
-    gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 20px;
+  width: 90vw;
+  max-width: 1200px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  margin-bottom: 30px;
 }
 
+/* 菜单项基础样式 - 重点确保文字完整显示 */
 .menuItem {
-    height: 100%;
-    min-height: 120px;
-    background: rgba(0,151,167, 0.9);
-    border-radius: 0.8rem;
-    display: flex;
-    flex-direction: column; /* 改为垂直布局 */
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    padding: 1.5rem;
-    box-shadow: inset 0 0 10px 3px rgba(255, 255, 255, 0.5); /* 向内发光效果 */
-    color: #e3f2fd;
-    /* 图标样式 */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 30px 15px;
+  color: #ffffff;
+  min-height: 180px;
+  text-align: center;
+  position: relative;
+  overflow: visible;
+
+  /* 图标样式 - 减小尺寸，为文字留出更多空间 */
+  .anticon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+  }
+
+  /* 文字样式 - 确保完整显示，调整字体大小和行高 */
+  div {
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.6;
+    padding: 0 5px;
+    word-wrap: break-word;
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    transition: all 0.3s ease;
+  }
+
+  /* 悬停效果 */
+  &:hover {
+    transform: translateY(-5px);
+    background: rgba(56, 189, 248, 0.2);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+
     .anticon {
-        font-size: 2.5rem;  // 从2rem加大到2.5rem
-        margin-bottom: 1.5rem; // 从1rem加大到1.5rem
-        color: #3b82f6;
+      transform: scale(1.05);
     }
-    
-    /* 文字样式 */
+
     div {
-        font-size: 1.2rem;
-        font-weight: bold;
-        text-align: center;
-        margin-top: 0.5rem; // 新增文字上边距
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
     }
+  }
 
-    &:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    }
+  /* 点击效果 */
+  &:active {
+    transform: translateY(-2px) scale(0.98);
+  }
 }
 
+/* 中心菜单项特殊样式 */
 .center {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    min-height: 280px;
-    background: rgba(0,145,234, 0.9) !important;
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 380px;
+  background: rgba(56, 189, 248, 0.25);
+  border: 2px solid rgba(56, 189, 248, 0.4);
+
+  .anticon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+
+  div {
+    font-size: 1.3rem;
+    font-weight: 700;
+    padding: 0 10px;
+    line-height: 1.7;
+  }
+
+  &:hover {
+    background: rgba(56, 189, 248, 0.35);
+    border-color: rgba(56, 189, 248, 0.5);
+  }
+}
+
+/* 顶部菜单项 */
+.topLeft, .topRight {
+  grid-row: 1;
+}
+
+/* 底部菜单项 */
+.bottomLeft, .bottomRight {
+  grid-row: 2;
+}
+
+/* 针对AI驱动数字货币投资辅助系统菜单项的特殊处理 */
+.topRight {
+  min-height: 200px !important;
+  padding: 30px 15px;
+  
+  div {
+    font-size: 1rem;
+    line-height: 1.7;
+    padding: 0 10px;
+  }
+}
+
+/* 菜单按钮样式 */
+.menuButton {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    text-decoration: none;
+  }
+
+  /* 简单的点击波纹效果 */
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    transform: translate(-50%, -50%);
+    transition: width 0.5s, height 0.5s;
+  }
+
+  &:active::after {
+    width: 200px;
+    height: 200px;
+  }
+}
+
+/* 粒子背景效果 - 简化以提高性能 */
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  z-index: 0;
+}
+
+/* 简单动画效果 */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 响应式设计 - 重点优化各种屏幕尺寸 */
+
+/* 大屏幕优化 */
+@media (min-width: 1400px) {
+  .title {
+    font-size: 3rem;
+    padding: 25px 40px;
+  }
+  
+  .menuGrid {
+    width: 80vw;
+    gap: 25px;
+  }
+  
+  .menuItem {
+    min-height: 200px;
+    padding: 40px 20px;
     
     .anticon {
-        color: white;
-        font-size: 3rem; // 从2.5rem加大到3rem
-        margin-bottom: 1.8rem; // 加大间距
+      font-size: 3.5rem;
     }
     
-    span {
-        color: white;
-        font-size: 1.5rem;
-        margin-top: 0.8rem; // 新增文字上边距
+    div {
+      font-size: 1.2rem;
     }
-
-    &:hover {
-        background: #2563eb !important;
+  }
+  
+  .center {
+    min-height: 420px;
+    
+    .anticon {
+      font-size: 4.5rem;
     }
+    
+    div {
+      font-size: 1.4rem;
+    }
+  }
+  
+  .topRight {
+    min-height: 220px !important;
+  }
 }
 
-.topLeft, .topRight {
-    grid-row: 1;
-    min-height: 23vh;
-    margin-bottom: 0.5rem; /* 顶部菜单下边距 */
+/* 中等屏幕 */
+@media (max-width: 1200px) {
+  .title {
+    font-size: 2.2rem;
+    padding: 20px 30px;
+    margin-bottom: 35px;
+  }
+  
+  .menuGrid {
+    width: 95vw;
+    gap: 15px;
+  }
+  
+  .menuItem {
+    min-height: 160px;
+    padding: 25px 15px;
+    
+    .anticon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    
+    div {
+      font-size: 1rem;
+    }
+  }
+  
+  .center {
+    min-height: 340px;
+    
+    .anticon {
+      font-size: 3.5rem;
+    }
+    
+    div {
+      font-size: 1.2rem;
+    }
+  }
+  
+  .topRight {
+    min-height: 180px !important;
+    
+    div {
+      font-size: 0.95rem;
+    }
+  }
 }
 
-.bottomLeft, .bottomRight {
+/* 平板设备 - 重新排列布局 */
+@media (max-width: 1024px) {
+  .menuGrid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto auto;
+    width: 95vw;
+    gap: 15px;
+  }
+  
+  .center {
+    grid-column: 1 / span 2;
     grid-row: 2;
-    margin-top: 0.5rem; /* 底部菜单上边距 */
+    min-height: 180px;
+    
+    .anticon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    
+    div {
+      font-size: 1.1rem;
+    }
+  }
+  
+  .topLeft, .topRight {
+    grid-row: 1;
+  }
+  
+  .bottomLeft, .bottomRight {
+    grid-row: 3;
+  }
+  
+  .topRight {
+    min-height: 160px !important;
+  }
 }
 
-.menuButton {
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: inherit;
-    cursor: pointer;
-    padding: 0;
-    margin-top: 0.5rem;
-    &:hover {
-        text-decoration: underline;
+/* 小平板和手机横屏 */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .title {
+    font-size: 1.8rem;
+    padding: 15px 20px;
+    margin-bottom: 30px;
+  }
+  
+  .menuGrid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(5, auto);
+    width: 95vw;
+    gap: 12px;
+    padding: 15px;
+  }
+  
+  .menuItem {
+    min-height: 140px;
+    padding: 20px 15px;
+    
+    /* 重置所有菜单项位置 */
+    &.topLeft, &.topRight, &.center, &.bottomLeft, &.bottomRight {
+      grid-column: auto;
+      grid-row: auto;
     }
+    
+    .anticon {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+    
+    div {
+      font-size: 1rem;
+      padding: 0 10px;
+    }
+  }
+  
+  /* 中心菜单项在移动设备上的样式 */
+  .center {
+    min-height: 160px;
+    
+    .anticon {
+      font-size: 2.8rem;
+    }
+    
+    div {
+      font-size: 1.1rem;
+    }
+  }
+  
+  /* 顶部右侧菜单项在移动设备上的特殊处理 */
+  .topRight {
+    min-height: 140px !important;
+    
+    div {
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+  }
+}
+
+/* 手机竖屏 */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1.5rem;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+  }
+  
+  .menuGrid {
+    width: 98vw;
+    padding: 10px;
+    gap: 10px;
+  }
+  
+  .menuItem {
+    min-height: 120px;
+    padding: 15px 10px;
+    
+    .anticon {
+      font-size: 1.8rem;
+      margin-bottom: 8px;
+    }
+    
+    div {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+  }
+  
+  .center {
+    min-height: 140px;
+    
+    .anticon {
+      font-size: 2.2rem;
+    }
+    
+    div {
+      font-size: 1rem;
+    }
+  }
+  
+  /* 针对长文字的特殊处理 */
+  .topRight {
+    min-height: 130px !important;
+    
+    div {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      padding: 0 8px;
+    }
+  }
 }

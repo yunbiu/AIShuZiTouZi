@@ -64,7 +64,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    actionsRender: () => [<Home key="home" />,<Question key="doc" />, <SelectLang key="SelectLang" />],
+    actionsRender: () => [<Home key="home" />, <Question key="doc" />, <SelectLang key="SelectLang" />],
     avatarProps: {
       src: initialState?.currentUser?.avatar,
       title: <AvatarName />,
@@ -152,14 +152,14 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
 };
 
 interface OnRouteChangeParams {
-  clientRoutes: any[]; 
+  clientRoutes: any[];
   location: Location;
 }
-export async function onRouteChange({ clientRoutes, location }:OnRouteChangeParams ) {
+export async function onRouteChange({ clientRoutes, location }: OnRouteChangeParams) {
 
   const menus = getRemoteMenu();
-//  console.log('onRouteChange', clientRoutes);
-  if(menus === null && location.pathname !== PageEnum.LOGIN) {
+  //  console.log('onRouteChange', clientRoutes);
+  if (menus === null && location.pathname !== PageEnum.LOGIN) {
     console.log('refresh')
     history.go(0);
   }
@@ -167,16 +167,16 @@ export async function onRouteChange({ clientRoutes, location }:OnRouteChangePara
   const curModel = localStorage.getItem('curModel');
   const pathSegments = location.pathname.split('/').filter(Boolean);
   const firstPathName = pathSegments.length > 0 ? pathSegments[0] : '';
-  if (firstPathName.length>0 && firstPathName !== curModel) {
-    localStorage.setItem('curModel',firstPathName)
-    window.location.reload(); 
-    
+  if (firstPathName.length > 0 && firstPathName !== curModel) {
+    localStorage.setItem('curModel', firstPathName)
+    window.location.reload();
+
   }
-  
+
 }
 
 
-export async function patchClientRoutes({ routes }:any) {
+export async function patchClientRoutes({ routes }: any) {
   // console.log('patchClientRoutes', routes);
   patchRouteWithRemoteMenus(routes);
 }
@@ -184,7 +184,7 @@ export async function patchClientRoutes({ routes }:any) {
 export function render(oldRender: () => void) {
   // console.log("render",history.location)
   const token = getAccessToken();
-  if(!token || token?.length === 0) {
+  if (!token || token?.length === 0) {
     oldRender();
     return;
   }
