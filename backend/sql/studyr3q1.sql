@@ -3,15 +3,15 @@
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80400 (8.4.0)
+ Source Server Version : 80013 (8.0.13)
  Source Host           : localhost:3306
  Source Schema         : studyr3q1
 
  Target Server Type    : MySQL
- Target Server Version : 80400 (8.4.0)
+ Target Server Version : 80013 (8.0.13)
  File Encoding         : 65001
 
- Date: 01/12/2025 20:33:33
+ Date: 01/12/2025 21:22:14
 */
 
 SET NAMES utf8mb4;
@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `ai_keys`;
 CREATE TABLE `ai_keys`  (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `api_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = DYNAMIC;
@@ -37,8 +37,8 @@ INSERT INTO `ai_keys` VALUES (1, 'ENjSyOf82jRnE7vtFXiiBK6s794GHyplqkwULtuPsfM=')
 -- ----------------------------
 DROP TABLE IF EXISTS `comments`;
 CREATE TABLE `comments`  (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int UNSIGNED NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) UNSIGNED NOT NULL,
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `times` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
@@ -57,14 +57,13 @@ INSERT INTO `comments` VALUES (121, 1, '老公', '2025-10-14 08:54:16');
 -- ----------------------------
 DROP TABLE IF EXISTS `crypto_message`;
 CREATE TABLE `crypto_message`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `title` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息标题',
   `coin` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '涉及币种',
   `sentiment` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '情感倾向：利好、利空、中性',
   `source` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息来源',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '消息内容',
   `publish_time` datetime NOT NULL COMMENT '发布时间',
-  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_coin`(`coin` ASC) USING BTREE,
@@ -75,22 +74,22 @@ CREATE TABLE `crypto_message`  (
 -- ----------------------------
 -- Records of crypto_message
 -- ----------------------------
-INSERT INTO `crypto_message` VALUES (1, '美联储加息预期降温，比特币市场情绪回暖', 'BTC', '利好', 'CoinGecko', '根据最新数据显示，美联储加息预期有所降温，这对比特币等加密货币市场产生了积极影响。市场分析师认为，随着美元流动性宽松预期增强，资金可能重新流入加密资产领域，比特币价格有望在短期内突破前期阻力位。', '2024-12-10 07:30:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
-INSERT INTO `crypto_message` VALUES (2, '以太坊2.0升级计划推迟，开发者社区引发讨论', 'ETH', '利空', 'Binance公告', '以太坊核心开发团队宣布2.0升级计划将推迟至下个季度，主要原因是为了进一步优化共识机制的安全性和兼容性。这一消息在开发者社区中引发了广泛讨论，部分社区成员担忧推迟可能影响以太坊的市场竞争力，而另一部分则支持团队的审慎决策。', '2024-12-10 06:15:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
+INSERT INTO `crypto_message` VALUES (1, '美联储加息预期降温，比特币市场情绪回暖', 'BTC', '利好', 'CoinGecko', '根据最新数据显示，美联储加息预期有所降温，这对比特币等加密货币市场产生了积极影响。市场分析师认为，随着美元流动性宽松预期增强，资金可能重新流入加密资产领域，比特币价格有望在短期内突破前期阻力位。', '2024-12-10 07:30:00', '2025-12-01 16:38:05');
+INSERT INTO `crypto_message` VALUES (2, '以太坊2.0升级计划推迟，开发者社区引发讨论', 'ETH', '利空', 'Binance公告', '以太坊核心开发团队宣布2.0升级计划将推迟至下个季度，主要原因是为了进一步优化共识机制的安全性和兼容性。这一消息在开发者社区中引发了广泛讨论，部分社区成员担忧推迟可能影响以太坊的市场竞争力，而另一部分则支持团队的审慎决策。', '2024-12-10 06:15:00', '2025-12-01 16:38:05');
 
 -- ----------------------------
 -- Table structure for crypto_portfolio
 -- ----------------------------
 DROP TABLE IF EXISTS `crypto_portfolio`;
 CREATE TABLE `crypto_portfolio`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '持仓ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '持仓ID',
   `asset_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产类型（BTC/ETH/SOL/USDT）',
   `percentage` decimal(5, 2) NOT NULL DEFAULT 0.00 COMMENT '持仓百分比',
   `amount` decimal(15, 8) NOT NULL DEFAULT 0.00000000 COMMENT '资产数量',
   `usd_value` decimal(15, 2) NOT NULL DEFAULT 0.00 COMMENT '美元价值',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_portfolio
@@ -111,15 +110,15 @@ INSERT INTO `crypto_portfolio` VALUES (10, 'USDT', 59.80, 59800.00000000, 59800.
 -- ----------------------------
 DROP TABLE IF EXISTS `crypto_portfolio_history`;
 CREATE TABLE `crypto_portfolio_history`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '历史记录ID',
-  `portfolio_id` bigint NOT NULL COMMENT '关联持仓ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '历史记录ID',
+  `portfolio_id` bigint(20) NOT NULL COMMENT '关联持仓ID',
   `asset_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产类型',
   `percentage` decimal(5, 2) NOT NULL DEFAULT 0.00 COMMENT '历史持仓百分比',
   `amount` decimal(15, 8) NOT NULL DEFAULT 0.00000000 COMMENT '历史资产数量',
   `usd_value` decimal(15, 2) NOT NULL DEFAULT 0.00 COMMENT '历史美元价值',
   `snapshot_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '快照时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_portfolio_history
@@ -140,9 +139,9 @@ INSERT INTO `crypto_portfolio_history` VALUES (10, 10, 'USDT', 58.00, 58000.0000
 -- ----------------------------
 DROP TABLE IF EXISTS `demo`;
 CREATE TABLE `demo`  (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '名称',
-  `age` int NULL DEFAULT NULL COMMENT '年龄',
+  `age` int(11) NULL DEFAULT NULL COMMENT '年龄',
   `gender` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '性别（男/女）',
   `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注信息',
   `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '创建人',
@@ -172,7 +171,7 @@ INSERT INTO `demo` VALUES (36, 'uuu', 18, '男', '2222', '管理员', '2025-10-1
 -- ----------------------------
 DROP TABLE IF EXISTS `gen_table`;
 CREATE TABLE `gen_table`  (
-  `table_id` bigint NOT NULL,
+  `table_id` bigint(20) NOT NULL,
   `table_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `table_comment` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `sub_table_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -203,8 +202,8 @@ CREATE TABLE `gen_table`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `gen_table_column`;
 CREATE TABLE `gen_table_column`  (
-  `column_id` bigint NOT NULL,
-  `table_id` bigint NULL DEFAULT NULL,
+  `column_id` bigint(20) NOT NULL,
+  `table_id` bigint(20) NULL DEFAULT NULL,
   `column_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `column_comment` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `column_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -220,7 +219,7 @@ CREATE TABLE `gen_table_column`  (
   `query_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `html_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dict_type` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `sort` int NULL DEFAULT NULL,
+  `sort` int(11) NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT NULL,
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -236,7 +235,7 @@ CREATE TABLE `gen_table_column`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_config`;
 CREATE TABLE `sys_config`  (
-  `config_id` bigint NOT NULL,
+  `config_id` bigint(20) NOT NULL,
   `config_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `config_value` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -263,11 +262,11 @@ INSERT INTO `sys_config` VALUES (11, 'OSS预览列表资源开关', 'sys.oss.pre
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dept`;
 CREATE TABLE `sys_dept`  (
-  `dept_id` bigint NOT NULL,
-  `parent_id` bigint NULL DEFAULT NULL,
+  `dept_id` bigint(20) NOT NULL,
+  `parent_id` bigint(20) NULL DEFAULT NULL,
   `ancestors` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dept_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `order_num` int NULL DEFAULT NULL,
+  `order_num` int(11) NULL DEFAULT NULL,
   `leader` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `phone` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -299,8 +298,8 @@ INSERT INTO `sys_dept` VALUES (1811589666899832833, 102, '0,100,102', '测试部
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_data`;
 CREATE TABLE `sys_dict_data`  (
-  `dict_code` bigint NOT NULL,
-  `dict_sort` int NULL DEFAULT NULL,
+  `dict_code` bigint(20) NOT NULL,
+  `dict_sort` int(11) NULL DEFAULT NULL,
   `dict_label` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dict_value` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -375,7 +374,7 @@ INSERT INTO `sys_dict_data` VALUES (1823182471136886786, 2, '作废', '-1', 'wms
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_dict_type`;
 CREATE TABLE `sys_dict_type`  (
-  `dict_id` bigint NOT NULL,
+  `dict_id` bigint(20) NOT NULL,
   `dict_name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dict_type` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -411,7 +410,7 @@ INSERT INTO `sys_dict_type` VALUES (1823182238898274306, '盘库状态', 'wms_ch
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_logininfor`;
 CREATE TABLE `sys_logininfor`  (
-  `info_id` bigint NOT NULL,
+  `info_id` bigint(20) NOT NULL,
   `user_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `ipaddr` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `login_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -562,15 +561,15 @@ INSERT INTO `sys_logininfor` VALUES (1995400336172445697, 'admin', '0:0:0:0:0:0:
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_menu`;
 CREATE TABLE `sys_menu`  (
-  `menu_id` bigint NOT NULL,
+  `menu_id` bigint(20) NOT NULL,
   `menu_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `parent_id` bigint NULL DEFAULT NULL,
-  `order_num` int NULL DEFAULT NULL,
+  `parent_id` bigint(20) NULL DEFAULT NULL,
+  `order_num` int(11) NULL DEFAULT NULL,
   `path` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `component` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `query_param` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `is_frame` int NULL DEFAULT NULL,
-  `is_cache` int NULL DEFAULT NULL,
+  `is_frame` int(11) NULL DEFAULT NULL,
+  `is_cache` int(11) NULL DEFAULT NULL,
   `menu_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `visible` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -690,7 +689,7 @@ INSERT INTO `sys_menu` VALUES (1909128585102680066, '基础信息设置', 1061, 
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_notice`;
 CREATE TABLE `sys_notice`  (
-  `notice_id` bigint NOT NULL,
+  `notice_id` bigint(20) NOT NULL,
   `notice_title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `notice_type` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `notice_content` longblob NULL,
@@ -713,12 +712,12 @@ INSERT INTO `sys_notice` VALUES (2, '维护通知：2018-07-01 系统凌晨维�
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_oper_log`;
 CREATE TABLE `sys_oper_log`  (
-  `oper_id` bigint NOT NULL,
+  `oper_id` bigint(20) NOT NULL,
   `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `business_type` int NULL DEFAULT NULL,
+  `business_type` int(11) NULL DEFAULT NULL,
   `method` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `request_method` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `operator_type` int NULL DEFAULT NULL,
+  `operator_type` int(11) NULL DEFAULT NULL,
   `oper_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `dept_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `oper_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -726,7 +725,7 @@ CREATE TABLE `sys_oper_log`  (
   `oper_location` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `oper_param` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `json_result` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `status` int NULL DEFAULT NULL,
+  `status` int(11) NULL DEFAULT NULL,
   `error_msg` varchar(2000) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `oper_time` datetime NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
@@ -1334,7 +1333,7 @@ INSERT INTO `sys_oper_log` VALUES (1932738021180280833, '菜单管理', 2, 'com.
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_oss`;
 CREATE TABLE `sys_oss`  (
-  `oss_id` bigint NOT NULL,
+  `oss_id` bigint(20) NOT NULL,
   `file_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `original_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `file_suffix` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -1355,7 +1354,7 @@ CREATE TABLE `sys_oss`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_oss_config`;
 CREATE TABLE `sys_oss_config`  (
-  `oss_config_id` bigint NOT NULL,
+  `oss_config_id` bigint(20) NOT NULL,
   `config_key` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `access_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `secret_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -1389,10 +1388,10 @@ INSERT INTO `sys_oss_config` VALUES (5, 'image', 'ruoyi', 'ruoyi123', 'ruoyi', '
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_post`;
 CREATE TABLE `sys_post`  (
-  `post_id` bigint NOT NULL,
+  `post_id` bigint(20) NOT NULL,
   `post_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `post_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `post_sort` int NOT NULL,
+  `post_sort` int(11) NOT NULL,
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime NULL DEFAULT NULL,
@@ -1415,10 +1414,10 @@ INSERT INTO `sys_post` VALUES (1811656351757385729, 'caiwu8989', '财务', 5, '1
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role`;
 CREATE TABLE `sys_role`  (
-  `role_id` bigint NOT NULL,
+  `role_id` bigint(20) NOT NULL,
   `role_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `role_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `role_sort` int NOT NULL,
+  `role_sort` int(11) NOT NULL,
   `data_scope` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `menu_check_strictly` tinyint(1) NULL DEFAULT NULL,
   `dept_check_strictly` tinyint(1) NULL DEFAULT NULL,
@@ -1448,8 +1447,8 @@ INSERT INTO `sys_role` VALUES (1913138480121155586, '仅测试', '3', 7, '1', 1,
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_dept`;
 CREATE TABLE `sys_role_dept`  (
-  `role_id` bigint NOT NULL,
-  `dept_id` bigint NOT NULL
+  `role_id` bigint(20) NOT NULL,
+  `dept_id` bigint(20) NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -1461,8 +1460,8 @@ CREATE TABLE `sys_role_dept`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_role_menu`;
 CREATE TABLE `sys_role_menu`  (
-  `role_id` bigint NOT NULL,
-  `menu_id` bigint NOT NULL
+  `role_id` bigint(20) NOT NULL,
+  `menu_id` bigint(20) NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -1496,8 +1495,8 @@ INSERT INTO `sys_role_menu` VALUES (1912875129050800129, 1909128585102680065);
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user`;
 CREATE TABLE `sys_user`  (
-  `user_id` bigint NOT NULL,
-  `dept_id` bigint NULL DEFAULT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `dept_id` bigint(20) NULL DEFAULT NULL,
   `user_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `nick_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `user_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -1536,8 +1535,8 @@ INSERT INTO `sys_user` VALUES (2, 111, 'xiaoxiao', '测试人员', 'sys_user', N
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_post`;
 CREATE TABLE `sys_user_post`  (
-  `user_id` bigint NOT NULL,
-  `post_id` bigint NOT NULL
+  `user_id` bigint(20) NOT NULL,
+  `post_id` bigint(20) NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -1551,8 +1550,8 @@ INSERT INTO `sys_user_post` VALUES (1912865254853877761, 1);
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_user_role`;
 CREATE TABLE `sys_user_role`  (
-  `user_id` bigint NOT NULL,
-  `role_id` bigint NOT NULL
+  `user_id` bigint(20) NOT NULL,
+  `role_id` bigint(20) NOT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -1567,11 +1566,11 @@ INSERT INTO `sys_user_role` VALUES (1912865254853877761, 1829105952432427010);
 -- ----------------------------
 DROP TABLE IF EXISTS `user_account`;
 CREATE TABLE `user_account`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `username` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '登录用户名，唯一',
   `password_md5` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码MD5摘要，后端仅保存散列值',
   `role_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'USER' COMMENT '角色编码：USER/ADMIN等',
-  `status` tinyint NOT NULL DEFAULT 1 COMMENT '账户状态：1正常，0禁用',
+  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '账户状态：1正常，0禁用',
   `content_enc` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '加密存储的扩展信息（AES Base64）',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -1589,12 +1588,12 @@ INSERT INTO `user_account` VALUES (1, '测试用户', 'e10adc3949ba59abbe56e057f
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_area`;
 CREATE TABLE `wms_area`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `area_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `area_name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `warehouse_id` bigint NOT NULL,
+  `warehouse_id` bigint(20) NOT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `del_flag` tinyint NOT NULL,
+  `del_flag` tinyint(4) NOT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -1619,12 +1618,12 @@ INSERT INTO `wms_area` VALUES (1829397742493560833, NULL, '相思湖地区仓库
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_check_order`;
 CREATE TABLE `wms_check_order`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `check_order_no` varchar(22) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `check_order_status` tinyint NULL DEFAULT NULL,
+  `check_order_status` tinyint(4) NULL DEFAULT NULL,
   `check_order_total` decimal(20, 2) NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -1644,18 +1643,18 @@ INSERT INTO `wms_check_order` VALUES (1828633046379339778, 'PK08283199', 1, 2.00
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_check_order_detail`;
 CREATE TABLE `wms_check_order_detail`  (
-  `id` bigint NOT NULL,
-  `check_order_id` bigint NULL DEFAULT NULL,
-  `sku_id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
+  `check_order_id` bigint(20) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NOT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `check_quantity` decimal(20, 2) NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `production_date` datetime(3) NULL DEFAULT NULL,
   `expiration_date` datetime(3) NULL DEFAULT NULL,
   `receipt_time` datetime(3) NULL DEFAULT NULL,
-  `inventory_detail_id` bigint NULL DEFAULT NULL,
+  `inventory_detail_id` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -1683,10 +1682,10 @@ INSERT INTO `wms_check_order_detail` VALUES (1828633046706495493, 18286330463793
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_inventory`;
 CREATE TABLE `wms_inventory`  (
-  `id` bigint NOT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -1724,14 +1723,14 @@ INSERT INTO `wms_inventory` VALUES (1829418900244852737, 1829399118304964610, 18
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_inventory_detail`;
 CREATE TABLE `wms_inventory_detail`  (
-  `id` bigint NOT NULL,
-  `receipt_order_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `receipt_order_id` bigint(20) NULL DEFAULT NULL,
   `receipt_order_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `order_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `type` int NULL DEFAULT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `type` int(11) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `production_date` datetime(3) NULL DEFAULT NULL,
@@ -1774,19 +1773,19 @@ INSERT INTO `wms_inventory_detail` VALUES (1829418900894969859, 1829418487672139
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_inventory_history`;
 CREATE TABLE `wms_inventory_history`  (
-  `id` bigint NOT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `production_date` datetime(3) NULL DEFAULT NULL,
   `expiration_date` datetime(3) NULL DEFAULT NULL,
   `amount` decimal(10, 2) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `order_id` bigint NULL DEFAULT NULL,
+  `order_id` bigint(20) NULL DEFAULT NULL,
   `order_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `order_type` int NULL DEFAULT NULL,
+  `order_type` int(11) NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
@@ -1840,12 +1839,12 @@ INSERT INTO `wms_inventory_history` VALUES (1829418901289234436, 182836474002817
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_item`;
 CREATE TABLE `wms_item`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `item_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `item_name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `item_category` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `unit` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `item_brand` bigint NULL DEFAULT NULL,
+  `item_brand` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -1873,7 +1872,7 @@ INSERT INTO `wms_item` VALUES (1912490838865289217, '', '砂糖橘', '1829397958
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_item_brand`;
 CREATE TABLE `wms_item_brand`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `brand_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -1896,10 +1895,10 @@ INSERT INTO `wms_item_brand` VALUES (1911764903073415169, '水果', 'admin', '20
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_item_category`;
 CREATE TABLE `wms_item_category`  (
-  `id` bigint NOT NULL,
-  `parent_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `parent_id` bigint(20) NULL DEFAULT NULL,
   `category_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `order_num` int NULL DEFAULT NULL,
+  `order_num` int(11) NULL DEFAULT NULL,
   `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -1927,9 +1926,9 @@ INSERT INTO `wms_item_category` VALUES (1910588541117718529, 0, '洗衣机', 8, 
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_item_sku`;
 CREATE TABLE `wms_item_sku`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `sku_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `item_id` bigint NULL DEFAULT NULL,
+  `item_id` bigint(20) NULL DEFAULT NULL,
   `barcode` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `sku_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `length` decimal(10, 1) NULL DEFAULT NULL,
@@ -1976,10 +1975,10 @@ INSERT INTO `wms_item_sku` VALUES (1912490839255359490, '中', 19124908388652892
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_merchant`;
 CREATE TABLE `wms_merchant`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `merchant_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `merchant_name` varchar(60) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `merchant_type` tinyint NULL DEFAULT NULL,
+  `merchant_type` tinyint(4) NULL DEFAULT NULL,
   `merchant_level` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `bank_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `bank_account` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -2008,13 +2007,13 @@ INSERT INTO `wms_merchant` VALUES (1912487836544737282, 'cs_0004', '南宁良庆
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_movement_order`;
 CREATE TABLE `wms_movement_order`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `movement_order_no` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `source_warehouse_id` bigint NULL DEFAULT NULL,
-  `source_area_id` bigint NULL DEFAULT NULL,
-  `target_warehouse_id` bigint NULL DEFAULT NULL,
-  `target_area_id` bigint NULL DEFAULT NULL,
-  `movement_order_status` tinyint NULL DEFAULT NULL,
+  `source_warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `source_area_id` bigint(20) NULL DEFAULT NULL,
+  `target_warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `target_area_id` bigint(20) NULL DEFAULT NULL,
+  `movement_order_status` tinyint(4) NULL DEFAULT NULL,
   `total_quantity` decimal(10, 2) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -2034,19 +2033,19 @@ INSERT INTO `wms_movement_order` VALUES (1829418487672139777, 'YK08301821', 1828
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_movement_order_detail`;
 CREATE TABLE `wms_movement_order_detail`  (
-  `id` bigint NOT NULL,
-  `movement_order_id` bigint NULL DEFAULT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `movement_order_id` bigint(20) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `production_date` datetime(3) NULL DEFAULT NULL,
   `expiration_date` datetime(3) NULL DEFAULT NULL,
-  `source_warehouse_id` bigint NULL DEFAULT NULL,
-  `source_area_id` bigint NULL DEFAULT NULL,
-  `target_warehouse_id` bigint NULL DEFAULT NULL,
-  `target_area_id` bigint NULL DEFAULT NULL,
-  `inventory_detail_id` bigint NULL DEFAULT NULL,
+  `source_warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `source_area_id` bigint(20) NULL DEFAULT NULL,
+  `target_warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `target_area_id` bigint(20) NULL DEFAULT NULL,
+  `inventory_detail_id` bigint(20) NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -2065,16 +2064,16 @@ INSERT INTO `wms_movement_order_detail` VALUES (1829418488129318915, 18294184876
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_receipt_order`;
 CREATE TABLE `wms_receipt_order`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `receipt_order_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `receipt_order_type` int NULL DEFAULT NULL,
-  `merchant_id` bigint NULL DEFAULT NULL,
+  `receipt_order_type` int(11) NULL DEFAULT NULL,
+  `merchant_id` bigint(20) NULL DEFAULT NULL,
   `order_no` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `total_quantity` decimal(10, 2) NULL DEFAULT NULL,
   `payable_amount` decimal(10, 2) NULL DEFAULT NULL,
-  `receipt_order_status` tinyint NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `receipt_order_status` tinyint(4) NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -2093,9 +2092,9 @@ INSERT INTO `wms_receipt_order` VALUES (1829399579699376129, 'RK08302046', 2, NU
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_receipt_order_detail`;
 CREATE TABLE `wms_receipt_order_detail`  (
-  `id` bigint NOT NULL,
-  `receipt_order_id` bigint NULL DEFAULT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `receipt_order_id` bigint(20) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(20, 2) NULL DEFAULT NULL,
   `amount` decimal(10, 2) NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -2106,8 +2105,8 @@ CREATE TABLE `wms_receipt_order_detail`  (
   `create_time` datetime(3) NULL DEFAULT NULL,
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `update_time` datetime(3) NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
@@ -2132,16 +2131,16 @@ INSERT INTO `wms_receipt_order_detail` VALUES (1829399580093640708, 182939957969
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_shipment_order`;
 CREATE TABLE `wms_shipment_order`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `shipment_order_no` varchar(22) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `shipment_order_type` int NULL DEFAULT NULL,
+  `shipment_order_type` int(11) NULL DEFAULT NULL,
   `order_no` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `merchant_id` bigint NULL DEFAULT NULL,
+  `merchant_id` bigint(20) NULL DEFAULT NULL,
   `receivable_amount` decimal(10, 2) NULL DEFAULT NULL,
   `total_quantity` decimal(10, 2) NULL DEFAULT NULL,
-  `shipment_order_status` tinyint NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `shipment_order_status` tinyint(4) NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -2161,17 +2160,17 @@ INSERT INTO `wms_shipment_order` VALUES (1829407217174638593, 'CK08304574', 2, N
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_shipment_order_detail`;
 CREATE TABLE `wms_shipment_order_detail`  (
-  `id` bigint NOT NULL,
-  `shipment_order_id` bigint NULL DEFAULT NULL,
-  `sku_id` bigint NULL DEFAULT NULL,
+  `id` bigint(20) NOT NULL,
+  `shipment_order_id` bigint(20) NULL DEFAULT NULL,
+  `sku_id` bigint(20) NULL DEFAULT NULL,
   `quantity` decimal(10, 2) NULL DEFAULT NULL,
   `amount` decimal(10, 2) NULL DEFAULT NULL,
-  `warehouse_id` bigint NULL DEFAULT NULL,
-  `area_id` bigint NULL DEFAULT NULL,
+  `warehouse_id` bigint(20) NULL DEFAULT NULL,
+  `area_id` bigint(20) NULL DEFAULT NULL,
   `batch_no` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `production_date` datetime(3) NULL DEFAULT NULL,
   `expiration_date` datetime(3) NULL DEFAULT NULL,
-  `inventory_detail_id` bigint NULL DEFAULT NULL,
+  `inventory_detail_id` bigint(20) NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
@@ -2203,11 +2202,11 @@ INSERT INTO `wms_shipment_order_detail` VALUES (1829407217568903171, 18294072171
 -- ----------------------------
 DROP TABLE IF EXISTS `wms_warehouse`;
 CREATE TABLE `wms_warehouse`  (
-  `id` bigint NOT NULL,
+  `id` bigint(20) NOT NULL,
   `warehouse_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `warehouse_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `order_num` bigint NULL DEFAULT NULL,
+  `order_num` bigint(20) NULL DEFAULT NULL,
   `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `create_time` datetime(3) NULL DEFAULT NULL,
   `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
