@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("portfolio_history")
+@TableName("crypto_portfolio_history")
 public class PortfolioHistory {
     @TableId(type = IdType.AUTO)
     private Integer id;

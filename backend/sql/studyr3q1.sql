@@ -1,37 +1,21 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80030 (8.0.30)
+ Source Server Version : 80400 (8.4.0)
  Source Host           : localhost:3306
  Source Schema         : studyr3q1
 
  Target Server Type    : MySQL
- Target Server Version : 80030 (8.0.30)
+ Target Server Version : 80400 (8.4.0)
  File Encoding         : 65001
 
- Date: 01/12/2025 18:15:50
+ Date: 01/12/2025 20:33:33
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
-
--- ----------------------------
--- Table structure for activity
--- ----------------------------
-DROP TABLE IF EXISTS `activity`;
-CREATE TABLE `activity`  (
-  `id` int NOT NULL COMMENT '活动id',
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '活动名称',
-  `description` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '活动描述信息',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of activity
--- ----------------------------
-INSERT INTO `activity` VALUES (1, '活动1', '若依111');
 
 -- ----------------------------
 -- Table structure for ai_keys
@@ -49,24 +33,6 @@ CREATE TABLE `ai_keys`  (
 INSERT INTO `ai_keys` VALUES (1, 'ENjSyOf82jRnE7vtFXiiBK6s794GHyplqkwULtuPsfM=');
 
 -- ----------------------------
--- Table structure for asset
--- ----------------------------
-DROP TABLE IF EXISTS `asset`;
-CREATE TABLE `asset`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `symbol` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产符号：BTC/ETH/USDT等',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产名称',
-  `decimals` int NOT NULL DEFAULT 8 COMMENT '资产精度位数（如BTC为8位）',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `symbol`(`symbol` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '数字资产字典' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of asset
--- ----------------------------
-
--- ----------------------------
 -- Table structure for comments
 -- ----------------------------
 DROP TABLE IF EXISTS `comments`;
@@ -77,25 +43,14 @@ CREATE TABLE `comments`  (
   `times` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 133 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of comments
 -- ----------------------------
-INSERT INTO `comments` VALUES (119, 1, '彭彩媛', '2025-10-14 08:42:34');
+INSERT INTO `comments` VALUES (119, 1, '1', '2025-10-14 08:42:34');
 INSERT INTO `comments` VALUES (120, 1, '她是我女票', '2025-10-14 08:43:14');
 INSERT INTO `comments` VALUES (121, 1, '老公', '2025-10-14 08:54:16');
-INSERT INTO `comments` VALUES (122, 1, '啊啊', '2025-10-14 08:54:39');
-INSERT INTO `comments` VALUES (123, 1, '爸爸', '2025-10-14 08:55:07');
-INSERT INTO `comments` VALUES (124, 1, '***', '2025-10-14 08:59:48');
-INSERT INTO `comments` VALUES (125, 1, '爸爸lxb', '2025-10-14 09:58:54');
-INSERT INTO `comments` VALUES (126, 1, '**', '2025-10-14 10:06:04');
-INSERT INTO `comments` VALUES (127, 1, '***', '2025-10-14 10:06:16');
-INSERT INTO `comments` VALUES (128, 1, '广西英华国际职业学院', '2025-10-14 10:07:01');
-INSERT INTO `comments` VALUES (129, 1, '广西英华国际职业学院', '2025-10-14 10:07:16');
-INSERT INTO `comments` VALUES (130, 1, '广西英华国际职业学院', '2025-10-14 10:07:25');
-INSERT INTO `comments` VALUES (131, 1, '啊啊啊啊啊', '2025-10-14 10:08:47');
-INSERT INTO `comments` VALUES (132, 1, '彭彩园跟彭兰清', '2025-10-14 11:37:49');
 
 -- ----------------------------
 -- Table structure for crypto_message
@@ -115,13 +70,70 @@ CREATE TABLE `crypto_message`  (
   INDEX `idx_coin`(`coin` ASC) USING BTREE,
   INDEX `idx_sentiment`(`sentiment` ASC) USING BTREE,
   INDEX `idx_publish_time`(`publish_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密货币消息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密货币消息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_message
 -- ----------------------------
 INSERT INTO `crypto_message` VALUES (1, '美联储加息预期降温，比特币市场情绪回暖', 'BTC', '利好', 'CoinGecko', '根据最新数据显示，美联储加息预期有所降温，这对比特币等加密货币市场产生了积极影响。市场分析师认为，随着美元流动性宽松预期增强，资金可能重新流入加密资产领域，比特币价格有望在短期内突破前期阻力位。', '2024-12-10 07:30:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
 INSERT INTO `crypto_message` VALUES (2, '以太坊2.0升级计划推迟，开发者社区引发讨论', 'ETH', '利空', 'Binance公告', '以太坊核心开发团队宣布2.0升级计划将推迟至下个季度，主要原因是为了进一步优化共识机制的安全性和兼容性。这一消息在开发者社区中引发了广泛讨论，部分社区成员担忧推迟可能影响以太坊的市场竞争力，而另一部分则支持团队的审慎决策。', '2024-12-10 06:15:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
+
+-- ----------------------------
+-- Table structure for crypto_portfolio
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_portfolio`;
+CREATE TABLE `crypto_portfolio`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '持仓ID',
+  `asset_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产类型（BTC/ETH/SOL/USDT）',
+  `percentage` decimal(5, 2) NOT NULL DEFAULT 0.00 COMMENT '持仓百分比',
+  `amount` decimal(15, 8) NOT NULL DEFAULT 0.00000000 COMMENT '资产数量',
+  `usd_value` decimal(15, 2) NOT NULL DEFAULT 0.00 COMMENT '美元价值',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of crypto_portfolio
+-- ----------------------------
+INSERT INTO `crypto_portfolio` VALUES (1, 'BTC', 45.50, 0.85213400, 38500.00, '2024-12-01 10:30:00');
+INSERT INTO `crypto_portfolio` VALUES (2, 'ETH', 28.75, 8.45210000, 24500.00, '2024-12-01 10:30:00');
+INSERT INTO `crypto_portfolio` VALUES (3, 'SOL', 15.25, 125.75000000, 13000.00, '2024-12-01 10:30:00');
+INSERT INTO `crypto_portfolio` VALUES (4, 'USDT', 10.50, 10500.00000000, 10500.00, '2024-12-01 10:30:00');
+INSERT INTO `crypto_portfolio` VALUES (5, 'BTC', 60.00, 1.12345678, 51000.00, '2024-12-01 11:15:00');
+INSERT INTO `crypto_portfolio` VALUES (6, 'ETH', 25.30, 7.89012345, 21500.00, '2024-12-01 11:15:00');
+INSERT INTO `crypto_portfolio` VALUES (7, 'SOL', 8.70, 72.50000000, 7400.00, '2024-12-01 11:15:00');
+INSERT INTO `crypto_portfolio` VALUES (8, 'USDT', 6.00, 6000.00000000, 6000.00, '2024-12-01 11:15:00');
+INSERT INTO `crypto_portfolio` VALUES (9, 'ETH', 40.20, 12.34567890, 35000.00, '2024-12-01 12:00:00');
+INSERT INTO `crypto_portfolio` VALUES (10, 'USDT', 59.80, 59800.00000000, 59800.00, '2024-12-01 12:00:00');
+
+-- ----------------------------
+-- Table structure for crypto_portfolio_history
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_portfolio_history`;
+CREATE TABLE `crypto_portfolio_history`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '历史记录ID',
+  `portfolio_id` bigint NOT NULL COMMENT '关联持仓ID',
+  `asset_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产类型',
+  `percentage` decimal(5, 2) NOT NULL DEFAULT 0.00 COMMENT '历史持仓百分比',
+  `amount` decimal(15, 8) NOT NULL DEFAULT 0.00000000 COMMENT '历史资产数量',
+  `usd_value` decimal(15, 2) NOT NULL DEFAULT 0.00 COMMENT '历史美元价值',
+  `snapshot_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '快照时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of crypto_portfolio_history
+-- ----------------------------
+INSERT INTO `crypto_portfolio_history` VALUES (1, 1, 'BTC', 46.00, 0.86000000, 39000.00, '2024-11-30 10:30:00');
+INSERT INTO `crypto_portfolio_history` VALUES (2, 2, 'ETH', 29.00, 8.50000000, 25000.00, '2024-11-30 10:30:00');
+INSERT INTO `crypto_portfolio_history` VALUES (3, 3, 'SOL', 14.50, 120.00000000, 12500.00, '2024-11-30 10:30:00');
+INSERT INTO `crypto_portfolio_history` VALUES (4, 4, 'USDT', 10.50, 10500.00000000, 10500.00, '2024-11-30 10:30:00');
+INSERT INTO `crypto_portfolio_history` VALUES (5, 5, 'BTC', 62.00, 1.15000000, 52500.00, '2024-11-30 11:15:00');
+INSERT INTO `crypto_portfolio_history` VALUES (6, 6, 'ETH', 26.00, 8.00000000, 22000.00, '2024-11-30 11:15:00');
+INSERT INTO `crypto_portfolio_history` VALUES (7, 7, 'SOL', 7.00, 65.00000000, 7000.00, '2024-11-30 11:15:00');
+INSERT INTO `crypto_portfolio_history` VALUES (8, 8, 'USDT', 5.00, 5000.00000000, 5000.00, '2024-11-30 11:15:00');
+INSERT INTO `crypto_portfolio_history` VALUES (9, 9, 'ETH', 42.00, 13.00000000, 36500.00, '2024-11-30 12:00:00');
+INSERT INTO `crypto_portfolio_history` VALUES (10, 10, 'USDT', 58.00, 58000.00000000, 58000.00, '2024-11-30 12:00:00');
 
 -- ----------------------------
 -- Table structure for demo
@@ -138,7 +150,7 @@ CREATE TABLE `demo`  (
   `updater` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '更新人',
   `update_time` datetime NULL DEFAULT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'Demo列表数据表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 37 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'Demo列表数据表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of demo
@@ -217,66 +229,6 @@ CREATE TABLE `gen_table_column`  (
 
 -- ----------------------------
 -- Records of gen_table_column
--- ----------------------------
-
--- ----------------------------
--- Table structure for holding
--- ----------------------------
-DROP TABLE IF EXISTS `holding`;
-CREATE TABLE `holding`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `portfolio_id` bigint NOT NULL COMMENT '所属组合ID',
-  `asset_id` bigint NOT NULL COMMENT '资产ID',
-  `quantity` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '当前持仓数量（扣除卖出后剩余）',
-  `avg_cost` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '加权平均成本（按交易维护）',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最近更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_portfolio_asset`(`portfolio_id` ASC, `asset_id` ASC) USING BTREE,
-  INDEX `fk_holding_asset`(`asset_id` ASC) USING BTREE,
-  CONSTRAINT `fk_holding_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_holding_portfolio` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组合的持仓聚合' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of holding
--- ----------------------------
-
--- ----------------------------
--- Table structure for market_price
--- ----------------------------
-DROP TABLE IF EXISTS `market_price`;
-CREATE TABLE `market_price`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `asset_id` bigint NOT NULL COMMENT '资产ID',
-  `price` decimal(32, 16) NOT NULL COMMENT '行情价格',
-  `ts` datetime NOT NULL COMMENT '价格时间戳',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_asset_ts`(`asset_id` ASC, `ts` ASC) USING BTREE,
-  CONSTRAINT `fk_price_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资产行情价格' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of market_price
--- ----------------------------
-
--- ----------------------------
--- Table structure for portfolio
--- ----------------------------
-DROP TABLE IF EXISTS `portfolio`;
-CREATE TABLE `portfolio`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `user_id` bigint NOT NULL COMMENT '所属用户ID',
-  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '组合名称，用户内唯一',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组合备注',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_user_name`(`user_id` ASC, `name` ASC) USING BTREE,
-  CONSTRAINT `fk_portfolio_user` FOREIGN KEY (`user_id`) REFERENCES `user_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户自定义投资组合' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of portfolio
 -- ----------------------------
 
 -- ----------------------------
@@ -1611,32 +1563,6 @@ INSERT INTO `sys_user_role` VALUES (1829105396288688129, 1829105952432427010);
 INSERT INTO `sys_user_role` VALUES (1912865254853877761, 1829105952432427010);
 
 -- ----------------------------
--- Table structure for transaction
--- ----------------------------
-DROP TABLE IF EXISTS `transaction`;
-CREATE TABLE `transaction`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `portfolio_id` bigint NOT NULL COMMENT '所属组合ID',
-  `asset_id` bigint NOT NULL COMMENT '资产ID',
-  `tx_type` enum('BUY','SELL') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '交易类型：BUY买入，SELL卖出',
-  `quantity` decimal(32, 16) NOT NULL COMMENT '交易数量（正数）',
-  `price` decimal(32, 16) NOT NULL COMMENT '交易单价（计价为法币或USDT）',
-  `fee` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '手续费',
-  `tx_time` datetime NOT NULL COMMENT '交易时间',
-  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '交易备注',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  INDEX `fk_tx_asset`(`asset_id` ASC) USING BTREE,
-  INDEX `idx_tx_portfolio_time`(`portfolio_id` ASC, `tx_time` ASC) USING BTREE,
-  CONSTRAINT `fk_tx_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_tx_portfolio` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组合的交易明细' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of transaction
--- ----------------------------
-
--- ----------------------------
 -- Table structure for user_account
 -- ----------------------------
 DROP TABLE IF EXISTS `user_account`;
@@ -1657,26 +1583,6 @@ CREATE TABLE `user_account`  (
 -- Records of user_account
 -- ----------------------------
 INSERT INTO `user_account` VALUES (1, '测试用户', 'e10adc3949ba59abbe56e057f20f883e', 'USER', 1, NULL, '2025-11-22 19:49:20', '2025-11-22 19:49:20');
-
--- ----------------------------
--- Table structure for watchlist
--- ----------------------------
-DROP TABLE IF EXISTS `watchlist`;
-CREATE TABLE `watchlist`  (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `user_id` bigint NOT NULL COMMENT '用户ID',
-  `asset_id` bigint NOT NULL COMMENT '资产ID',
-  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `uk_user_asset`(`user_id` ASC, `asset_id` ASC) USING BTREE,
-  INDEX `fk_watch_asset`(`asset_id` ASC) USING BTREE,
-  CONSTRAINT `fk_watch_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_watch_user` FOREIGN KEY (`user_id`) REFERENCES `user_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户自选资产' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of watchlist
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for wms_area
