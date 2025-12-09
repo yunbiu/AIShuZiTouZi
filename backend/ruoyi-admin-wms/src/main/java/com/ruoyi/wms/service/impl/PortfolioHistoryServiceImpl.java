@@ -15,16 +15,21 @@ import java.util.List;
 public class PortfolioHistoryServiceImpl extends ServiceImpl<PortfolioHistoryMapper, PortfolioHistory> implements PortfolioHistoryService {
 
     @Override
-    public List<PortfolioHistory> getPortfolioHistoryList() {
-        return this.list();
+    public List<PortfolioHistory> getPortfolioHistoryList(Integer portfolioId) {
+        return baseMapper.getPortfolioHistoryList(portfolioId);
     }
+
     @Override
-    public List<PortfolioHistory> getRecentSevenDaysHistory() {
+    public List<PortfolioHistory> getRecentSevenDaysHistory(Integer historyId) {
         LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
         QueryWrapper<PortfolioHistory> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ge("snapshot_time", sevenDaysAgo);
-        queryWrapper.orderByDesc("snapshot_time");
-
+        queryWrapper.lambda()
+            .eq(PortfolioHistory::getPortfolioId, historyId)
+            .ge(PortfolioHistory::getSnapshotTime, sevenDaysAgo)
+            .orderByDesc(PortfolioHistory::getSnapshotTime);
         return this.list(queryWrapper);
     }
+
+
+
 }

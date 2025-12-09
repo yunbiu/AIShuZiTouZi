@@ -7,7 +7,8 @@ import java.util.List;
 
 public interface PortfolioHistoryService extends IService<PortfolioHistory> {
     //查询历史持仓
-    List<PortfolioHistory> getPortfolioHistoryList();
+    List<PortfolioHistory> getPortfolioHistoryList(Integer portfolioId);
     // 添加获取近7天记录的方法
-    List<PortfolioHistory> getRecentSevenDaysHistory();
+    List<PortfolioHistory> getRecentSevenDaysHistory(Integer historyId);
 }
+

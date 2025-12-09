@@ -4,4 +4,19 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.wms.mapper.PortfolioMapper">
 
+    <select id="getPortfolioList" resultType="com.ruoyi.wms.domain.query.PortfolioQuery">
+        SELECT
+            cp.id,
+            cp.asset_type,
+            cp.percentage,
+            cp.amount,
+            cp.usd_value,
+            cp.update_time,
+            cp.user_id,
+            ua.user_name
+        FROM crypto_portfolio cp
+                 LEFT JOIN sys_user ua ON ua.user_id = cp.user_id
+        WHERE cp.user_id = #{userId}
+
+    </select>
 </mapper>
