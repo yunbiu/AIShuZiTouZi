@@ -1,66 +1,52 @@
-import React, { useState } from 'react';
-import { Card, Row, Col, Table, Button, DatePicker, Space, Select, Radio, Tag, Progress } from 'antd';
-import { DownloadOutlined, CaretUpOutlined, CaretDownOutlined } from '@ant-design/icons';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Table, Button, DatePicker, Space, Select, Radio, Tag, Progress, Spin, Alert } from 'antd';
+import { DownloadOutlined, CaretUpOutlined, CaretDownOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Line } from '@ant-design/charts';
+import axios from 'axios';
+import dayjs from 'dayjs';
 
-// 调整颜色方案以匹配图片
-const assetRatioData = [
-  { type: 'BTC', value: 41.5, amount: '12.35 BTC', valueNum: '$4,268,524', color: '#175DFB' },
-  { type: 'ETH', value: 33.2, amount: '245.82 ETH', valueNum: '$3,414,819', color: '#11C5C2' },
-  { type: 'SOL', value: 14.8, amount: '3,842.5 SOL', valueNum: '$1,522,269', color: '#FE7E03' },
-  { type: 'USDT', value: 10.5, amount: '1,080,000 USDT', valueNum: '$1,080,000', color: '#F3413F' },
-];
+// 币种颜色映射（保持原有配色）
+const ASSET_COLOR_MAP = {
+  BTC: '#175DFB',
+  ETH: '#11C5C2',
+  SOL: '#FE7E03',
+  USDT: '#F3413F',
+};
 
-// 模拟近7日持仓变化数据
-const trendData = [
-  { date: '12/04', BTC: 40, ETH: 34, SOL: 15, USDT: 11 },
-  { date: '12/05', BTC: 40.5, ETH: 33.8, SOL: 14.9, USDT: 10.8 },
-  { date: '12/06', BTC: 41, ETH: 33.5, SOL: 14.8, USDT: 10.7 },
-  { date: '12/07', BTC: 41.2, ETH: 33.3, SOL: 14.8, USDT: 10.7 },
-  { date: '12/08', BTC: 41.3, ETH: 33.2, SOL: 14.8, USDT: 10.7 },
-  { date: '12/09', BTC: 41.4, ETH: 33.2, SOL: 14.8, USDT: 10.6 },
-  { date: '12/10', BTC: 41.5, ETH: 33.2, SOL: 14.8, USDT: 10.5 },
-];
+// 默认请求参数（可根据实际需求调整或从路由/状态获取）
+const DEFAULT_PARAMS = {
+  userId: 1,           // 默认用户ID
+  portfolioId: 1,      // 默认组合ID
+  historyId: 2,        // 默认7天历史ID
+};
 
-// 模拟持仓历史记录
-const historyData = [
-  {
-    key: '1',
-    date: '2024-12-09 14:30',
-    type: 'AI建议调整',
-    btc: { value: '41.5%', change: '+1.5%' },
-    eth: { value: '33.2%', change: '-1.8%' },
-    sol: { value: '14.8%', change: '-0.2%' },
-    usdt: { value: '10.5%', change: '+0.5%' },
-    reason: '市场利好消息影响',
-    operator: '管理员A',
-  },
-  {
-    key: '2',
-    date: '2024-12-05 10:15',
-    type: 'AI建议调整',
-    btc: { value: '40.0%', change: '+0.0%' },
-    eth: { value: '35.0%', change: '+0.0%' },
-    sol: { value: '15.0%', change: '+0.0%' },
-    usdt: { value: '10.0%', change: '+0.0%' },
-    reason: '维持原有持仓结构',
-    operator: '管理员B',
-  },
-  {
-    key: '3',
-    date: '2024-12-01 09:00',
-    type: '初始配置',
-    btc: { value: '40.0%', change: '' },
-    eth: { value: '35.0%', change: '' },
-    sol: { value: '15.0%', change: '' },
-    usdt: { value: '10.0%', change: '' },
-    reason: '系统初始化配置',
-    operator: '系统管理员',
-  },
-];
+// 格式化金额为 $xxx,xxx.xx 格式
+const formatUsdValue = (value: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(value);
+};
 
-// 带引出线的饼图组件
-const PieChartWithLines = ({ data }: { data: typeof assetRatioData }) => {
+// 格式化资产数量（根据币种调整小数位数）
+const formatAssetAmount = (assetType: string, amount: number) => {
+  switch (assetType) {
+    case 'BTC':
+      return `${amount.toFixed(6)} BTC`;
+    case 'ETH':
+      return `${amount.toFixed(4)} ETH`;
+    case 'SOL':
+      return `${amount.toFixed(2)} SOL`;
+    case 'USDT':
+      return `${amount.toLocaleString()} USDT`;
+    default:
+      return `${amount} ${assetType}`;
+  }
+};
+
+// 带引出线的饼图组件（原有逻辑保留）
+const PieChartWithLines = ({ data }: { data: any[] }) => {
   const radius = 90;
   const centerX = 150;
   const centerY = 150;
@@ -76,7 +62,6 @@ const PieChartWithLines = ({ data }: { data: typeof assetRatioData }) => {
     const endAngle = startAngle + angle;
     const midAngle = startAngle + angle / 2;
 
-    // 计算扇区路径
     const x1 = centerX + radius * Math.cos(startAngle);
     const y1 = centerY + radius * Math.sin(startAngle);
     const x2 = centerX + radius * Math.cos(endAngle);
@@ -91,15 +76,12 @@ const PieChartWithLines = ({ data }: { data: typeof assetRatioData }) => {
       'Z'
     ].join(' ');
 
-    // 计算标签线起点
     const labelStartX = centerX + labelRadius * Math.cos(midAngle);
     const labelStartY = centerY + labelRadius * Math.sin(midAngle);
-
-    // 计算文本位置，避免重叠
     const textX = centerX + textRadius * Math.cos(midAngle);
     const textY = centerY + textRadius * Math.sin(midAngle);
 
-    // 为不同资产调整位置，避免重叠
+    // 调整文本位置避免重叠
     let adjustedTextX = textX;
     let adjustedTextY = textY;
 
@@ -190,8 +172,8 @@ const PieChartWithLines = ({ data }: { data: typeof assetRatioData }) => {
   );
 };
 
-// 将趋势数据转换为长格式用于多线图
-const transformTrendData = (data: typeof trendData) => {
+// 转换趋势数据为图表所需格式
+const transformTrendData = (data: any[]) => {
   const result: any[] = [];
   data.forEach(item => {
     Object.keys(item).forEach(key => {
@@ -199,7 +181,7 @@ const transformTrendData = (data: typeof trendData) => {
         result.push({
           date: item.date,
           type: key,
-          value: item[key as keyof typeof item],
+          value: item[key],
         });
       }
     });
@@ -208,9 +190,156 @@ const transformTrendData = (data: typeof trendData) => {
 };
 
 const PortfolioData = () => {
+  // 状态管理
   const [timeRange, setTimeRange] = useState('7d');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  
+  // 数据状态
+  const [assetRatioData, setAssetRatioData] = useState<any[]>([]); // 当前资产占比
+  const [trendData, setTrendData] = useState<any[]>([]); // 近7日趋势
+  const [historyData, setHistoryData] = useState<any[]>([]); // 持仓历史记录
 
-  // 折线图配置 - 更新颜色以匹配饼图
+  // 接口请求函数
+  // 1. 获取用户当前资产占比
+  const fetchUserAssetData = async (userId: number) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/portfolio/userId/${userId}`);
+      if (res.data.code === 200) {
+        // 转换为页面所需格式
+        const formattedData = res.data.data.map((item: any) => ({
+          type: item.assetType,
+          value: item.percentage,
+          amount: formatAssetAmount(item.assetType, item.amount),
+          valueNum: formatUsdValue(item.usdValue),
+          color: ASSET_COLOR_MAP[item.assetType as keyof typeof ASSET_COLOR_MAP] || '#1890ff',
+        }));
+        setAssetRatioData(formattedData);
+      } else {
+        setError(`获取用户资产失败: ${res.data.msg}`);
+      }
+    } catch (err) {
+      setError(`获取用户资产失败: ${(err as Error).message}`);
+    }
+  };
+
+  // 2. 获取组合历史持仓记录
+  const fetchPortfolioHistory = async (portfolioId: number) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/portfolio/portfolioId/${portfolioId}`);
+      if (res.data.code === 200) {
+        // 按时间分组转换为历史记录格式
+        const recordMap = new Map();
+        
+        // 先分组（按快照时间）
+        res.data.data.forEach((item: any) => {
+          const timeKey = item.snapshotTime.split(' ')[0];
+          if (!recordMap.has(timeKey)) {
+            recordMap.set(timeKey, {
+              date: item.snapshotTime,
+              type: item.percentage > 0 ? 'AI建议调整' : '初始配置',
+              reason: item.assetType.includes('测试') ? item.assetType : '系统自动调整',
+              operator: '系统管理员',
+              btc: { value: '0%', change: '' },
+              eth: { value: '0%', change: '' },
+              sol: { value: '0%', change: '' },
+              usdt: { value: '0%', change: '' },
+            });
+          }
+          
+          // 填充对应币种数据
+          const record = recordMap.get(timeKey);
+          const assetKey = item.assetType.toLowerCase();
+          if (record[assetKey]) {
+            record[assetKey].value = `${item.percentage}%`;
+            // 模拟变化值（实际可从接口获取）
+            record[assetKey].change = item.percentage > 0 ? `+${(item.percentage % 10).toFixed(1)}%` : '';
+          }
+        });
+        
+        // 转换为数组并排序
+        const formattedHistory = Array.from(recordMap.values())
+          .sort((a: any, b: any) => dayjs(b.date).unix() - dayjs(a.date).unix())
+          .map((item: any, index: number) => ({
+            key: `${index + 1}`,
+            ...item,
+          }));
+        
+        setHistoryData(formattedHistory);
+      } else {
+        setError(`获取持仓历史失败: ${res.data.msg}`);
+      }
+    } catch (err) {
+      setError(`获取持仓历史失败: ${(err as Error).message}`);
+    }
+  };
+
+  // 3. 获取近7天持仓趋势
+  const fetchSevenDaysHistory = async (historyId: number) => {
+    try {
+      const res = await axios.get(`http://localhost:8080/portfolio/getRecentSevenDaysHistory/${historyId}`);
+      if (res.data.code === 200) {
+        // 构建7天趋势数据（实际可根据接口返回的时间范围生成）
+        const baseDate = dayjs();
+        const trendMap: any = {};
+        
+        // 初始化7天数据
+        for (let i = 6; i >= 0; i--) {
+          const date = baseDate.subtract(i, 'day').format('MM/DD');
+          trendMap[date] = { date, BTC: 0, ETH: 0, SOL: 0, USDT: 0 };
+        }
+        
+        // 填充接口返回的实际数据
+        res.data.data.forEach((item: any) => {
+          const date = dayjs(item.snapshotTime).format('MM/DD');
+          if (trendMap[date]) {
+            trendMap[date][item.assetType] = item.percentage;
+          }
+        });
+        
+        // 转换为数组
+        const formattedTrend = Object.values(trendMap);
+        setTrendData(formattedTrend);
+      } else {
+        setError(`获取7天趋势失败: ${res.data.msg}`);
+      }
+    } catch (err) {
+      setError(`获取7天趋势失败: ${(err as Error).message}`);
+    }
+  };
+
+  // 刷新所有数据
+  const refreshData = async () => {
+    setLoading(true);
+    setError('');
+    
+    // 并行请求三个接口
+    await Promise.all([
+      fetchUserAssetData(DEFAULT_PARAMS.userId),
+      fetchPortfolioHistory(DEFAULT_PARAMS.portfolioId),
+      fetchSevenDaysHistory(DEFAULT_PARAMS.historyId),
+    ]);
+    
+    setLoading(false);
+  };
+
+  // 组件挂载时加载数据
+  useEffect(() => {
+    refreshData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // 切换时间范围时重新获取趋势数据
+  useEffect(() => {
+    if (timeRange !== '7d') {
+      // 这里可根据不同时间范围请求不同接口/参数
+      setLoading(true);
+      fetchSevenDaysHistory(DEFAULT_PARAMS.historyId).then(() => setLoading(false));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timeRange]);
+
+  // 折线图配置
   const lineConfig = {
     data: transformTrendData(trendData),
     xField: 'date',
@@ -236,7 +365,7 @@ const PortfolioData = () => {
         alignTick: false,
       },
     },
-    color: ['#175DFB', '#11C5C2', '#FE7E03', '#F3413F'], // 使用饼图对应的颜色
+    color: ['#175DFB', '#11C5C2', '#FE7E03', '#F3413F'],
     lineStyle: {
       lineWidth: 2,
     },
@@ -261,12 +390,10 @@ const PortfolioData = () => {
     tooltip: {
       showCrosshairs: true,
       shared: true,
-      formatter: (datum: any) => {
-        return {
-          name: datum.type,
-          value: `${datum.value}%`,
-        };
-      },
+      formatter: (datum: any) => ({
+        name: datum.type,
+        value: `${datum.value}%`,
+      }),
     },
     legend: {
       position: 'bottom',
@@ -285,7 +412,7 @@ const PortfolioData = () => {
     },
   };
 
-  // 持仓历史表格列
+  // 持仓历史表格列配置
   const historyColumns = [
     {
       title: '调整日期',
@@ -299,7 +426,6 @@ const PortfolioData = () => {
       key: 'type',
       width: 120,
       render: (text: string) => {
-        // 使用 Ant Design 预设的颜色，确保文字清晰可见
         const typeToColor: Record<string, string> = {
           'AI建议调整': 'blue',
           '初始配置': 'green',
@@ -413,6 +539,12 @@ const PortfolioData = () => {
     },
   ];
 
+  // 计算总资产
+  const totalAsset = assetRatioData.reduce((sum, item) => {
+    const num = parseFloat(item.valueNum.replace(/[$,]/g, ''));
+    return sum + (isNaN(num) ? 0 : num);
+  }, 0);
+
   return (
     <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
       <Card
@@ -431,9 +563,9 @@ const PortfolioData = () => {
           <div>
             <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>持仓数据</h2>
             <div style={{ color: '#666', marginTop: '4px' }}>
-              总资产规模: <span style={{ color: '#1890ff', fontWeight: 'bold' }}>$10,285,600</span>
+              总资产规模: <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{formatUsdValue(totalAsset)}</span>
               <span style={{ marginLeft: '16px', fontSize: '12px', color: '#999' }}>
-                基于实时汇率计算 • 更新时间: 2024-12-10 08:00
+                基于实时汇率计算 • 更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
               </span>
             </div>
           </div>
@@ -449,164 +581,210 @@ const PortfolioData = () => {
             >
               导出Excel
             </Button>
+            <Button
+              icon={<ReloadOutlined />}
+              onClick={refreshData}
+              loading={loading}
+            >
+              刷新
+            </Button>
           </Space>
         </div>
 
-        {/* 资产占比 + 持仓趋势 */}
-        <Row gutter={[24, 24]}>
-          <Col lg={12} md={24} sm={24}>
-            <Card
-              title={
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>当前资产占比</span>
-                  <div style={{ fontSize: '12px', color: '#999' }}>
-                    数据更新时间: 2024-12-10 08:00
-                  </div>
-                </div>
-              }
-              bordered={false}
-              style={{
-                borderRadius: '8px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                height: '100%',
-              }}
-              bodyStyle={{ padding: '16px' }}
-            >
-              <Row gutter={[16, 16]}>
-                <Col lg={12} sm={24}>
-                  <div style={{ height: '340px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <PieChartWithLines data={assetRatioData} />
-                  </div>
-                </Col>
-                <Col lg={12} sm={24}>
-                  <div style={{ padding: '8px', marginTop: '10px' }}>
-                    {assetRatioData.map((item) => (
-                      <div key={item.type} style={{ marginBottom: '20px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{
-                              width: '12px',
-                              height: '12px',
-                              borderRadius: '2px',
-                              background: item.color,
-                            }} />
-                            <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{item.type}</span>
-                          </div>
-                          <span style={{ fontSize: '16px', fontWeight: 'bold', color: item.color }}>
-                            {item.value}%
-                          </span>
-                        </div>
+        {/* 错误提示 */}
+        {error && (
+          <Alert
+            message="数据加载失败"
+            description={error}
+            type="error"
+            showIcon
+            style={{ marginBottom: '24px' }}
+            closable
+            onClose={() => setError('')}
+          />
+        )}
 
-                        <Progress
-                          percent={item.value}
-                          showInfo={false}
-                          strokeColor={item.color}
-                          trailColor="#f0f0f0"
-                          strokeWidth={6}
-                          style={{ marginBottom: '8px' }}
-                        />
+        {/* 加载状态 */}
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px 0' }}>
+            <Spin size="large" tip="正在加载数据..." />
+          </div>
+        ) : (
+          <>
+            {/* 资产占比 + 持仓趋势 */}
+            <Row gutter={[24, 24]}>
+              <Col lg={12} md={24} sm={24}>
+                <Card
+                  title={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>当前资产占比</span>
+                      <div style={{ fontSize: '12px', color: '#999' }}>
+                        数据更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
+                      </div>
+                    </div>
+                  }
+                  bordered={false}
+                  style={{
+                    borderRadius: '8px',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                    height: '100%',
+                  }}
+                  bodyStyle={{ padding: '16px' }}
+                >
+                  <Row gutter={[16, 16]}>
+                    <Col lg={12} sm={24}>
+                      <div style={{ height: '340px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        {assetRatioData.length > 0 ? (
+                          <PieChartWithLines data={assetRatioData} />
+                        ) : (
+                          <div style={{ color: '#999' }}>暂无资产数据</div>
+                        )}
+                      </div>
+                    </Col>
+                    <Col lg={12} sm={24}>
+                      <div style={{ padding: '8px', marginTop: '10px' }}>
+                        {assetRatioData.length > 0 ? (
+                          assetRatioData.map((item) => (
+                            <div key={item.type} style={{ marginBottom: '20px' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                  <div style={{
+                                    width: '12px',
+                                    height: '12px',
+                                    borderRadius: '2px',
+                                    background: item.color,
+                                  }} />
+                                  <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{item.type}</span>
+                                </div>
+                                <span style={{ fontSize: '16px', fontWeight: 'bold', color: item.color }}>
+                                  {item.value}%
+                                </span>
+                              </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' }}>
-                          <div>
-                            <div>价值：{item.valueNum}</div>
+                              <Progress
+                                percent={item.value}
+                                showInfo={false}
+                                strokeColor={item.color}
+                                trailColor="#f0f0f0"
+                                strokeWidth={6}
+                                style={{ marginBottom: '8px' }}
+                              />
+
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' }}>
+                                <div>
+                                  <div>价值：{item.valueNum}</div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                  <div>数量：{item.amount}</div>
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div style={{ textAlign: 'center', padding: '20px 0', color: '#999' }}>
+                            暂无资产数据
                           </div>
-                          <div style={{ textAlign: 'right' }}>
-                            <div>数量：{item.amount}</div>
-                          </div>
-                        </div>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+                </Card>
+              </Col>
+
+              <Col lg={12} md={24} sm={24}>
+                <Card
+                  title={
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>近7日持仓变化</span>
+                      <div>
+                        <Radio.Group
+                          value={timeRange}
+                          onChange={(e) => setTimeRange(e.target.value)}
+                          size="small"
+                          style={{ marginRight: '12px' }}
+                        >
+                          <Radio.Button value="7d">7天</Radio.Button>
+                          <Radio.Button value="30d">30天</Radio.Button>
+                          <Radio.Button value="90d">90天</Radio.Button>
+                        </Radio.Group>
+                      </div>
+                    </div>
+                  }
+                  bordered={false}
+                  style={{
+                    borderRadius: '8px',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                  }}
+                  bodyStyle={{ paddingBottom: '24px' }}
+                >
+                  <div style={{ height: '300px' }}>
+                    {trendData.length > 0 ? (
+                      <Line {...lineConfig} />
+                    ) : (
+                      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+                        暂无趋势数据
+                      </div>
+                    )}
+                  </div>
+
+                  {/* 自定义图例 */}
+                  <div style={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    marginTop: '16px',
+                    gap: '24px',
+                    flexWrap: 'wrap'
+                  }}>
+                    {Object.keys(ASSET_COLOR_MAP).map((assetType) => (
+                      <div key={assetType} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{
+                          width: '12px',
+                          height: '12px',
+                          borderRadius: '50%',
+                          backgroundColor: ASSET_COLOR_MAP[assetType as keyof typeof ASSET_COLOR_MAP]
+                        }} />
+                        <span style={{ fontSize: '14px', color: '#333' }}>{assetType}</span>
                       </div>
                     ))}
                   </div>
-                </Col>
-              </Row>
-            </Card>
-          </Col>
+                </Card>
+              </Col>
+            </Row>
 
-          <Col lg={12} md={24} sm={24}>
+            {/* 持仓历史记录 */}
             <Card
               title={
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>近7日持仓变化</span>
-                  <div>
-                    <Radio.Group
-                      value={timeRange}
-                      onChange={(e) => setTimeRange(e.target.value)}
-                      size="small"
-                      style={{ marginRight: '12px' }}
-                    >
-                      <Radio.Button value="7d">7天</Radio.Button>
-                      <Radio.Button value="30d">30天</Radio.Button>
-                      <Radio.Button value="90d">90天</Radio.Button>
-                    </Radio.Group>
+                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>持仓历史记录</span>
+                  <div style={{ fontSize: '12px', color: '#999' }}>
+                    共 {historyData.length} 条记录 • 最近更新: {dayjs().format('YYYY-MM-DD HH:mm')}
                   </div>
                 </div>
               }
               bordered={false}
               style={{
+                marginTop: '24px',
                 borderRadius: '8px',
                 boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
               }}
-              bodyStyle={{ paddingBottom: '24px' }}
             >
-              <div style={{ height: '300px' }}>
-                <Line {...lineConfig} />
-              </div>
-
-              {/* 自定义图例，放置在图表下方 */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginTop: '16px',
-                gap: '24px',
-                flexWrap: 'wrap'
-              }}>
-                {assetRatioData.map((asset) => (
-                  <div key={asset.type} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div style={{
-                      width: '12px',
-                      height: '12px',
-                      borderRadius: '50%',
-                      backgroundColor: asset.color
-                    }} />
-                    <span style={{ fontSize: '14px', color: '#333' }}>{asset.type}</span>
-                  </div>
-                ))}
-              </div>
+              <Table
+                dataSource={historyData}
+                columns={historyColumns}
+                rowKey="key"
+                size="middle"
+                pagination={{
+                  pageSize: 5,
+                  showSizeChanger: false,
+                  showTotal: (total) => `共 ${total} 条记录`,
+                }}
+                scroll={{ x: 'max-content' }}
+                rowClassName={() => 'hover-row'}
+                locale={{ emptyText: '暂无历史记录' }}
+              />
             </Card>
-          </Col>
-        </Row>
-
-        {/* 持仓历史记录 */}
-        <Card
-          title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '16px', fontWeight: 'bold' }}>持仓历史记录</span>
-              <div style={{ fontSize: '12px', color: '#999' }}>
-                共 {historyData.length} 条记录 • 最近更新: 2024-12-10 08:00
-              </div>
-            </div>
-          }
-          bordered={false}
-          style={{
-            marginTop: '24px',
-            borderRadius: '8px',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-          }}
-        >
-          <Table
-            dataSource={historyData}
-            columns={historyColumns}
-            rowKey="key"
-            size="middle"
-            pagination={{
-              pageSize: 5,
-              showSizeChanger: false,
-              showTotal: (total) => `共 ${total} 条记录`,
-            }}
-            scroll={{ x: 'max-content' }}
-            rowClassName={() => 'hover-row'}
-          />
-        </Card>
+          </>
+        )}
       </Card>
 
       <style>{`
