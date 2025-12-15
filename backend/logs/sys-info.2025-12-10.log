@@ -1,0 +1,10 @@
+2025-12-10 11:36:39 [XNIO-1 task-2] INFO  c.r.c.w.i.PlusWebInvokeTimeInterceptor - [PLUS]开始请求 => URL[GET /captchaImage],无参数
+2025-12-10 11:36:39 [XNIO-1 task-2] INFO  c.r.c.w.i.PlusWebInvokeTimeInterceptor - [PLUS]结束请求 => URL[GET /captchaImage],耗时:[378]毫秒
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  io.undertow - stopping server: Undertow - 2.3.13.Final
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  io.undertow.servlet - Destroying Spring FrameworkServlet 'dispatcherServlet'
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  c.r.c.core.config.ThreadPoolConfig - ====关闭后台任务任务线程池====
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource start closing ....
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - master - Shutdown initiated...
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - master - Shutdown completed.
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  c.b.d.d.d.DefaultDataSourceDestroyer - dynamic-datasource close the datasource named [master] success,
+2025-12-10 11:40:18 [SpringApplicationShutdownHook] INFO  c.b.d.d.DynamicRoutingDataSource - dynamic-datasource all closed success,bye

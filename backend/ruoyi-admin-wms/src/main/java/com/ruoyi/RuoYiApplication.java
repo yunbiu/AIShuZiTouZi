@@ -13,6 +13,7 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 @SpringBootApplication
 public class RuoYiApplication {
 
+
     public static void main(String[] args) {
         System.setProperty("spring.devtools.restart.enabled", "false");
         SpringApplication application = new SpringApplication(RuoYiApplication.class);

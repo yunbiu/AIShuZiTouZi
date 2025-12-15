@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Table, Select, Input, Button, Row, Col, Tag, Modal, Spin, message } from 'antd';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-import axios from 'axios';
+// 删除原来的axios导入，改用项目提供的request
+import { request } from '@umijs/max';
 
 // 定义接口类型 - 消息列表项
 interface MessageItem {
@@ -67,9 +68,6 @@ const MessageList: React.FC = () => {
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
   const [currentDetail, setCurrentDetail] = useState<MessageItem | null>(null);
 
-  // 接口基础地址
-  const baseUrl = 'http://localhost:8080/message';
-
   // 获取消息列表
   const fetchMessageList = async () => {
     setLoading(true);
@@ -83,14 +81,19 @@ const MessageList: React.FC = () => {
         keyword: searchKeyword || undefined,
       };
 
-      const response = await axios.get<MessageListResponse>(`${baseUrl}/list`, { params });
-      if (response.data.code === 200) {
-        setMessageList(response.data.data.records);
-        setTotal(response.data.data.total);
-        setCurrentPage(response.data.data.current);
+      // 使用项目提供的request方法，并通过代理路径/api/message/list访问
+      const response = await request<MessageListResponse>('/api/message/list', { 
+        method: 'GET',
+        params
+      });
+      
+      if (response.code === 200) {
+        setMessageList(response.data.records);
+        setTotal(response.data.total);
+        setCurrentPage(response.data.current);
         message.success('数据加载成功');
       } else {
-        message.error(`加载失败: ${response.data.msg}`);
+        message.error(`加载失败: ${response.msg}`);
       }
     } catch (error) {
       console.error('获取消息列表失败:', error);
@@ -104,12 +107,16 @@ const MessageList: React.FC = () => {
   const fetchMessageDetail = async (id: number) => {
     setDetailLoading(true);
     try {
-      const response = await axios.get<MessageDetailResponse>(`${baseUrl}/${id}`);
-      if (response.data.code === 200) {
-        setCurrentDetail(response.data.data);
+      // 使用项目提供的request方法，并通过代理路径/api/message访问
+      const response = await request<MessageDetailResponse>(`/api/message/${id}`, {
+        method: 'GET'
+      });
+      
+      if (response.code === 200) {
+        setCurrentDetail(response.data);
         setDetailVisible(true);
       } else {
-        message.error(`获取详情失败: ${response.data.msg}`);
+        message.error(`获取详情失败: ${response.msg}`);
       }
     } catch (error) {
       console.error('获取消息详情失败:', error);
@@ -204,14 +211,10 @@ const MessageList: React.FC = () => {
     },
     {
       title: '操作',
-      key: 'action',
+      key: 'actions',
       width: 100,
       render: (_: any, record: MessageItem) => (
-        <Button 
-          type="link" 
-          size="small" 
-          onClick={() => handleViewDetail(record.id)}
-        >
+        <Button type="link" onClick={() => handleViewDetail(record.id)}>
           查看详情
         </Button>
       ),
@@ -219,61 +222,56 @@ const MessageList: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: 24 }}>
-      <Card bordered={false}>
-        <div style={{ marginBottom: 16 }}>
-          <h2>消息列表</h2>
-          <p style={{ color: '#888' }}>已采集到 {total} 条市场消息，按时间倒序排列</p>
-        </div>
-
-        {/* 筛选区域 */}
-        <Row gutter={[16, 16]} style={{ marginBottom: 16 }}>
-          <Col lg={4} md={8} sm={24}>
+    <div style={{ padding: 20 }}>
+      {/* 筛选区域 */}
+      <Card style={{ marginBottom: 16 }}>
+        <Row gutter={[16, 16]} align="middle">
+          <Col span={5}>
             <Select
+              style={{ width: '100%' }}
+              placeholder="请选择币种"
               value={coinFilter}
               onChange={handleCoinChange}
               options={[
-                { value: 'all', label: '所有币种' },
-                { value: 'BTC', label: 'BTC' },
-                { value: 'ETH', label: 'ETH' },
-                { value: 'SOL', label: 'SOL' },
-                { value: 'USDT', label: 'USDT' },
+                { value: 'all', label: '全部币种' },
+                { value: 'BTC', label: '比特币(BTC)' },
+                { value: 'ETH', label: '以太坊(ETH)' },
+                { value: 'BNB', label: '币安币(BNB)' },
+                { value: 'SOL', label: 'Solana(SOL)' },
+                { value: 'XRP', label: '瑞波币(XRP)' },
               ]}
-              style={{ width: '100%' }}
             />
           </Col>
-          <Col lg={4} md={8} sm={24}>
+          <Col span={5}>
             <Select
+              style={{ width: '100%' }}
+              placeholder="请选择情感倾向"
               value={sentimentFilter}
               onChange={handleSentimentChange}
               options={[
-                { value: 'all', label: '所有情感倾向' },
+                { value: 'all', label: '全部倾向' },
                 { value: '利好', label: '利好' },
                 { value: '利空', label: '利空' },
                 { value: '中性', label: '中性' },
               ]}
-              style={{ width: '100%' }}
             />
           </Col>
-          <Col lg={12} md={16} sm={24}>
+          <Col span={6}>
             <Input.Search
-              placeholder="搜索消息关键词..."
-              prefix={<SearchOutlined />}
-              style={{ width: '100%' }}
-              onChange={(e) => setSearchKeyword(e.target.value)}
+              placeholder="请输入关键词搜索"
+              allowClear
               onSearch={handleSearch}
-              enterButton
+              enterButton={<SearchOutlined />}
             />
           </Col>
-          <Col lg={4} md={8} sm={24}>
+          <Col span={4}>
             <Button 
               type="primary" 
               icon={<ReloadOutlined />} 
-              block 
               onClick={handleRefresh}
               loading={loading}
             >
-              刷新
+              刷新数据
             </Button>
           </Col>
         </Row>
@@ -281,22 +279,42 @@ const MessageList: React.FC = () => {
         {/* 消息表格 */}
         <Spin spinning={loading}>
           <Table
+            rowKey="id"
             dataSource={messageList}
             columns={columns}
-            rowKey="id"
-            size="middle"
+            loading={loading}
             pagination={{
               current: currentPage,
               pageSize: pageSize,
               total: total,
-              showSizeChanger: true, // 允许调整每页条数
-              showQuickJumper: true,
-              pageSizeOptions: ['5', '10', '20'],
               onChange: handlePageChange,
+              showSizeChanger: false,
+              showQuickJumper: true,
               showTotal: (total) => `共 ${total} 条记录`,
             }}
+            scroll={{ x: 800 }} // 横向滚动
           />
         </Spin>
+      </Card>
+
+      {/* 列表区域 */}
+      <Card>
+        <Table
+          rowKey="id"
+          dataSource={messageList}
+          columns={columns}
+          loading={loading}
+          pagination={{
+            current: currentPage,
+            pageSize: pageSize,
+            total: total,
+            onChange: handlePageChange,
+            showSizeChanger: false,
+            showQuickJumper: true,
+            showTotal: (total) => `共 ${total} 条记录`,
+          }}
+          scroll={{ x: 800 }} // 横向滚动
+        />
       </Card>
 
       {/* 详情弹窗 */}
@@ -304,47 +322,34 @@ const MessageList: React.FC = () => {
         title="消息详情"
         open={detailVisible}
         onCancel={handleDetailClose}
-        footer={[
-          <Button key="close" onClick={handleDetailClose}>
-            关闭
-          </Button>,
-        ]}
+        footer={null}
         width={800}
-        destroyOnClose // 关闭时销毁内容
       >
-        <Spin spinning={detailLoading}>
-          {currentDetail && (
-            <div style={{ lineHeight: 1.8 }}>
-              <div style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #eee' }}>
-                <h3 style={{ margin: 0, color: '#1f2937' }}>{currentDetail.title}</h3>
-                <div style={{ marginTop: 8, display: 'flex', gap: 16 }}>
-                  <span>
-                    <strong>涉及币种：</strong>
-                    {currentDetail.coin}
-                  </span>
-                  <span>
-                    <strong>情感倾向：</strong>
-                    {sentimentTag(currentDetail.sentiment)}
-                  </span>
-                  <span>
-                    <strong>消息来源：</strong>
-                    {currentDetail.source}
-                  </span>
-                  <span>
-                    <strong>发布时间：</strong>
-                    {currentDetail.publishTime}
-                  </span>
-                </div>
-              </div>
-              <div>
-                <strong>消息内容：</strong>
-                <div style={{ marginTop: 8, whiteSpace: 'pre-wrap' }}>
-                  {currentDetail.content}
-                </div>
-              </div>
+        {detailLoading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}>
+            <Spin tip="加载中..." />
+          </div>
+        ) : currentDetail ? (
+          <div>
+            <p><strong>消息标题：</strong>{currentDetail.title}</p>
+            <p><strong>涉及币种：</strong>{currentDetail.coin}</p>
+            <p><strong>情感倾向：</strong>{sentimentTag(currentDetail.sentiment)}</p>
+            <p><strong>消息来源：</strong>{currentDetail.source}</p>
+            <p><strong>发布时间：</strong>{currentDetail.publishTime}</p>
+            <p><strong>更新时间：</strong>{currentDetail.updateTime}</p>
+            <p><strong>消息内容：</strong></p>
+            <div style={{ 
+              maxHeight: 300, 
+              overflowY: 'auto', 
+              border: '1px solid #f0f0f0', 
+              padding: 12,
+              backgroundColor: '#fafafa',
+              borderRadius: 4
+            }}>
+              {currentDetail.content}
             </div>
-          )}
-        </Spin>
+          </div>
+        ) : null}
       </Modal>
     </div>
   );

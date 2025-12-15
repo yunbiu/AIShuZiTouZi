@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, Table, Tag, Button, Space, Select, DatePicker, Divider, Typography, Descriptions } from 'antd';
-import { DownloadOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Card, Table, Tag, Button, Space, Select, DatePicker, Divider, Typography, Descriptions, message, Modal, Slider } from 'antd';
+import { DownloadOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import type { Dayjs } from 'dayjs';
 
@@ -86,6 +86,14 @@ const SuggestionReport: React.FC = () => {
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [expandedReport, setExpandedReport] = useState<string | null>(null);
   const [confidenceThreshold, setConfidenceThreshold] = useState('70');
+  // 新增生成对话框状态
+  const [generateModalVisible, setGenerateModalVisible] = useState(false);
+  // 新增生成参数状态
+  const [generateParams, setGenerateParams] = useState({
+    cryptoTypes: '',
+    reportType: '持仓调整',
+    confidenceLevel: 80,
+  });
 
   const handleRefresh = () => {
     // 刷新报告列表
@@ -109,6 +117,39 @@ const SuggestionReport: React.FC = () => {
   const handleDownload = (id: string) => {
     // 下载报告逻辑
     console.log(`下载报告 ${id}`);
+  };
+
+  // 新增：打开生成对话框
+  const showGenerateModal = () => {
+    setGenerateModalVisible(true);
+  };
+
+  // 新增：关闭生成对话框
+  const closeGenerateModal = () => {
+    setGenerateModalVisible(false);
+  };
+
+  // 新增：处理生成参数变化
+  const handleParamChange = (field: string, value: any) => {
+    setGenerateParams({
+      ...generateParams,
+      [field]: value
+    });
+  };
+
+  // 新增：处理生成报告
+  const handleGenerate = () => {
+    // 模拟生成过程
+    message.loading('正在生成报告...');
+    
+    // 模拟API调用延迟
+    setTimeout(() => {
+      message.success('报告生成成功！');
+      closeGenerateModal();
+      
+      // 这里应该实际添加新生成的报告到列表中
+      // 由于我们使用的是模拟数据，这里只是演示
+    }, 1500);
   };
 
   // 模拟获取报告详情数据
@@ -273,6 +314,13 @@ const SuggestionReport: React.FC = () => {
             <RangePicker onChange={(dates) => setDateRange(dates)} />
             <Button 
               type="primary" 
+              icon={<PlusOutlined />} 
+              onClick={showGenerateModal}
+            >
+              生成报告
+            </Button>
+            <Button 
+              type="default" 
               icon={<ReloadOutlined />} 
               onClick={handleRefresh}
             >
@@ -349,6 +397,68 @@ const SuggestionReport: React.FC = () => {
           }}
         />
       </Card>
+
+      {/* 生成报告对话框 */}
+      <Modal
+        title="生成投资建议报告"
+        open={generateModalVisible}
+        onOk={handleGenerate}
+        onCancel={closeGenerateModal}
+        okText="生成"
+        cancelText="取消"
+      >
+        <div style={{ padding: '20px 0' }}>
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', marginBottom: 8 }}>涉及币种:</label>
+            <Select
+              mode="tags"
+              style={{ width: '100%' }}
+              placeholder="请选择或输入币种（如BTC、ETH等）"
+              value={generateParams.cryptoTypes.split(',').filter(Boolean)}
+              onChange={(values) => handleParamChange('cryptoTypes', values.join(','))}
+              tokenSeparators={[',']}
+            >
+              <Option value="BTC">BTC</Option>
+              <Option value="ETH">ETH</Option>
+              <Option value="SOL">SOL</Option>
+              <Option value="USDT">USDT</Option>
+              <Option value="BNB">BNB</Option>
+            </Select>
+          </div>
+          
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', marginBottom: 8 }}>报告类型:</label>
+            <Select
+              style={{ width: '100%' }}
+              value={generateParams.reportType}
+              onChange={(value) => handleParamChange('reportType', value)}
+            >
+              <Option value="持仓调整">持仓调整</Option>
+              <Option value="持仓维持">持仓维持</Option>
+              <Option value="资产配置优化">资产配置优化</Option>
+              <Option value="减持建议">减持建议</Option>
+              <Option value="增持建议">增持建议</Option>
+            </Select>
+          </div>
+          
+          <div style={{ marginBottom: 16 }}>
+            <label style={{ display: 'block', marginBottom: 8 }}>最低置信度: {generateParams.confidenceLevel}%</label>
+            <Slider
+              min={70}
+              max={95}
+              step={5}
+              value={generateParams.confidenceLevel}
+              onChange={(value) => handleParamChange('confidenceLevel', value)}
+              marks={{
+                70: '70%',
+                80: '80%',
+                90: '90%',
+                95: '95%'
+              }}
+            />
+          </div>
+        </div>
+      </Modal>
     </PageContainer>
   );
 };

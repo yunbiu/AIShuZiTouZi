@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
-import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout } from 'antd';
+  import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout, Select, Descriptions, Divider } from 'antd';
 import { 
   BellOutlined, FileTextOutlined, DollarOutlined, 
   PieChartOutlined, DownloadOutlined, EyeOutlined,
@@ -9,6 +9,7 @@ import {
 import { Pie } from '@ant-design/plots';
 
 const { Header } = Layout;
+const { Option } = Select;
 
 // 模拟数据（保持原有）
 const assetData = [
@@ -25,7 +26,14 @@ const reportData = [
     coins: 'BTC, ETH',
     type: '持仓调整',
     status: '待审核',
-    details: '建议减持BTC 5%，增持ETH 3%，以平衡市场风险'
+    details: '建议减持BTC 5%，增持ETH 3%，以平衡市场风险',
+    // 新增详细信息字段
+    analyst: 'AI-System-A',
+    confidence: '92%',
+    expectedReturn: '+8.5%',
+    riskLevel: '中等',
+    recommendation: '建议在未来3天内逐步调整仓位，注意市场波动',
+    marketOutlook: '短期内市场可能出现回调，但长期趋势仍然向好'
   },
   {
     key: '2',
@@ -34,7 +42,14 @@ const reportData = [
     coins: 'SOL',
     type: '持仓维持',
     status: '已通过',
-    details: 'SOL近期表现稳定，建议维持现有持仓比例不变'
+    details: 'SOL近期表现稳定，建议维持现有持仓比例不变',
+    // 新增详细信息字段
+    analyst: 'AI-System-B',
+    confidence: '86%',
+    expectedReturn: '+4.2%',
+    riskLevel: '低',
+    recommendation: '继续持有现有仓位，关注项目进展',
+    marketOutlook: '项目基本面良好，预计未来一个月将有正面催化剂'
   },
   {
     key: '3',
@@ -43,7 +58,14 @@ const reportData = [
     coins: 'ETH, USDT',
     type: '资产配置优化',
     status: '已驳回',
-    details: '建议将USDT转换为ETH的比例过高，存在流动性风险，已驳回'
+    details: '建议将USDT转换为ETH的比例过高，存在流动性风险，已驳回',
+    // 新增详细信息字段
+    analyst: 'AI-System-C',
+    confidence: '78%',
+    expectedReturn: '+6.3%',
+    riskLevel: '高',
+    recommendation: '建议降低ETH增持比例，保持一定现金储备',
+    marketOutlook: '市场不确定性较高，建议采取保守策略'
   },
 ];
 const unreadMessages = [
@@ -87,6 +109,8 @@ const Dashboard = () => {
     report: false
   });
   const [currentReport, setCurrentReport] = useState(null);
+  // 新增：选中的报告ID状态
+  const [selectedReportId, setSelectedReportId] = useState<string | undefined>(undefined);
 
   // 饼图配置（匹配目标图颜色）
   const pieConfig = {
@@ -135,6 +159,17 @@ const Dashboard = () => {
   const closeModal = (type) => {
     setModalVisible(prev => ({ ...prev, [type]: false }));
     if (type === 'report') setCurrentReport(null);
+  };
+
+  // 新增：处理报告选择变化
+  const handleReportChange = (value: string) => {
+    setSelectedReportId(value);
+    // 查找选中的报告
+    const selectedReport = reportData.find(report => report.reportId === value);
+    if (selectedReport) {
+      setCurrentReport(selectedReport);
+      setModalVisible(prev => ({ ...prev, report: true }));
+    }
   };
 
   return (
@@ -320,7 +355,28 @@ const Dashboard = () => {
 
         {/* 近期建议报告 */}
         <Card 
-          title="近期建议报告" 
+          title={
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span>近期建议报告</span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+                <span style={{ fontSize: 14 }}>选择报告:</span>
+                <Select
+                  style={{ width: 200 }}
+                  placeholder="请选择报告ID"
+                  value={selectedReportId}
+                  onChange={handleReportChange}
+                  allowClear
+                  showSearch
+                >
+                  {reportData.map(report => (
+                    <Option key={report.key} value={report.reportId}>
+                      {report.reportId} - {report.type}
+                    </Option>
+                  ))}
+                </Select>
+              </div>
+            </div>
+          }
           extra={<Button type="link" onClick={() => history.push('/crypto-ai/suggestion-report')}>查看全部</Button>} 
           bordered={false}
           style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}
@@ -332,6 +388,36 @@ const Dashboard = () => {
             rowKey="key"
             size="middle"
             style={{ borderTop: '1px solid #e8e8e8' }}
+            expandable={{
+              expandedRowRender: (record) => (
+                <div style={{ padding: '16px 0' }}>
+                  <Descriptions column={2} size="small">
+                    <Descriptions.Item label="分析师">{record.analyst}</Descriptions.Item>
+                    <Descriptions.Item label="置信度">{record.confidence}</Descriptions.Item>
+                    <Descriptions.Item label="预期收益率">{record.expectedReturn}</Descriptions.Item>
+                    <Descriptions.Item label="风险等级">{record.riskLevel}</Descriptions.Item>
+                  </Descriptions>
+                  
+                  <Divider style={{ margin: '12px 0' }} />
+                  
+                  <div>
+                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议详情:</div>
+                    <div>{record.details}</div>
+                  </div>
+                  
+                  <div style={{ marginTop: 8 }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议操作:</div>
+                    <div>{record.recommendation}</div>
+                  </div>
+                  
+                  <div style={{ marginTop: 8 }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>市场展望:</div>
+                    <div>{record.marketOutlook}</div>
+                  </div>
+                </div>
+              ),
+              rowExpandable: (record) => true,
+            }}
           />
         </Card>
       </div>
@@ -434,6 +520,16 @@ const Dashboard = () => {
             <div style={{ marginBottom: 16 }}><Typography.Text>状态: {statusTag(currentReport.status)}</Typography.Text></div>
             <Typography.Title level={5} style={{ marginBottom: 8 }}>建议详情</Typography.Title>
             <Typography.Paragraph>{currentReport.details}</Typography.Paragraph>
+            
+            <Divider>详细信息</Divider>
+            <Descriptions column={1} size="small">
+              <Descriptions.Item label="分析师">{currentReport.analyst}</Descriptions.Item>
+              <Descriptions.Item label="置信度">{currentReport.confidence}</Descriptions.Item>
+              <Descriptions.Item label="预期收益率">{currentReport.expectedReturn}</Descriptions.Item>
+              <Descriptions.Item label="风险等级">{currentReport.riskLevel}</Descriptions.Item>
+              <Descriptions.Item label="建议操作">{currentReport.recommendation}</Descriptions.Item>
+              <Descriptions.Item label="市场展望">{currentReport.marketOutlook}</Descriptions.Item>
+            </Descriptions>
           </div>
         )}
       </Modal>
