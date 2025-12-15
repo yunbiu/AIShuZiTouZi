@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { history } from 'umi';
-  import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout, Select, Descriptions, Divider } from 'antd';
-import { 
-  BellOutlined, FileTextOutlined, DollarOutlined, 
+  import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout, Select, Descriptions, Divider, message } from 'antd';
+import {
+  BellOutlined, FileTextOutlined, DollarOutlined,
   PieChartOutlined, DownloadOutlined, EyeOutlined,
-  HomeOutlined, MessageOutlined, BarChartOutlined
+  HomeOutlined, MessageOutlined, BarChartOutlined,
+  CheckOutlined
 } from '@ant-design/icons';
 import { Pie } from '@ant-design/plots';
 
@@ -111,6 +112,20 @@ const Dashboard = () => {
   const [currentReport, setCurrentReport] = useState(null);
   // 新增：选中的报告ID状态
   const [selectedReportId, setSelectedReportId] = useState<string | undefined>(undefined);
+  // 新增：分页状态
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 3,
+    total: reportData.length
+  });
+  // 分页变化处理
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setPagination(prev => ({
+      ...prev,
+      current: page,
+      pageSize
+    }));
+  };
 
   // 饼图配置（匹配目标图颜色）
   const pieConfig = {
@@ -138,18 +153,32 @@ const Dashboard = () => {
       title: '操作',
       key: 'action',
       render: (_, record) => (
-        <Button 
-          type="link" 
-          icon={<EyeOutlined />} 
-          size="small"
-          onClick={() => {
-            setCurrentReport(record);
-            setModalVisible(prev => ({ ...prev, report: true }));
-          }}
-          style={{ color: '#1890ff' }}
-        >
-          查看
-        </Button>
+        <Space>
+          <Button
+            type="link"
+            icon={<CheckOutlined />}
+            size="small"
+            onClick={() => {
+              setCurrentReport(record);
+              setModalVisible(prev => ({ ...prev, report: true }));
+            }}
+            style={{ color: '#00b42a' }}
+          >
+            审核
+          </Button>
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            size="small"
+            onClick={() => {
+              setCurrentReport(record);
+              setModalVisible(prev => ({ ...prev, report: true }));
+            }}
+            style={{ color: '#1890ff' }}
+          >
+            详情
+          </Button>
+        </Space>
       ),
     },
   ];
@@ -175,9 +204,9 @@ const Dashboard = () => {
   return (
     <Layout style={{ height: '100vh' }}>
       {/* 顶部导航栏（圈出区域） */}
-      <Header style={{ 
-        background: '#fff', 
-        padding: '0 24px', 
+      <Header style={{
+        background: '#fff',
+        padding: '0 24px',
         borderBottom: '1px solid #e8e8e8',
         display: 'flex',
         justifyContent: 'space-between',
@@ -223,8 +252,8 @@ const Dashboard = () => {
       </Header>
 
       {/* 主内容区 */}
-      <div style={{ 
-        padding: 24, 
+      <div style={{
+        padding: 24,
         height: 'calc(100vh - 64px)', // 减去导航栏高度
         boxSizing: 'border-box',
         overflow: 'hidden',
@@ -233,8 +262,8 @@ const Dashboard = () => {
         {/* 顶部统计卡片 */}
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col lg={8} md={12} sm={24}>
-            <Card 
-              bordered={false} 
+            <Card
+              bordered={false}
               style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)', cursor: 'pointer' }}
               onClick={() => openModal('unread')}
             >
@@ -253,8 +282,8 @@ const Dashboard = () => {
             </Card>
           </Col>
           <Col lg={8} md={12} sm={24}>
-            <Card 
-              bordered={false} 
+            <Card
+              bordered={false}
               style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)', cursor: 'pointer' }}
               onClick={() => openModal('pending')}
             >
@@ -273,8 +302,8 @@ const Dashboard = () => {
             </Card>
           </Col>
           <Col lg={8} md={24} sm={24}>
-            <Card 
-              bordered={false} 
+            <Card
+              bordered={false}
               style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)', cursor: 'pointer' }}
               onClick={() => openModal('asset')}
             >
@@ -297,52 +326,56 @@ const Dashboard = () => {
 
         {/* 快速入口 + 资产分布 */}
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
-          <Col lg={6} md={12} sm={24}>
-            <Card title="快速入口" bordered={false} style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
-              <Space direction="vertical" style={{ width: '100%' }}>
+          <Col lg={8} md={12} sm={24}>
+            <Card title="快速入口" bordered={false} style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)', padding: 24 }}>
+              <Space direction="vertical" style={{ width: '100%', gap: 16 }}>
                 <Button
                   type="default"
                   icon={<MessageOutlined />}
                   block
+                  size="large"
                   onClick={() => history.push('/crypto-ai/message-list')}
-                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8' }}
+                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8', height: 48, fontSize: 16 }}
                 >
                   查看消息列表
                 </Button>
-                <Button 
-                  type="default" 
-                  icon={<BarChartOutlined />} 
-                  block 
+                <Button
+                  type="default"
+                  icon={<BarChartOutlined />}
+                  block
+                  size="large"
                   onClick={() => history.push('/crypto-ai/portfolio-data')}
-                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8' }}
+                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8', height: 48, fontSize: 16 }}
                 >
                   查看持仓数据
                 </Button>
-                <Button 
-                  type="default" 
-                  icon={<FileTextOutlined />} 
-                  block 
+                <Button
+                  type="default"
+                  icon={<FileTextOutlined />}
+                  block
+                  size="large"
                   onClick={() => history.push('/crypto-ai/suggestion-report')}
-                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8' }}
+                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8', height: 48, fontSize: 16 }}
                 >
                   审核建议报告
                 </Button>
-                <Button 
-                  type="default" 
-                  icon={<DownloadOutlined />} 
-                  block 
+                <Button
+                  type="default"
+                  icon={<DownloadOutlined />}
+                  block
+                  size="large"
                   onClick={() => alert('数据报表导出中...')}
-                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8' }}
+                  style={{ justifyContent: 'flex-start', background: '#fff', borderColor: '#e8e8e8', height: 48, fontSize: 16 }}
                 >
                   导出数据报表
                 </Button>
               </Space>
             </Card>
           </Col>
-          <Col lg={18} md={12} sm={24}>
-            <Card 
-              title="资产分布概览" 
-              extra={<span>数据更新时间: 2024-12-10 08:00</span>} 
+          <Col lg={16} md={12} sm={24}>
+            <Card
+              title="资产分布概览"
+              extra={<span>数据更新时间: 2024-12-10 08:00</span>}
               bordered={false}
               style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}
             >
@@ -354,19 +387,26 @@ const Dashboard = () => {
         </Row>
 
         {/* 近期建议报告 */}
-        <Card 
+        <Card
           title={
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
               <span>近期建议报告</span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
                 <span style={{ fontSize: 14 }}>选择报告:</span>
                 <Select
-                  style={{ width: 200 }}
+                  style={{
+                    width: { xs: '100%', sm: 200 },
+                    maxWidth: 280,
+                    borderColor: '#d9d9d9',
+                    borderRadius: 4,
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)'
+                  }}
                   placeholder="请选择报告ID"
                   value={selectedReportId}
                   onChange={handleReportChange}
                   allowClear
                   showSearch
+                  dropdownStyle={{ boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}
                 >
                   {reportData.map(report => (
                     <Option key={report.key} value={report.reportId}>
@@ -377,48 +417,65 @@ const Dashboard = () => {
               </div>
             </div>
           }
-          extra={<Button type="link" onClick={() => history.push('/crypto-ai/suggestion-report')}>查看全部</Button>} 
+          extra={<Button type="link" onClick={() => history.push('/crypto-ai/suggestion-report')}>查看全部</Button>}
           bordered={false}
           style={{ boxShadow: '0 1px 2px rgba(0,0,0,0.1)' }}
         >
-          <Table
-            dataSource={reportData}
-            columns={reportColumns}
-            pagination={false}
-            rowKey="key"
-            size="middle"
-            style={{ borderTop: '1px solid #e8e8e8' }}
-            expandable={{
-              expandedRowRender: (record) => (
-                <div style={{ padding: '16px 0' }}>
-                  <Descriptions column={2} size="small">
-                    <Descriptions.Item label="分析师">{record.analyst}</Descriptions.Item>
-                    <Descriptions.Item label="置信度">{record.confidence}</Descriptions.Item>
-                    <Descriptions.Item label="预期收益率">{record.expectedReturn}</Descriptions.Item>
-                    <Descriptions.Item label="风险等级">{record.riskLevel}</Descriptions.Item>
-                  </Descriptions>
-                  
-                  <Divider style={{ margin: '12px 0' }} />
-                  
-                  <div>
-                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议详情:</div>
-                    <div>{record.details}</div>
-                  </div>
-                  
-                  <div style={{ marginTop: 8 }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议操作:</div>
-                    <div>{record.recommendation}</div>
-                  </div>
-                  
-                  <div style={{ marginTop: 8 }}>
-                    <div style={{ fontWeight: 'bold', marginBottom: 8 }}>市场展望:</div>
-                    <div>{record.marketOutlook}</div>
-                  </div>
-                </div>
-              ),
-              rowExpandable: (record) => true,
-            }}
-          />
+          {/* 计算当前页显示的数据 */}
+          {(() => {
+            const { current, pageSize } = pagination;
+            const startIndex = (current - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const currentPageData = reportData.slice(startIndex, endIndex);
+
+            return (
+              <Table
+                dataSource={currentPageData}
+                columns={reportColumns}
+                pagination={{
+                  ...pagination,
+                  onChange: handlePaginationChange,
+                  showSizeChanger: true,
+                  showTotal: (total) => `共 ${total} 条记录`,
+                  pageSizeOptions: ['3', '5', '10'],
+                  style: { marginBottom: 0 }
+                }}
+                rowKey="key"
+                size="middle"
+                style={{ borderTop: '1px solid #e8e8e8' }}
+                expandable={{
+                  expandedRowRender: (record) => (
+                    <div style={{ padding: '16px 0' }}>
+                      <Descriptions column={2} size="small">
+                        <Descriptions.Item label="分析师">{record.analyst}</Descriptions.Item>
+                        <Descriptions.Item label="置信度">{record.confidence}</Descriptions.Item>
+                        <Descriptions.Item label="预期收益率">{record.expectedReturn}</Descriptions.Item>
+                        <Descriptions.Item label="风险等级">{record.riskLevel}</Descriptions.Item>
+                      </Descriptions>
+
+                      <Divider style={{ margin: '12px 0' }} />
+
+                      <div>
+                        <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议详情:</div>
+                        <div>{record.details}</div>
+                      </div>
+
+                      <div style={{ marginTop: 8 }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: 8 }}>建议操作:</div>
+                        <div>{record.recommendation}</div>
+                      </div>
+
+                      <div style={{ marginTop: 8 }}>
+                        <div style={{ fontWeight: 'bold', marginBottom: 8 }}>市场展望:</div>
+                        <div>{record.marketOutlook}</div>
+                      </div>
+                    </div>
+                  ),
+                  rowExpandable: (record) => true,
+                }}
+              />
+            );
+          })()}
         </Card>
       </div>
 
@@ -466,10 +523,52 @@ const Dashboard = () => {
             {
               title: '操作',
               key: 'action',
-              render: () => (
+              render: (_, record) => (
                 <Space>
-                  <Button type="link" size="small">审核</Button>
-                  <Button type="link" size="small">详情</Button>
+                  <Button
+                    type="link"
+                    icon={<CheckOutlined />}
+                    size="small"
+                    onClick={() => {
+                      Modal.confirm({
+                        title: '审核报告',
+                        content: `确定要审核报告 ${record.id} 吗？`,
+                        okText: '通过',
+                        okType: 'primary',
+                        cancelText: '拒绝',
+                        onOk: () => {
+                          // 模拟审核通过
+                          message.success('审核通过');
+                          console.log('审核通过报告:', record.id);
+                          // 可以在这里添加实际的审核API调用
+                        },
+                        onCancel: () => {
+                          // 模拟审核拒绝
+                          message.info('审核已拒绝');
+                          console.log('拒绝审核报告:', record.id);
+                        },
+                      });
+                    }}
+                    style={{ color: '#00b42a' }}
+                  >
+                    审核
+                  </Button>
+                  <Button
+                    type="link"
+                    icon={<EyeOutlined />}
+                    size="small"
+                    onClick={() => {
+                      // 查找对应的完整报告数据
+                      const fullReport = reportData.find(report => report.reportId === record.id);
+                      if (fullReport) {
+                        setCurrentReport(fullReport);
+                        setModalVisible(prev => ({ ...prev, report: true }));
+                      }
+                    }}
+                    style={{ color: '#1890ff' }}
+                  >
+                    详情
+                  </Button>
                 </Space>
               )
             }
@@ -520,7 +619,7 @@ const Dashboard = () => {
             <div style={{ marginBottom: 16 }}><Typography.Text>状态: {statusTag(currentReport.status)}</Typography.Text></div>
             <Typography.Title level={5} style={{ marginBottom: 8 }}>建议详情</Typography.Title>
             <Typography.Paragraph>{currentReport.details}</Typography.Paragraph>
-            
+
             <Divider>详细信息</Divider>
             <Descriptions column={1} size="small">
               <Descriptions.Item label="分析师">{currentReport.analyst}</Descriptions.Item>
