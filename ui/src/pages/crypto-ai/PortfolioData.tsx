@@ -4,6 +4,7 @@ import { DownloadOutlined, CaretUpOutlined, CaretDownOutlined, ReloadOutlined } 
 import { Line } from '@ant-design/charts';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import * as XLSX from 'xlsx';
 
 // 币种颜色映射（保持原有配色）
 const ASSET_COLOR_MAP = {
@@ -81,22 +82,25 @@ const PieChartWithLines = ({ data }: { data: any[] }) => {
     const textX = centerX + textRadius * Math.cos(midAngle);
     const textY = centerY + textRadius * Math.sin(midAngle);
 
-    // 调整文本位置避免重叠
+    // 调整文本位置避免重叠（动态计算，支持所有资产类型）
     let adjustedTextX = textX;
     let adjustedTextY = textY;
 
-    if (item.type === 'BTC') {
+    // 根据角度动态调整文本位置，避免重叠
+    if (midAngle > -Math.PI / 2 && midAngle < Math.PI / 2) {
+      // 右侧扇区，文本右移
       adjustedTextX = textX + 10;
-      adjustedTextY = textY - 5;
-    } else if (item.type === 'ETH') {
-      adjustedTextX = textX - 5;
-      adjustedTextY = textY + 10;
-    } else if (item.type === 'SOL') {
+    } else {
+      // 左侧扇区，文本左移
       adjustedTextX = textX - 10;
-      adjustedTextY = textY - 5;
-    } else if (item.type === 'USDT') {
-      adjustedTextX = textX + 5;
+    }
+
+    if (midAngle > 0) {
+      // 下半部分，文本下移
       adjustedTextY = textY + 10;
+    } else {
+      // 上半部分，文本上移
+      adjustedTextY = textY - 5;
     }
 
     currentAngle = endAngle;
@@ -194,10 +198,28 @@ const PortfolioData = () => {
   const [timeRange, setTimeRange] = useState('7d');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
+  // 模拟数据
+  const MOCK_ASSET_RATIO_DATA = [
+    { type: 'BTC', value: 45.5, amount: '0.852134 BTC', valueNum: '$36,500.00', color: '#175DFB' },
+    { type: 'ETH', value: 25.3, amount: '7.8901 ETH', valueNum: '$21,500.00', color: '#11C5C2' },
+    { type: 'SOL', value: 15.2, amount: '123.456 SOL', valueNum: '$12,500.00', color: '#FE7E03' },
+    { type: 'USDT', value: 14.0, amount: '14,000 USDT', valueNum: '$14,000.00', color: '#F3413F' },
+  ];
+
+  const MOCK_TREND_DATA = [
+    { date: '12/10', BTC: 42.3, ETH: 26.5, SOL: 14.2, USDT: 17.0 },
+    { date: '12/11', BTC: 43.1, ETH: 25.8, SOL: 14.5, USDT: 16.6 },
+    { date: '12/12', BTC: 44.2, ETH: 25.5, SOL: 14.8, USDT: 15.5 },
+    { date: '12/13', BTC: 44.8, ETH: 25.4, SOL: 15.0, USDT: 14.8 },
+    { date: '12/14', BTC: 45.2, ETH: 25.3, SOL: 15.1, USDT: 14.4 },
+    { date: '12/15', BTC: 45.4, ETH: 25.3, SOL: 15.1, USDT: 14.2 },
+    { date: '12/16', BTC: 45.5, ETH: 25.3, SOL: 15.2, USDT: 14.0 },
+  ];
+
   // 数据状态
-  const [assetRatioData, setAssetRatioData] = useState<any[]>([]); // 当前资产占比
-  const [trendData, setTrendData] = useState<any[]>([]); // 近7日趋势
+  const [assetRatioData, setAssetRatioData] = useState<any[]>(MOCK_ASSET_RATIO_DATA); // 当前资产占比，默认使用模拟数据
+  const [trendData, setTrendData] = useState<any[]>(transformTrendData(MOCK_TREND_DATA)); // 近7日趋势，默认使用模拟数据
   const [historyData, setHistoryData] = useState<any[]>([]); // 持仓历史记录
 
   // 接口请求函数
@@ -214,12 +236,26 @@ const PortfolioData = () => {
           valueNum: formatUsdValue(item.usdValue),
           color: ASSET_COLOR_MAP[item.assetType as keyof typeof ASSET_COLOR_MAP] || '#1890ff',
         }));
-        setAssetRatioData(formattedData);
+
+        // 创建一个映射，用于快速查找后端返回的资产数据
+        const backendDataMap = new Map(formattedData.map(item => [item.type, item]));
+
+        // 合并后端数据和模拟数据，确保所有预设的货币类型都显示
+        const mergedData = MOCK_ASSET_RATIO_DATA.map(mockItem => {
+          // 如果后端有该货币的数据，则使用后端数据，否则使用模拟数据
+          return backendDataMap.get(mockItem.type) || mockItem;
+        });
+
+        setAssetRatioData(mergedData);
       } else {
         setError(`获取用户资产失败: ${res.data.msg}`);
+        // 保持使用模拟数据
+        setAssetRatioData(MOCK_ASSET_RATIO_DATA);
       }
     } catch (err) {
       setError(`获取用户资产失败: ${(err as Error).message}`);
+      // 保持使用模拟数据
+      setAssetRatioData(MOCK_ASSET_RATIO_DATA);
     }
   };
 
@@ -230,7 +266,7 @@ const PortfolioData = () => {
       if (res.data.code === 200) {
         // 按时间分组转换为历史记录格式
         const recordMap = new Map();
-        
+
         // 先分组（按快照时间）
         res.data.data.forEach((item: any) => {
           const timeKey = item.snapshotTime.split(' ')[0];
@@ -246,7 +282,7 @@ const PortfolioData = () => {
               usdt: { value: '0%', change: '' },
             });
           }
-          
+
           // 填充对应币种数据
           const record = recordMap.get(timeKey);
           const assetKey = item.assetType.toLowerCase();
@@ -256,7 +292,7 @@ const PortfolioData = () => {
             record[assetKey].change = item.percentage > 0 ? `+${(item.percentage % 10).toFixed(1)}%` : '';
           }
         });
-        
+
         // 转换为数组并排序
         const formattedHistory = Array.from(recordMap.values())
           .sort((a: any, b: any) => dayjs(b.date).unix() - dayjs(a.date).unix())
@@ -264,7 +300,7 @@ const PortfolioData = () => {
             key: `${index + 1}`,
             ...item,
           }));
-        
+
         setHistoryData(formattedHistory);
       } else {
         setError(`获取持仓历史失败: ${res.data.msg}`);
@@ -279,54 +315,75 @@ const PortfolioData = () => {
     try {
       const res = await axios.get(`http://localhost:8080/portfolio/getRecentSevenDaysHistory/${historyId}`);
       if (res.data.code === 200) {
-        // 构建7天趋势数据（实际可根据接口返回的时间范围生成）
-        const baseDate = dayjs();
-        const trendMap: any = {};
-        
-        // 初始化7天数据
-        for (let i = 6; i >= 0; i--) {
-          const date = baseDate.subtract(i, 'day').format('MM/DD');
-          trendMap[date] = { date, BTC: 0, ETH: 0, SOL: 0, USDT: 0 };
-        }
-        
-        // 填充接口返回的实际数据
-        res.data.data.forEach((item: any) => {
-          const date = dayjs(item.snapshotTime).format('MM/DD');
-          if (trendMap[date]) {
-            trendMap[date][item.assetType] = item.percentage;
+        // 检查后端返回的数据是否为空
+        if (res.data.data && res.data.data.length > 0) {
+          // 构建7天趋势数据（实际可根据接口返回的时间范围生成）
+          const baseDate = dayjs();
+          const trendMap: any = {};
+
+          // 收集所有出现过的资产类型
+          const assetTypes = new Set<string>();
+          res.data.data.forEach((item: any) => {
+            assetTypes.add(item.assetType);
+          });
+
+          // 初始化7天数据，动态添加所有资产类型
+          for (let i = 6; i >= 0; i--) {
+            const date = baseDate.subtract(i, 'day').format('MM/DD');
+            // 初始化为只包含date字段的对象
+            trendMap[date] = { date };
+            // 为每种资产类型添加初始值0
+            assetTypes.forEach(type => {
+              trendMap[date][type] = 0;
+            });
           }
-        });
-        
-        // 转换为数组
-        const formattedTrend = Object.values(trendMap);
-        setTrendData(formattedTrend);
+
+          // 填充接口返回的实际数据
+          res.data.data.forEach((item: any) => {
+            const date = dayjs(item.snapshotTime).format('MM/DD');
+            if (trendMap[date]) {
+              trendMap[date][item.assetType] = item.percentage;
+            }
+          });
+
+          // 转换为数组
+          const formattedTrendData = Object.values(trendMap);
+          // 使用transformTrendData转换数据格式
+          setTrendData(transformTrendData(formattedTrendData));
+        } else {
+          // 后端返回数据为空，使用模拟数据
+          setTrendData(transformTrendData(MOCK_TREND_DATA));
+        }
       } else {
-        setError(`获取7天趋势失败: ${res.data.msg}`);
+        setError(`获取趋势数据失败: ${res.data.msg}`);
+        // 保持使用模拟数据
+        setTrendData(transformTrendData(MOCK_TREND_DATA));
       }
     } catch (err) {
-      setError(`获取7天趋势失败: ${(err as Error).message}`);
+      setError(`获取趋势数据失败: ${(err as Error).message}`);
+      // 保持使用模拟数据
+      setTrendData(transformTrendData(MOCK_TREND_DATA));
     }
   };
 
-  // 刷新所有数据
-  const refreshData = async () => {
+  // 刷新数据函数
+  const refreshData = () => {
     setLoading(true);
     setError('');
-    
-    // 并行请求三个接口
-    await Promise.all([
+
+    // 并行请求接口
+    Promise.allSettled([
       fetchUserAssetData(DEFAULT_PARAMS.userId),
       fetchPortfolioHistory(DEFAULT_PARAMS.portfolioId),
       fetchSevenDaysHistory(DEFAULT_PARAMS.historyId),
-    ]);
-    
-    setLoading(false);
+    ]).finally(() => {
+      setLoading(false);
+    });
   };
 
-  // 组件挂载时加载数据
+  // 页面初始化时加载数据
   useEffect(() => {
     refreshData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 切换时间范围时重新获取趋势数据
@@ -339,77 +396,39 @@ const PortfolioData = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange]);
 
-  // 折线图配置
-  const lineConfig = {
-    data: transformTrendData(trendData),
-    xField: 'date',
-    yField: 'value',
-    seriesField: 'type',
-    yAxis: {
-      label: {
-        formatter: (v: number) => `${v}%`,
-      },
-      grid: {
-        line: {
-          style: {
-            stroke: '#f0f0f0',
-            lineDash: [4, 4],
-          },
-        },
-      },
-      min: 0,
-      max: 50,
-    },
-    xAxis: {
-      tickLine: {
-        alignTick: false,
-      },
-    },
-    color: ['#175DFB', '#11C5C2', '#FE7E03', '#F3413F'],
-    lineStyle: {
-      lineWidth: 2,
-    },
-    point: {
-      size: 4,
-      shape: 'circle',
-      style: {
-        fill: '#fff',
-        stroke: (item: any) => {
-          const colors: Record<string, string> = {
-            BTC: '#175DFB',
-            ETH: '#11C5C2',
-            SOL: '#FE7E03',
-            USDT: '#F3413F',
-          };
-          return colors[item.type] || '#1890ff';
-        },
-        strokeWidth: 2,
-      },
-    },
-    smooth: true,
-    tooltip: {
-      showCrosshairs: true,
-      shared: true,
-      formatter: (datum: any) => ({
-        name: datum.type,
-        value: `${datum.value}%`,
-      }),
-    },
-    legend: {
-      position: 'bottom',
-      layout: 'horizontal',
-      itemName: {
-        style: {
-          fontSize: 12,
-        },
-      },
-    },
-    animation: {
-      appear: {
-        animation: 'wave-in',
-        duration: 1000,
-      },
-    },
+  // 导出Excel功能
+  const exportToExcel = () => {
+    try {
+      // 准备要导出的数据
+      const exportData = assetRatioData.map(item => ({
+        '币种': item.type,
+        '占比': `${item.value}%`,
+        '数量': item.amount,
+        '价值': item.valueNum,
+      }));
+
+      // 创建一个工作簿
+      const workbook = XLSX.utils.book_new();
+
+      // 创建工作表
+      const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+      // 设置列宽
+      worksheet['!cols'] = [
+        { wch: 10 }, // 币种列宽
+        { wch: 10 }, // 占比列宽
+        { wch: 20 }, // 数量列宽
+        { wch: 20 }, // 价值列宽
+      ];
+
+      // 将工作表添加到工作簿
+      XLSX.utils.book_append_sheet(workbook, worksheet, '资产占比数据');
+
+      // 导出工作簿
+      XLSX.writeFile(workbook, `持仓数据_${dayjs().format('YYYY-MM-DD')}.xlsx`);
+    } catch (error) {
+      console.error('导出Excel失败:', error);
+    }
   };
 
   // 持仓历史表格列配置
@@ -539,6 +558,80 @@ const PortfolioData = () => {
     },
   ];
 
+  // 折线图配置
+  const lineConfig = {
+    data: trendData,
+    xField: 'date',
+    yField: 'value',
+    seriesField: 'type',
+    yAxis: {
+      title: {
+        text: '占比 (%)',
+        style: {
+          fill: '#666',
+        },
+      },
+      formatter: (v: number) => `${v}%`,
+      grid: {
+        line: {
+          style: {
+            stroke: '#f0f0f0',
+            lineDash: [4, 4],
+          },
+        },
+      },
+      min: 0,
+      max: 50,
+    },
+    xAxis: {
+      tickLine: {
+        alignTick: false,
+      },
+    },
+    // 动态颜色映射，优先使用ASSET_COLOR_MAP，然后使用默认颜色
+    color: (type: string) => {
+      return ASSET_COLOR_MAP[type as keyof typeof ASSET_COLOR_MAP] || '#1890ff';
+    },
+    lineStyle: {
+      lineWidth: 2,
+    },
+    point: {
+      size: 4,
+      shape: 'circle',
+      style: {
+        fill: '#fff',
+        stroke: (item: any) => {
+          return ASSET_COLOR_MAP[item.type as keyof typeof ASSET_COLOR_MAP] || '#1890ff';
+        },
+        strokeWidth: 2,
+      },
+    },
+    smooth: true,
+    tooltip: {
+      showCrosshairs: true,
+      shared: true,
+      formatter: (datum: any) => ({
+        name: datum.type,
+        value: `${datum.value}%`,
+      }),
+    },
+    legend: {
+      position: 'bottom',
+      layout: 'horizontal',
+      itemName: {
+        style: {
+          fontSize: 12,
+        },
+      },
+    },
+    animation: {
+      appear: {
+        animation: 'wave-in',
+        duration: 1000,
+      },
+    },
+  };
+
   // 计算总资产
   const totalAsset = assetRatioData.reduce((sum, item) => {
     const num = parseFloat(item.valueNum.replace(/[$,]/g, ''));
@@ -578,6 +671,7 @@ const PortfolioData = () => {
               type="primary"
               icon={<DownloadOutlined />}
               style={{ background: '#1890ff', borderColor: '#1890ff' }}
+              onClick={exportToExcel}
             >
               导出Excel
             </Button>
