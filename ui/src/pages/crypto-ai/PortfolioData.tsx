@@ -16,7 +16,6 @@ const ASSET_COLOR_MAP = {
 
 // 默认请求参数（可根据实际需求调整或从路由/状态获取）
 const DEFAULT_PARAMS = {
-  userId: 1,           // 默认用户ID
   portfolioId: 1,      // 默认组合ID
   historyId: 2,        // 默认7天历史ID
 };
@@ -199,34 +198,25 @@ const PortfolioData = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // 模拟数据
-  const MOCK_ASSET_RATIO_DATA = [
-    { type: 'BTC', value: 45.5, amount: '0.852134 BTC', valueNum: '$36,500.00', color: '#175DFB' },
-    { type: 'ETH', value: 25.3, amount: '7.8901 ETH', valueNum: '$21,500.00', color: '#11C5C2' },
-    { type: 'SOL', value: 15.2, amount: '123.456 SOL', valueNum: '$12,500.00', color: '#FE7E03' },
-    { type: 'USDT', value: 14.0, amount: '14,000 USDT', valueNum: '$14,000.00', color: '#F3413F' },
-  ];
-
-  const MOCK_TREND_DATA = [
-    { date: '12/10', BTC: 42.3, ETH: 26.5, SOL: 14.2, USDT: 17.0 },
-    { date: '12/11', BTC: 43.1, ETH: 25.8, SOL: 14.5, USDT: 16.6 },
-    { date: '12/12', BTC: 44.2, ETH: 25.5, SOL: 14.8, USDT: 15.5 },
-    { date: '12/13', BTC: 44.8, ETH: 25.4, SOL: 15.0, USDT: 14.8 },
-    { date: '12/14', BTC: 45.2, ETH: 25.3, SOL: 15.1, USDT: 14.4 },
-    { date: '12/15', BTC: 45.4, ETH: 25.3, SOL: 15.1, USDT: 14.2 },
-    { date: '12/16', BTC: 45.5, ETH: 25.3, SOL: 15.2, USDT: 14.0 },
-  ];
-
-  // 数据状态
-  const [assetRatioData, setAssetRatioData] = useState<any[]>(MOCK_ASSET_RATIO_DATA); // 当前资产占比，默认使用模拟数据
-  const [trendData, setTrendData] = useState<any[]>(transformTrendData(MOCK_TREND_DATA)); // 近7日趋势，默认使用模拟数据
+  // 数据状态（移除模拟数据，初始化为空数组）
+  const [assetRatioData, setAssetRatioData] = useState<any[]>([]); // 当前资产占比
+  const [trendData, setTrendData] = useState<any[]>([]); // 近7日趋势
   const [historyData, setHistoryData] = useState<any[]>([]); // 持仓历史记录
 
   // 接口请求函数
-  // 1. 获取用户当前资产占比
-  const fetchUserAssetData = async (userId: number) => {
+  // 1. 获取用户当前资产占比（修改接口地址，添加token请求头）
+  const fetchUserAssetData = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/portfolio/userId/${userId}`);
+      // 获取token
+      const authToken = localStorage.getItem('access_token') || 'your_actual_token_here';
+      
+      const res = await axios.get('http://localhost:8080/portfolio/userId', {
+        headers: {
+          'Authorization': `Bearer ${authToken}`, // 常规token传递方式，可根据后端要求调整
+          'Content-Type': 'application/json'
+        }
+      });
+      
       if (res.data.code === 200) {
         // 转换为页面所需格式
         const formattedData = res.data.data.map((item: any) => ({
@@ -236,30 +226,18 @@ const PortfolioData = () => {
           valueNum: formatUsdValue(item.usdValue),
           color: ASSET_COLOR_MAP[item.assetType as keyof typeof ASSET_COLOR_MAP] || '#1890ff',
         }));
-
-        // 创建一个映射，用于快速查找后端返回的资产数据
-        const backendDataMap = new Map(formattedData.map(item => [item.type, item]));
-
-        // 合并后端数据和模拟数据，确保所有预设的货币类型都显示
-        const mergedData = MOCK_ASSET_RATIO_DATA.map(mockItem => {
-          // 如果后端有该货币的数据，则使用后端数据，否则使用模拟数据
-          return backendDataMap.get(mockItem.type) || mockItem;
-        });
-
-        setAssetRatioData(mergedData);
+        setAssetRatioData(formattedData);
       } else {
         setError(`获取用户资产失败: ${res.data.msg}`);
-        // 保持使用模拟数据
-        setAssetRatioData(MOCK_ASSET_RATIO_DATA);
+        setAssetRatioData([]);
       }
     } catch (err) {
       setError(`获取用户资产失败: ${(err as Error).message}`);
-      // 保持使用模拟数据
-      setAssetRatioData(MOCK_ASSET_RATIO_DATA);
+      setAssetRatioData([]);
     }
   };
 
-  // 2. 获取组合历史持仓记录
+  // 2. 获取组合历史持仓记录（保持不变）
   const fetchPortfolioHistory = async (portfolioId: number) => {
     try {
       const res = await axios.get(`http://localhost:8080/portfolio/portfolioId/${portfolioId}`);
@@ -310,7 +288,7 @@ const PortfolioData = () => {
     }
   };
 
-  // 3. 获取近7天持仓趋势
+  // 3. 获取近7天持仓趋势（保持不变）
   const fetchSevenDaysHistory = async (historyId: number) => {
     try {
       const res = await axios.get(`http://localhost:8080/portfolio/getRecentSevenDaysHistory/${historyId}`);
@@ -351,18 +329,15 @@ const PortfolioData = () => {
           // 使用transformTrendData转换数据格式
           setTrendData(transformTrendData(formattedTrendData));
         } else {
-          // 后端返回数据为空，使用模拟数据
-          setTrendData(transformTrendData(MOCK_TREND_DATA));
+          setTrendData([]);
         }
       } else {
         setError(`获取趋势数据失败: ${res.data.msg}`);
-        // 保持使用模拟数据
-        setTrendData(transformTrendData(MOCK_TREND_DATA));
+        setTrendData([]);
       }
     } catch (err) {
       setError(`获取趋势数据失败: ${(err as Error).message}`);
-      // 保持使用模拟数据
-      setTrendData(transformTrendData(MOCK_TREND_DATA));
+      setTrendData([]);
     }
   };
 
@@ -373,7 +348,7 @@ const PortfolioData = () => {
 
     // 并行请求接口
     Promise.allSettled([
-      fetchUserAssetData(DEFAULT_PARAMS.userId),
+      fetchUserAssetData(), // 不再传递userId参数
       fetchPortfolioHistory(DEFAULT_PARAMS.portfolioId),
       fetchSevenDaysHistory(DEFAULT_PARAMS.historyId),
     ]).finally(() => {
@@ -389,7 +364,6 @@ const PortfolioData = () => {
   // 切换时间范围时重新获取趋势数据
   useEffect(() => {
     if (timeRange !== '7d') {
-      // 这里可根据不同时间范围请求不同接口/参数
       setLoading(true);
       fetchSevenDaysHistory(DEFAULT_PARAMS.historyId).then(() => setLoading(false));
     }
@@ -431,7 +405,7 @@ const PortfolioData = () => {
     }
   };
 
-  // 持仓历史表格列配置
+  // 持仓历史表格列配置（保持不变）
   const historyColumns = [
     {
       title: '调整日期',
@@ -558,7 +532,7 @@ const PortfolioData = () => {
     },
   ];
 
-  // 折线图配置
+  // 折线图配置（保持不变）
   const lineConfig = {
     data: trendData,
     xField: 'date',
