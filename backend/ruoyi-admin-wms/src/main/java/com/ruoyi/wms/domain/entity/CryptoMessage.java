@@ -2,8 +2,10 @@ package com.ruoyi.wms.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -47,8 +49,9 @@ public class CryptoMessage {
     /**
      * 发布时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime publishTime;
+    @JsonProperty("publish_time")
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate publishTime;
 
 //    /**
 //     * 创建时间
@@ -57,10 +60,16 @@ public class CryptoMessage {
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 //    private LocalDateTime createTime;
 
+//    /**
+//     * 更新时间
+//     */
+//    @TableField(fill = FieldFill.INSERT_UPDATE)
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    private LocalDateTime updateTime;
     /**
-     * 更新时间
+     * 阅读状态：1-已读、0-未读
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime updateTime;
+    private Integer status;
+
+
 }

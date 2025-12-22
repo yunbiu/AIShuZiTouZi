@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { history } from 'umi';
-  import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout, Select, Descriptions, Divider, message } from 'antd';
+import { Card, Statistic, Row, Col, Button, Table, Space, Tag, Modal, Typography, Layout, Select, Descriptions, Divider, message } from 'antd';
 import {
   BellOutlined, FileTextOutlined, DollarOutlined,
   PieChartOutlined, DownloadOutlined, EyeOutlined,
@@ -11,8 +11,9 @@ import { Pie } from '@ant-design/plots';
 
 const { Header } = Layout;
 const { Option } = Select;
+const { Text, Title, Paragraph } = Typography;
 
-// 模拟数据（保持原有）
+// 模拟数据（保留非消息相关的原有数据）
 const assetData = [
   { type: 'BTC', value: 55 },
   { type: 'ETH', value: 25 },
@@ -28,7 +29,6 @@ const reportData = [
     type: '持仓调整',
     status: '待审核',
     details: '建议减持BTC 5%，增持ETH 3%，以平衡市场风险',
-    // 新增详细信息字段
     analyst: 'AI-System-A',
     confidence: '92%',
     expectedReturn: '+8.5%',
@@ -44,7 +44,6 @@ const reportData = [
     type: '持仓维持',
     status: '已通过',
     details: 'SOL近期表现稳定，建议维持现有持仓比例不变',
-    // 新增详细信息字段
     analyst: 'AI-System-B',
     confidence: '86%',
     expectedReturn: '+4.2%',
@@ -60,7 +59,6 @@ const reportData = [
     type: '资产配置优化',
     status: '已驳回',
     details: '建议将USDT转换为ETH的比例过高，存在流动性风险，已驳回',
-    // 新增详细信息字段
     analyst: 'AI-System-C',
     confidence: '78%',
     expectedReturn: '+6.3%',
@@ -68,11 +66,6 @@ const reportData = [
     recommendation: '建议降低ETH增持比例，保持一定现金储备',
     marketOutlook: '市场不确定性较高，建议采取保守策略'
   },
-];
-const unreadMessages = [
-  { id: 1, content: 'BTC价格突破42000美元', time: '10:23' },
-  { id: 2, content: 'ETH完成网络升级', time: '09:15' },
-  { id: 3, content: '新的持仓建议报告已生成', time: '08:40' },
 ];
 const pendingReports = [
   { id: '#R2024121001', coin: 'BTC, ETH', type: '持仓调整', time: '09:30' },
@@ -110,14 +103,59 @@ const Dashboard = () => {
     report: false
   });
   const [currentReport, setCurrentReport] = useState(null);
-  // 新增：选中的报告ID状态
   const [selectedReportId, setSelectedReportId] = useState<string | undefined>(undefined);
-  // 新增：分页状态
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 3,
     total: reportData.length
   });
+
+  // 新增：存储真实接口数据的状态
+  const [unreadCount, setUnreadCount] = useState(0); // 未读消息数量
+  const [realUnreadMessages, setRealUnreadMessages] = useState([]); // 未读消息列表
+  const [loading, setLoading] = useState(true); // 接口加载状态
+
+  // 封装：获取未读消息数量
+  const fetchUnreadCount = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/message/unread/count');
+      const result = await response.json();
+      if (result.code === 200) {
+        setUnreadCount(result.data);
+      } else {
+        message.error('获取未读消息数量失败：' + result.msg);
+      }
+    } catch (error) {
+      console.error('未读消息数量请求异常：', error);
+      message.error('获取未读消息数量失败，请检查接口连接');
+    }
+  };
+
+  // 封装：获取未读消息列表
+  const fetchUnreadMessageList = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/message/unread/list');
+      const result = await response.json();
+      if (result.code === 200) {
+        setRealUnreadMessages(result.data);
+      } else {
+        message.error('获取未读消息列表失败：' + result.msg);
+      }
+    } catch (error) {
+      console.error('未读消息列表请求异常：', error);
+      message.error('获取未读消息列表失败，请检查接口连接');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 组件挂载时发起接口请求
+  useEffect(() => {
+    fetchUnreadCount();
+    fetchUnreadMessageList();
+    //  eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // 分页变化处理
   const handlePaginationChange = (page: number, pageSize: number) => {
     setPagination(prev => ({
@@ -134,7 +172,7 @@ const Dashboard = () => {
     colorField: 'type',
     radius: 0.8,
     innerRadius: 0.5,
-    color: ['#1890ff', '#00b42a', '#fa8c16', '#f53f3f'], // 目标图配色（BTC蓝、ETH绿、SOL橙、USDT红）
+    color: ['#1890ff', '#00b42a', '#fa8c16', '#f53f3f'],
     label: false,
     legend: {
       position: 'bottom',
@@ -190,10 +228,9 @@ const Dashboard = () => {
     if (type === 'report') setCurrentReport(null);
   };
 
-  // 新增：处理报告选择变化
+  // 处理报告选择变化
   const handleReportChange = (value: string) => {
     setSelectedReportId(value);
-    // 查找选中的报告
     const selectedReport = reportData.find(report => report.reportId === value);
     if (selectedReport) {
       setCurrentReport(selectedReport);
@@ -203,7 +240,7 @@ const Dashboard = () => {
 
   return (
     <Layout style={{ height: '100vh' }}>
-      {/* 顶部导航栏（圈出区域） */}
+      {/* 顶部导航栏 */}
       <Header style={{
         background: '#fff',
         padding: '0 24px',
@@ -254,12 +291,12 @@ const Dashboard = () => {
       {/* 主内容区 */}
       <div style={{
         padding: 24,
-        height: 'calc(100vh - 64px)', // 减去导航栏高度
+        height: 'calc(100vh - 64px)',
         boxSizing: 'border-box',
         overflow: 'hidden',
         backgroundColor: '#f5f5f5'
       }}>
-        {/* 顶部统计卡片 */}
+        {/* 顶部统计卡片 - 替换未读消息数为接口数据 */}
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col lg={8} md={12} sm={24}>
             <Card
@@ -272,10 +309,10 @@ const Dashboard = () => {
                   <div style={{ fontSize: 14, color: '#666', marginBottom: 8 }}>未读消息数</div>
                   <div style={{ fontSize: 24, fontWeight: 600, display: 'flex', alignItems: 'center' }}>
                     <BellOutlined style={{ color: '#1890ff', marginRight: 8 }} />
-                    12
+                    {loading ? '加载中...' : unreadCount}
                   </div>
-                  <div style={{ fontSize: 12, color: '#52c41a', marginTop: 8 }}>
-                    ↑3条新增 · 今日更新
+                  <div style={{ fontSize: 12, color: '#666', marginTop: 8 }}>
+                    点击查看
                   </div>
                 </div>
               </div>
@@ -479,30 +516,29 @@ const Dashboard = () => {
         </Card>
       </div>
 
-      {/* 弹窗（保持原有） */}
+      {/* 弹窗 - 替换未读消息为接口数据（展示title） */}
       <Modal
         title="未读消息"
         open={modalVisible.unread}
         onCancel={() => closeModal('unread')}
         footer={[
           <Button key="close" onClick={() => closeModal('unread')}>关闭</Button>,
-          <Button key="mark-all" type="primary" onClick={() => closeModal('unread')}>全部标为已读</Button>
         ]}
         width={600}
       >
         <div style={{ maxHeight: 400, overflowY: 'auto' }}>
-          {unreadMessages.map(msg => (
-            <div key={msg.id} style={{ padding: 12, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
-              <Typography.Text strong>{msg.content}</Typography.Text>
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>{msg.time}</Typography.Text>
-            </div>
-          ))}
-          {[...Array(9)].map((_, i) => (
-            <div key={`more-${i}`} style={{ padding: 12, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
-              <Typography.Text>系统自动消息通知 {i+4}</Typography.Text>
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>{`0${7-i}:${i*10+10}`}</Typography.Text>
-            </div>
-          ))}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: 20 }}>加载未读消息中...</div>
+          ) : realUnreadMessages.length > 0 ? (
+            realUnreadMessages.map(msg => (
+              <div key={msg.id} style={{ padding: 12, borderBottom: '1px solid #f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
+                <Text strong>{msg.title}</Text> {/* 展示接口返回的title */}
+                <Text type="secondary" style={{ fontSize: 12 }}>{msg.publish_time}</Text> {/* 展示发布时间 */}
+              </div>
+            ))
+          ) : (
+            <div style={{ textAlign: 'center', padding: 20, color: '#666' }}>暂无未读消息</div>
+          )}
         </div>
       </Modal>
 
@@ -537,13 +573,10 @@ const Dashboard = () => {
                         okType: 'primary',
                         cancelText: '拒绝',
                         onOk: () => {
-                          // 模拟审核通过
                           message.success('审核通过');
                           console.log('审核通过报告:', record.id);
-                          // 可以在这里添加实际的审核API调用
                         },
                         onCancel: () => {
-                          // 模拟审核拒绝
                           message.info('审核已拒绝');
                           console.log('拒绝审核报告:', record.id);
                         },
@@ -558,7 +591,6 @@ const Dashboard = () => {
                     icon={<EyeOutlined />}
                     size="small"
                     onClick={() => {
-                      // 查找对应的完整报告数据
                       const fullReport = reportData.find(report => report.reportId === record.id);
                       if (fullReport) {
                         setCurrentReport(fullReport);
@@ -586,18 +618,18 @@ const Dashboard = () => {
         width={600}
       >
         <div style={{ marginBottom: 20, textAlign: 'center' }}>
-          <Typography.Title level={3} style={{ margin: 0 }}>$10,285,600</Typography.Title>
-          <Typography.Text type="success">↑2.86% 较昨日涨幅</Typography.Text>
+          <Title level={3} style={{ margin: 0 }}>$10,285,600</Title>
+          <Text type="success">↑2.86% 较昨日涨幅</Text>
         </div>
-        <Typography.Text strong>资产分布明细</Typography.Text>
+        <Text strong>资产分布明细</Text>
         {assetDetails.map((item, index) => (
           <div key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: 10, borderBottom: '1px solid #f0f0f0' }}>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div style={{ width: 12, height: 12, borderRadius: '50%', marginRight: 8, backgroundColor: ['#1890ff', '#00b42a', '#fa8c16', '#f53f3f'][index] }}></div>
-              <Typography.Text strong>{item.type}</Typography.Text>
+              <Text strong>{item.type}</Text>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <Typography.Text strong>{item.value}</Typography.Text>
+              <Text strong>{item.value}</Text>
               <div style={{ fontSize: 12, color: '#666' }}>{item.proportion} · {item.change}</div>
             </div>
           </div>
@@ -613,12 +645,12 @@ const Dashboard = () => {
       >
         {currentReport && (
           <div>
-            <div style={{ marginBottom: 16 }}><Typography.Text>生成时间: {currentReport.createTime}</Typography.Text></div>
-            <div style={{ marginBottom: 16 }}><Typography.Text>涉及币种: {currentReport.coins}</Typography.Text></div>
-            <div style={{ marginBottom: 16 }}><Typography.Text>建议类型: {currentReport.type}</Typography.Text></div>
-            <div style={{ marginBottom: 16 }}><Typography.Text>状态: {statusTag(currentReport.status)}</Typography.Text></div>
-            <Typography.Title level={5} style={{ marginBottom: 8 }}>建议详情</Typography.Title>
-            <Typography.Paragraph>{currentReport.details}</Typography.Paragraph>
+            <div style={{ marginBottom: 16 }}><Text>生成时间: {currentReport.createTime}</Text></div>
+            <div style={{ marginBottom: 16 }}><Text>涉及币种: {currentReport.coins}</Text></div>
+            <div style={{ marginBottom: 16 }}><Text>建议类型: {currentReport.type}</Text></div>
+            <div style={{ marginBottom: 16 }}><Text>状态: {statusTag(currentReport.status)}</Text></div>
+            <Title level={5} style={{ marginBottom: 8 }}>建议详情</Title>
+            <Paragraph>{currentReport.details}</Paragraph>
 
             <Divider>详细信息</Divider>
             <Descriptions column={1} size="small">

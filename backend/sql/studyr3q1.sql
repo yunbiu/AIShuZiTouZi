@@ -11,7 +11,7 @@
  Target Server Version : 80400 (8.4.0)
  File Encoding         : 65001
 
- Date: 09/12/2025 09:22:59
+ Date: 22/12/2025 15:56:34
 */
 
 SET NAMES utf8mb4;
@@ -51,6 +51,595 @@ CREATE TABLE `comments`  (
 INSERT INTO `comments` VALUES (119, 1, '1', '2025-10-14 08:42:34');
 INSERT INTO `comments` VALUES (120, 1, '她是我女票', '2025-10-14 08:43:14');
 INSERT INTO `comments` VALUES (121, 1, '老公', '2025-10-14 08:54:16');
+
+-- ----------------------------
+-- Table structure for crypto_market_data
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_market_data`;
+CREATE TABLE `crypto_market_data`  (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '币种名称（VARCHAR）',
+  `price` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '价格',
+  `day_increase` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '日涨跌幅',
+  `weeks_increase` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '周涨跌幅',
+  `suggestion` int NOT NULL,
+  `create_time` datetime NOT NULL COMMENT '入库时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 676 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of crypto_market_data
+-- ----------------------------
+INSERT INTO `crypto_market_data` VALUES (46, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (47, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (48, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (49, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (50, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (51, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (52, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (53, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (54, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (55, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (56, '比特币现金', '$593.91', '-1.78%', '+3.13%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (57, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (58, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (59, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (60, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-21 17:13:36');
+INSERT INTO `crypto_market_data` VALUES (121, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (122, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (123, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (124, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (125, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (126, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (127, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (128, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (129, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (130, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (131, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (132, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (133, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (134, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (135, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-21 20:00:48');
+INSERT INTO `crypto_market_data` VALUES (136, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (137, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (138, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (139, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (140, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (141, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (142, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (143, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (144, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (145, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (146, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (147, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (148, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (149, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (150, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:02:22');
+INSERT INTO `crypto_market_data` VALUES (151, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (152, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (153, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (154, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (155, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (156, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (157, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (158, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (159, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (160, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (161, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (162, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (163, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (164, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (165, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:02:24');
+INSERT INTO `crypto_market_data` VALUES (166, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (167, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (168, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (169, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (170, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (171, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (172, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (173, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (174, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (175, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (176, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (177, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (178, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (179, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (180, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:04:33');
+INSERT INTO `crypto_market_data` VALUES (181, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (182, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (183, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (184, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (185, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (186, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (187, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (188, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (189, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (190, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (191, '比特币现金', '$593.91', '-1.78%', '+3.13%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (192, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (193, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (194, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (195, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:06:34');
+INSERT INTO `crypto_market_data` VALUES (196, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (197, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (198, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (199, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (200, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (201, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (202, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (203, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (204, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (205, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (206, '比特币现金', '$593.91', '-1.78%', '+3.13%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (207, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (208, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (209, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (210, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:08:42');
+INSERT INTO `crypto_market_data` VALUES (211, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (212, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (213, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (214, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (215, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (216, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (217, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (218, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (219, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (220, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (221, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (222, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (223, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (224, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (225, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:10:43');
+INSERT INTO `crypto_market_data` VALUES (226, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (227, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (228, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (229, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (230, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (231, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (232, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (233, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (234, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (235, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (236, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (237, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (238, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (239, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (240, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:12:49');
+INSERT INTO `crypto_market_data` VALUES (241, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (242, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (243, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (244, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (245, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (246, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (247, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (248, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (249, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (250, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (251, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (252, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (253, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (254, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (255, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:14:57');
+INSERT INTO `crypto_market_data` VALUES (256, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (257, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (258, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (259, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (260, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (261, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (262, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (263, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (264, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (265, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (266, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (267, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (268, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (269, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (270, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:16:57');
+INSERT INTO `crypto_market_data` VALUES (271, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (272, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (273, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (274, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (275, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (276, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (277, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (278, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (279, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (280, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (281, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (282, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (283, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (284, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (285, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:19:01');
+INSERT INTO `crypto_market_data` VALUES (286, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (287, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (288, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (289, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (290, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (291, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (292, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (293, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (294, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (295, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (296, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (297, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (298, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (299, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (300, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:21:07');
+INSERT INTO `crypto_market_data` VALUES (301, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (302, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (303, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (304, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (305, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (306, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (307, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (308, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (309, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (310, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (311, '比特币现金', '$593.91', '-1.78%', '+3.13%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (312, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (313, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (314, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (315, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:23:11');
+INSERT INTO `crypto_market_data` VALUES (316, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (317, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (318, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (319, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (320, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (321, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (322, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (323, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (324, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (325, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (326, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (327, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (328, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (329, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (330, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:25:16');
+INSERT INTO `crypto_market_data` VALUES (331, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (332, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (333, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (334, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (335, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (336, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (337, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (338, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (339, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (340, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (341, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (342, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (343, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (344, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (345, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:27:21');
+INSERT INTO `crypto_market_data` VALUES (346, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (347, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (348, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (349, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (350, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (351, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (352, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (353, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (354, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (355, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (356, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (357, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (358, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (359, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (360, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:29:26');
+INSERT INTO `crypto_market_data` VALUES (361, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (362, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (363, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (364, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (365, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (366, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (367, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (368, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (369, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (370, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (371, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (372, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (373, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (374, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (375, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:30:32');
+INSERT INTO `crypto_market_data` VALUES (376, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (377, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (378, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (379, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (380, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (381, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (382, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (383, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (384, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (385, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (386, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (387, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (388, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (389, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (390, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:32:33');
+INSERT INTO `crypto_market_data` VALUES (391, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (392, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (393, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (394, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (395, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (396, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (397, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (398, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (399, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (400, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (401, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (402, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (403, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (404, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (405, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:35:11');
+INSERT INTO `crypto_market_data` VALUES (406, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (407, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (408, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (409, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (410, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (411, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (412, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (413, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (414, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (415, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (416, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (417, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (418, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (419, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (420, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:36:48');
+INSERT INTO `crypto_market_data` VALUES (421, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (422, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (423, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (424, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (425, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (426, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (427, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (428, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (429, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (430, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (431, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (432, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (433, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (434, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (435, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:38:49');
+INSERT INTO `crypto_market_data` VALUES (436, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (437, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (438, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (439, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (440, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (441, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (442, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (443, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (444, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (445, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (446, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (447, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (448, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (449, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (450, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:40:55');
+INSERT INTO `crypto_market_data` VALUES (451, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (452, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (453, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (454, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (455, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (456, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (457, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (458, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (459, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (460, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (461, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (462, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (463, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (464, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (465, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:43:00');
+INSERT INTO `crypto_market_data` VALUES (466, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (467, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (468, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (469, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (470, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (471, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (472, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (473, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (474, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (475, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (476, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (477, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (478, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (479, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (480, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:45:11');
+INSERT INTO `crypto_market_data` VALUES (481, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (482, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (483, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (484, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (485, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (486, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (487, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (488, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (489, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (490, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (491, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (492, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (493, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (494, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (495, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:47:11');
+INSERT INTO `crypto_market_data` VALUES (496, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (497, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (498, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (499, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (500, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (501, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (502, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (503, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (504, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (505, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (506, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (507, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (508, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (509, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (510, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:49:19');
+INSERT INTO `crypto_market_data` VALUES (511, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (512, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (513, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (514, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (515, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (516, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (517, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (518, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (519, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (520, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (521, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (522, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (523, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (524, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (525, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:51:22');
+INSERT INTO `crypto_market_data` VALUES (526, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (527, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (528, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (529, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (530, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (531, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (532, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (533, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (534, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (535, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (536, '比特币现金', '$593.91', '-1.78%', '+3.13%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (537, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (538, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (539, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (540, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:53:27');
+INSERT INTO `crypto_market_data` VALUES (541, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (542, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (543, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (544, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (545, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (546, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (547, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (548, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (549, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (550, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (551, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (552, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (553, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (554, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (555, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:54:31');
+INSERT INTO `crypto_market_data` VALUES (556, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (557, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (558, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (559, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (560, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (561, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (562, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (563, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (564, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (565, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (566, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (567, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (568, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (569, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (570, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:56:33');
+INSERT INTO `crypto_market_data` VALUES (571, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (572, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (573, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (574, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (575, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (576, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (577, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (578, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (579, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (580, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (581, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (582, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (583, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (584, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (585, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 14:59:29');
+INSERT INTO `crypto_market_data` VALUES (586, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (587, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (588, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (589, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (590, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (591, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (592, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (593, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (594, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (595, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (596, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (597, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (598, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (599, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (600, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 15:00:54');
+INSERT INTO `crypto_market_data` VALUES (601, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (602, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (603, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (604, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (605, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (606, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (607, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (608, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (609, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (610, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (611, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (612, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (613, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (614, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (615, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 15:02:49');
+INSERT INTO `crypto_market_data` VALUES (616, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (617, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (618, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (619, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (620, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (621, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (622, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (623, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (624, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (625, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (626, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (627, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (628, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (629, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (630, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 15:04:56');
+INSERT INTO `crypto_market_data` VALUES (631, '比特币', '$88,082.6', '-0.17%', '-2.25%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (632, '以太坊', '$2,976.14', '-0.23%', '-4.31%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (633, '泰达币', '$1.0004', '+0.02%', '-0.05%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (634, 'BNB', '$850.20', '-0.41%', '-4.91%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (635, 'XRP', '$1.9210', '+0.32%', '-4.59%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (636, 'USDC', '$1.0002', '+0.01%', '-0.01%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (637, 'Solana', '$125.424', '-0.90%', '-5.55%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (638, '波场币', '$0.282982', '+1.31%', '+3.18%', 0, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (639, '狗狗币', '$0.131540', '+0.27%', '-4.51%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (640, '艾达币', '$0.3686', '-1.37%', '-9.52%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (641, '比特币现金', '$593.91', '-1.78%', '+3.13%', 0, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (642, 'Chainlink', '$12.53', '+0.20%', '-8.38%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (643, '门罗币', '$464.475', '+4.15%', '+12.06%', 0, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (644, 'Hyperliquid', '$24.1636', '-2.43%', '-17.30%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (645, 'UNUS SED LEO', '$8.4516', '+6.25%', '-7.79%', 1, '2025-12-22 15:07:00');
+INSERT INTO `crypto_market_data` VALUES (646, '比特币', '$89,167.5', '+0.99%', '-0.92%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (647, '以太坊', '$3,035.14', '+1.71%', '-3.56%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (648, '泰达币', '$1.0000', '-0.00%', '-0.04%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (649, 'BNB', '$860.90', '+1.14%', '-3.49%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (650, 'XRP', '$1.9272', '-0.08%', '-4.14%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (651, 'USDC', '$1.0002', '-0.01%', '-0.01%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (652, 'Solana', '$126.422', '+0.46%', '-4.88%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (653, '波场币', '$0.287499', '+1.58%', '+2.11%', 0, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (654, '狗狗币', '$0.132334', '+0.24%', '-3.75%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (655, '艾达币', '$0.3688', '-0.50%', '-9.51%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (656, '比特币现金', '$579.37', '-2.49%', '+1.99%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (657, 'Chainlink', '$12.59', '+0.20%', '-8.08%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (658, '门罗币', '$477.822', '+3.07%', '+18.85%', 0, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (659, 'Hyperliquid', '$25.1086', '+3.39%', '-14.24%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (660, 'UNUS SED LEO', '$8.1982', '-1.82%', '-10.07%', 1, '2025-12-22 15:09:11');
+INSERT INTO `crypto_market_data` VALUES (661, '比特币', '$89,167.5', '+0.99%', '-0.92%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (662, '以太坊', '$3,035.14', '+1.71%', '-3.56%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (663, '泰达币', '$1.0000', '-0.00%', '-0.04%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (664, 'BNB', '$860.90', '+1.14%', '-3.49%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (665, 'XRP', '$1.9272', '-0.08%', '-4.14%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (666, 'USDC', '$1.0002', '-0.01%', '-0.01%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (667, 'Solana', '$126.422', '+0.46%', '-4.88%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (668, '波场币', '$0.287499', '+1.58%', '+2.11%', 0, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (669, '狗狗币', '$0.132334', '+0.24%', '-3.75%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (670, '艾达币', '$0.3688', '-0.50%', '-9.51%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (671, '比特币现金', '$579.37', '-2.49%', '+1.99%', 0, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (672, 'Chainlink', '$12.59', '+0.20%', '-8.08%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (673, '门罗币', '$477.822', '+3.07%', '+18.85%', 0, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (674, 'Hyperliquid', '$25.1086', '+3.39%', '-14.24%', 1, '2025-12-22 15:11:09');
+INSERT INTO `crypto_market_data` VALUES (675, 'UNUS SED LEO', '$8.1982', '-1.82%', '-10.07%', 1, '2025-12-22 15:11:09');
 
 -- ----------------------------
 -- Table structure for crypto_message
@@ -137,6 +726,57 @@ INSERT INTO `crypto_portfolio_history` VALUES (9, 9, 'ETH', 42.00, 13.00000000, 
 INSERT INTO `crypto_portfolio_history` VALUES (10, 10, 'USDT', 58.00, 58000.00000000, 58000.00, '2024-11-30 12:00:00');
 INSERT INTO `crypto_portfolio_history` VALUES (11, 1, '测试全部历史持仓', 0.00, 0.00000000, 0.00, '2025-11-13 09:13:56');
 INSERT INTO `crypto_portfolio_history` VALUES (12, 1, '测试七天历史持仓', 0.00, 0.00000000, 0.00, '2025-12-04 09:14:33');
+
+-- ----------------------------
+-- Table structure for crypto_report
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_report`;
+CREATE TABLE `crypto_report`  (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '报告ID',
+  `generation_time` datetime NOT NULL COMMENT '生成时间',
+  `involved_currencies` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '涉及币种列表',
+  `suggestion_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '建议类型',
+  `suggestions` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '建议内容',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `idx_generation_time`(`generation_time` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密投资建议报告表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of crypto_report
+-- ----------------------------
+INSERT INTO `crypto_report` VALUES ('report_20230925_01', '2023-09-25 15:30:00', 'BTC,ETH', '持仓维持', '当前市场环境下，BTC和ETH的持仓表现稳定，建议维持现有持仓。', 1, NULL, NULL);
+INSERT INTO `crypto_report` VALUES ('report_20230925_02', '2023-09-25 15:30:00', 'DOGE', '减持', 'DOGE近期表现不佳，建议适当减持。', 1, NULL, NULL);
+INSERT INTO `crypto_report` VALUES ('report_20230925_03', '2023-09-25 15:30:00', 'SHIB', '增持', 'SHIB近期表现相对较好，建议适量增持。', 1, NULL, NULL);
+
+-- ----------------------------
+-- Table structure for crypto_report_review
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_report_review`;
+CREATE TABLE `crypto_report_review`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '审核ID',
+  `report_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '关联报告ID',
+  `reviewer_id` bigint NULL DEFAULT NULL COMMENT '审核人ID（sys_user.user_id）',
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '审核状态：待审/已通过/已驳回',
+  `confidence` decimal(5, 2) NULL DEFAULT NULL COMMENT '重合度/可信度（百分比）',
+  `expected_return` decimal(6, 2) NULL DEFAULT NULL COMMENT '预期收益（百分比，可为负）',
+  `analyst` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '分析师或系统标识',
+  `comment` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '审核意见',
+  `decision_time` datetime NULL DEFAULT NULL COMMENT '审核时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `idx_report_id`(`report_id` ASC) USING BTREE,
+  INDEX `idx_status`(`status` ASC) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密投资报告审核表' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of crypto_report_review
+-- ----------------------------
+INSERT INTO `crypto_report_review` VALUES (3, 'report_20230925_03', 1, '已通过', NULL, NULL, NULL, NULL, '2025-12-22 15:09:47', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for demo
@@ -570,6 +1210,12 @@ INSERT INTO `sys_logininfor` VALUES (1995684640648294402, 'admin', '0:0:0:0:0:0:
 INSERT INTO `sys_logininfor` VALUES (1995684651666731009, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-02 10:41:14');
 INSERT INTO `sys_logininfor` VALUES (1995691435919929346, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-02 11:08:11');
 INSERT INTO `sys_logininfor` VALUES (1997592340990660610, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-07 17:01:42');
+INSERT INTO `sys_logininfor` VALUES (1998209262589562881, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-09 09:53:08');
+INSERT INTO `sys_logininfor` VALUES (2002641602413805569, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-21 15:25:40');
+INSERT INTO `sys_logininfor` VALUES (2002678884344737793, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-21 17:53:49');
+INSERT INTO `sys_logininfor` VALUES (2002683155593240577, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-21 18:10:47');
+INSERT INTO `sys_logininfor` VALUES (2002984253977747458, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 14:07:14');
+INSERT INTO `sys_logininfor` VALUES (2002991757210025985, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 14:37:03');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -1534,7 +2180,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', 'sys_user', 'zccbbg@qq.com', '18888888888', '0', '', '$2a$10$0Z/eg.trTaGUXDnRLNH0pOcGWrqDoatG.VhQTRjsTM1Mz7jyKilSe', '1', '0', '0:0:0:0:0:0:0:1', '2025-12-07 17:01:42', 'admin', '2024-06-13 16:06:25', 'admin', '2025-12-07 17:01:42', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', 'sys_user', 'zccbbg@qq.com', '18888888888', '0', '', '$2a$10$0Z/eg.trTaGUXDnRLNH0pOcGWrqDoatG.VhQTRjsTM1Mz7jyKilSe', '1', '0', '0:0:0:0:0:0:0:1', '2025-12-22 14:37:03', 'admin', '2024-06-13 16:06:25', 'admin', '2025-12-22 14:37:03', '管理员');
 INSERT INTO `sys_user` VALUES (1829105396288688129, 105, 'kucun', 'kucun', 'sys_user', '', '', '0', '', '$2a$10$jpbgHXxmB9nszkvhixjaQuwQtXcq7XJrqFaFpev/93WvaWa/oEpGy', '1', '0', '127.0.0.1', '2024-08-30 13:54:01', 'admin', '2024-08-29 18:34:44', 'kucun', '2024-08-30 13:54:01', NULL);
 INSERT INTO `sys_user` VALUES (1912506203460673537, 100, '123', '测试人员', 'sys_user', '', '', '0', '', '$2a$10$VkfiPPWiWzgqjCoaz48FUOsegbZAt.09jE.Zg9kjfQ4Cw26MFUeza', '0', '1', '', NULL, 'admin', '2025-04-16 21:59:46', 'admin', '2025-04-16 21:59:46', NULL);
 INSERT INTO `sys_user` VALUES (1912507603993305090, 100, 'ww', '测试人员', 'sys_user', '', '', '0', '', '$2a$10$pD.Byi1Hs82Z/OZjKUe8OOj3rIiEQtotpvot0K8U5kkJFQQzKTvfK', '1', '1', '', NULL, 'admin', '2025-04-16 22:05:20', 'admin', '2025-04-16 22:05:20', NULL);

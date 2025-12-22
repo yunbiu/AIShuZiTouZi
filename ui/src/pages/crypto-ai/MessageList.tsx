@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Select, Input, Button, Row, Col, Tag, Modal, Spin, message } from 'antd';
+import { Card, Table, Select, Input, Button, Row, Col, Tag, Modal, Spin, message, Badge } from 'antd';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
-// 删除原来的axios导入，改用项目提供的request
 import { request } from '@umijs/max';
 
 // 定义接口类型 - 消息列表项
@@ -12,8 +11,8 @@ interface MessageItem {
   sentiment: '利好' | '利空' | '中性';
   source: string;
   content: string;
-  publishTime: string;
-  updateTime: string;
+  publish_time: string;
+  status: 0 | 1; // 0: 未读, 1: 已读
 }
 
 // 定义接口类型 - 列表接口返回数据
@@ -52,17 +51,18 @@ const sentimentTag = (sentiment: '利好' | '利空' | '中性') => {
 
 const MessageList: React.FC = () => {
   // 状态管理
-  const [loading, setLoading] = useState<boolean>(false); // 列表加载状态
-  const [detailLoading, setDetailLoading] = useState<boolean>(false); // 详情加载状态
-  const [messageList, setMessageList] = useState<MessageItem[]>([]); // 消息列表数据
-  const [total, setTotal] = useState<number>(0); // 总条数
-  const [currentPage, setCurrentPage] = useState<number>(1); // 当前页码
-  const [pageSize] = useState<number>(10); // 每页条数（和后端保持一致）
+  const [loading, setLoading] = useState<boolean>(false);
+  const [detailLoading, setDetailLoading] = useState<boolean>(false);
+  const [messageList, setMessageList] = useState<MessageItem[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [pageSize] = useState<number>(10);
   
   // 筛选条件
-  const [coinFilter, setCoinFilter] = useState<string>('all'); // 币种筛选
-  const [sentimentFilter, setSentimentFilter] = useState<string>('all'); // 情感倾向筛选
-  const [searchKeyword, setSearchKeyword] = useState<string>(''); // 搜索关键词
+  const [coinFilter, setCoinFilter] = useState<string>('all');
+  const [sentimentFilter, setSentimentFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all'); // 状态筛选
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
   
   // 详情弹窗状态
   const [detailVisible, setDetailVisible] = useState<boolean>(false);
@@ -73,15 +73,17 @@ const MessageList: React.FC = () => {
     setLoading(true);
     try {
       // 构造请求参数
-      const params = {
+      const params: any = {
         current: currentPage,
         size: pageSize,
-        coin: coinFilter !== 'all' ? coinFilter : undefined,
-        sentiment: sentimentFilter !== 'all' ? sentimentFilter : undefined,
-        keyword: searchKeyword || undefined,
       };
 
-      // 使用项目提供的request方法，并通过代理路径/api/message/list访问
+      // 添加筛选条件（如果未选择"全部"）
+      if (coinFilter !== 'all') params.coin = coinFilter;
+      if (sentimentFilter !== 'all') params.sentiment = sentimentFilter;
+      if (statusFilter !== 'all') params.status = statusFilter;
+      if (searchKeyword) params.keyword = searchKeyword;
+
       const response = await request<MessageListResponse>('/api/message/list', { 
         method: 'GET',
         params
@@ -90,8 +92,6 @@ const MessageList: React.FC = () => {
       if (response.code === 200) {
         setMessageList(response.data.records);
         setTotal(response.data.total);
-        setCurrentPage(response.data.current);
-        message.success('数据加载成功');
       } else {
         message.error(`加载失败: ${response.msg}`);
       }
@@ -107,7 +107,6 @@ const MessageList: React.FC = () => {
   const fetchMessageDetail = async (id: number) => {
     setDetailLoading(true);
     try {
-      // 使用项目提供的request方法，并通过代理路径/api/message访问
       const response = await request<MessageDetailResponse>(`/api/message/${id}`, {
         method: 'GET'
       });
@@ -115,6 +114,13 @@ const MessageList: React.FC = () => {
       if (response.code === 200) {
         setCurrentDetail(response.data);
         setDetailVisible(true);
+        
+        // 查看详情后，将该消息标记为已读，并更新列表中的状态
+        setMessageList(prevList => 
+          prevList.map(item => 
+            item.id === id ? { ...item, status: 1 } : item
+          )
+        );
       } else {
         message.error(`获取详情失败: ${response.msg}`);
       }
@@ -126,13 +132,47 @@ const MessageList: React.FC = () => {
     }
   };
 
+  // 批量标记为已读
+  const markAllAsRead = async () => {
+    try {
+      const unreadIds = messageList
+        .filter(item => item.status === 0)
+        .map(item => item.id);
+      
+      if (unreadIds.length === 0) {
+        message.info('没有未读消息');
+        return;
+      }
+
+      // 调用批量标记已读接口
+      const response = await request('/api/message/mark-read', {
+        method: 'POST',
+        data: { ids: unreadIds }
+      });
+
+      if (response.code === 200) {
+        message.success('已标记所有未读消息为已读');
+        // 更新本地状态
+        setMessageList(prevList => 
+          prevList.map(item => ({ ...item, status: 1 }))
+        );
+      } else {
+        message.error(`标记失败: ${response.msg}`);
+      }
+    } catch (error) {
+      console.error('标记已读失败:', error);
+      message.error('标记已读失败');
+    }
+  };
+
   // 组件挂载时加载数据
   useEffect(() => {
     fetchMessageList();
-  }, [currentPage, coinFilter, sentimentFilter, searchKeyword]);
+  }, [currentPage]);
 
   // 刷新数据
   const handleRefresh = () => {
+    setCurrentPage(1);
     fetchMessageList();
   };
 
@@ -144,19 +184,29 @@ const MessageList: React.FC = () => {
   // 币种筛选变化
   const handleCoinChange = (value: string) => {
     setCoinFilter(value);
-    setCurrentPage(1); // 筛选后重置页码
+    setCurrentPage(1);
+    setTimeout(() => fetchMessageList(), 0);
   };
 
   // 情感倾向筛选变化
   const handleSentimentChange = (value: string) => {
     setSentimentFilter(value);
-    setCurrentPage(1); // 筛选后重置页码
+    setCurrentPage(1);
+    setTimeout(() => fetchMessageList(), 0);
+  };
+
+  // 状态筛选变化
+  const handleStatusChange = (value: string) => {
+    setStatusFilter(value);
+    setCurrentPage(1);
+    setTimeout(() => fetchMessageList(), 0);
   };
 
   // 搜索处理
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
-    setCurrentPage(1); // 搜索后重置页码
+    setCurrentPage(1);
+    setTimeout(() => fetchMessageList(), 0);
   };
 
   // 查看详情
@@ -170,6 +220,21 @@ const MessageList: React.FC = () => {
     setCurrentDetail(null);
   };
 
+  // 渲染消息标题，包含未读红点
+  const renderTitleWithBadge = (title: string, status: 0 | 1) => {
+    if (status === 0) {
+      return (
+        <Badge dot color="red" offset={[-5, 5]}>
+          <span style={{ fontWeight: 'bold' }}>{title}</span>
+        </Badge>
+      );
+    }
+    return <span>{title}</span>;
+  };
+
+  // 计算未读消息数量
+  const unreadCount = messageList.filter(item => item.status === 0).length;
+
   // 表格列配置
   const columns = [
     { 
@@ -182,7 +247,13 @@ const MessageList: React.FC = () => {
       title: '消息标题', 
       dataIndex: 'title', 
       key: 'title',
-      ellipsis: true // 标题过长省略
+      width: 300,
+      ellipsis: true,
+      render: (text: string, record: MessageItem) => (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          {renderTitleWithBadge(text, record.status)}
+        </div>
+      )
     },
     { 
       title: '涉及币种', 
@@ -204,9 +275,22 @@ const MessageList: React.FC = () => {
       width: 120
     },
     { 
+      title: '状态', 
+      dataIndex: 'status', 
+      key: 'status',
+      width: 80,
+      render: (status: 0 | 1) => (
+        status === 0 ? (
+          <Badge status="error" text="未读" />
+        ) : (
+          <Badge status="success" text="已读" />
+        )
+      )
+    },
+    { 
       title: '发布时间', 
-      dataIndex: 'publishTime', 
-      key: 'publishTime',
+      dataIndex: 'publish_time',
+      key: 'publish_time',
       width: 180
     },
     {
@@ -226,7 +310,7 @@ const MessageList: React.FC = () => {
       {/* 筛选区域 */}
       <Card style={{ marginBottom: 16 }}>
         <Row gutter={[16, 16]} align="middle">
-          <Col span={5}>
+          <Col xs={24} sm={12} md={6} lg={4}>
             <Select
               style={{ width: '100%' }}
               placeholder="请选择币种"
@@ -239,10 +323,12 @@ const MessageList: React.FC = () => {
                 { value: 'BNB', label: '币安币(BNB)' },
                 { value: 'SOL', label: 'Solana(SOL)' },
                 { value: 'XRP', label: '瑞波币(XRP)' },
+                { value: 'USDC', label: '美元(USDC)' },
+                { value: '无', label: '无' },
               ]}
             />
           </Col>
-          <Col span={5}>
+          <Col xs={24} sm={12} md={6} lg={4}>
             <Select
               style={{ width: '100%' }}
               placeholder="请选择情感倾向"
@@ -256,7 +342,20 @@ const MessageList: React.FC = () => {
               ]}
             />
           </Col>
-          <Col span={6}>
+          <Col xs={24} sm={12} md={6} lg={4}>
+            <Select
+              style={{ width: '100%' }}
+              placeholder="请选择状态"
+              value={statusFilter}
+              onChange={handleStatusChange}
+              options={[
+                { value: 'all', label: '全部状态' },
+                { value: '0', label: '未读' },
+                { value: '1', label: '已读' },
+              ]}
+            />
+          </Col>
+          <Col xs={24} sm={12} md={6} lg={6}>
             <Input.Search
               placeholder="请输入关键词搜索"
               allowClear
@@ -264,18 +363,19 @@ const MessageList: React.FC = () => {
               enterButton={<SearchOutlined />}
             />
           </Col>
-          <Col span={4}>
+          <Col xs={24} sm={12} md={6} lg={3}>
             <Button 
               type="primary" 
               icon={<ReloadOutlined />} 
               onClick={handleRefresh}
               loading={loading}
+              block
             >
-              刷新数据
+              刷新
             </Button>
           </Col>
+ 
         </Row>
-
       </Card>
 
       {/* 列表区域 */}
@@ -293,9 +393,20 @@ const MessageList: React.FC = () => {
               onChange: handlePageChange,
               showSizeChanger: false,
               showQuickJumper: true,
-              showTotal: (total) => `共 ${total} 条记录`,
+              showTotal: (total, range) => {
+                const unread = messageList.filter(item => item.status === 0).length;
+                return (
+                  <span>
+                    共 {total} 条记录，其中 <span style={{ color: '#ff4d4f' }}>{unread} 条未读</span>
+                  </span>
+                );
+              },
             }}
-            scroll={{ y: 400 }} // 垂直滚动
+            rowClassName={(record) => record.status === 0 ? 'unread-row' : ''}
+            scroll={{ y: 400 }}
+            bordered
+            size="middle"
+            style={{ width: '100%' }}
           />
         </Spin>
       </Card>
@@ -318,8 +429,14 @@ const MessageList: React.FC = () => {
             <p><strong>涉及币种：</strong>{currentDetail.coin}</p>
             <p><strong>情感倾向：</strong>{sentimentTag(currentDetail.sentiment)}</p>
             <p><strong>消息来源：</strong>{currentDetail.source}</p>
-            <p><strong>发布时间：</strong>{currentDetail.publishTime}</p>
-            <p><strong>更新时间：</strong>{currentDetail.updateTime}</p>
+            <p><strong>状态：</strong>
+              {currentDetail.status === 0 ? (
+                <Badge status="error" text="未读" />
+              ) : (
+                <Badge status="success" text="已读" />
+              )}
+            </p>
+            <p><strong>发布时间：</strong>{currentDetail.publish_time}</p>
             <p><strong>消息内容：</strong></p>
             <div style={{ 
               maxHeight: 300, 
@@ -334,6 +451,19 @@ const MessageList: React.FC = () => {
           </div>
         ) : null}
       </Modal>
+
+      {/* 添加CSS样式 */}
+      <style>{`
+        .unread-row {
+          background-color: #fffafa;
+        }
+        .unread-row:hover {
+          background-color: #fff0f0;
+        }
+        .ant-badge-dot {
+          box-shadow: 0 0 0 1px #fff;
+        }
+      `}</style>
     </div>
   );
 };
