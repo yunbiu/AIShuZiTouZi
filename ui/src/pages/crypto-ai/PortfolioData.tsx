@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Table, Button, DatePicker, Space, Select, Radio, Tag, Progress, Spin, Alert } from 'antd';
+import { Card, Row, Col, Table, Button, DatePicker, Space, Select, Radio, Tag, Progress, Spin, Alert, Layout } from 'antd';
 import { DownloadOutlined, CaretUpOutlined, CaretDownOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Line } from '@ant-design/charts';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import * as XLSX from 'xlsx';
+import { history } from 'umi';
+import {
+  BellOutlined, FileTextOutlined, DollarOutlined,
+  PieChartOutlined, EyeOutlined,
+  HomeOutlined, MessageOutlined, BarChartOutlined,
+  CheckOutlined
+} from '@ant-design/icons';
+
+const { Header } = Layout;
 
 // 币种颜色映射（保持原有配色）
 const ASSET_COLOR_MAP = {
@@ -212,7 +221,7 @@ const PortfolioData = () => {
       
       const res = await axios.get('http://localhost:8080/portfolio/userId', {
         headers: {
-          'Authorization': `Bearer ${authToken}`, // 常规token传递方式，可根据后端要求调整
+          'Authorization': `Bearer ${authToken}`,
           'Content-Type': 'application/json'
         }
       });
@@ -288,14 +297,14 @@ const PortfolioData = () => {
     }
   };
 
-  // 3. 获取近7天持仓趋势（保持不变）
-  const fetchSevenDaysHistory = async (historyId: number) => {
+  // 3. 获取持仓趋势数据（支持不同时间范围）
+  const fetchTrendHistory = async (historyId: number, days: number) => {
     try {
-      const res = await axios.get(`http://localhost:8080/portfolio/getRecentSevenDaysHistory/${historyId}`);
+      const res = await axios.get(`http://localhost:8080/portfolio/getRecentHistory/${historyId}?days=${days}`);
       if (res.data.code === 200) {
         // 检查后端返回的数据是否为空
         if (res.data.data && res.data.data.length > 0) {
-          // 构建7天趋势数据（实际可根据接口返回的时间范围生成）
+          // 根据天数构建趋势数据
           const baseDate = dayjs();
           const trendMap: any = {};
 
@@ -305,8 +314,8 @@ const PortfolioData = () => {
             assetTypes.add(item.assetType);
           });
 
-          // 初始化7天数据，动态添加所有资产类型
-          for (let i = 6; i >= 0; i--) {
+          // 初始化数据，动态添加所有资产类型
+          for (let i = days - 1; i >= 0; i--) {
             const date = baseDate.subtract(i, 'day').format('MM/DD');
             // 初始化为只包含date字段的对象
             trendMap[date] = { date };
@@ -346,11 +355,14 @@ const PortfolioData = () => {
     setLoading(true);
     setError('');
 
+    // 根据时间范围确定天数
+    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+
     // 并行请求接口
     Promise.allSettled([
       fetchUserAssetData(), // 不再传递userId参数
       fetchPortfolioHistory(DEFAULT_PARAMS.portfolioId),
-      fetchSevenDaysHistory(DEFAULT_PARAMS.historyId),
+      fetchTrendHistory(DEFAULT_PARAMS.historyId, days),
     ]).finally(() => {
       setLoading(false);
     });
@@ -363,10 +375,9 @@ const PortfolioData = () => {
 
   // 切换时间范围时重新获取趋势数据
   useEffect(() => {
-    if (timeRange !== '7d') {
-      setLoading(true);
-      fetchSevenDaysHistory(DEFAULT_PARAMS.historyId).then(() => setLoading(false));
-    }
+    setLoading(true);
+    const days = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+    fetchTrendHistory(DEFAULT_PARAMS.historyId, days).then(() => setLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeRange]);
 
@@ -613,278 +624,337 @@ const PortfolioData = () => {
   }, 0);
 
   return (
-    <div style={{ padding: '24px', background: '#f5f5f5', minHeight: '100vh' }}>
-      <Card
-        style={{
-          borderRadius: '12px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-          marginBottom: '24px',
-        }}
-      >
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '24px',
-        }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>持仓数据</h2>
-            <div style={{ color: '#666', marginTop: '4px' }}>
-              总资产规模: <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{formatUsdValue(totalAsset)}</span>
-              <span style={{ marginLeft: '16px', fontSize: '12px', color: '#999' }}>
-                基于实时汇率计算 • 更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
-              </span>
-            </div>
-          </div>
-          <Space>
-            <DatePicker.RangePicker
-              style={{ width: '240px' }}
-              placeholder={['开始日期', '结束日期']}
-            />
-            <Button
-              type="primary"
-              icon={<DownloadOutlined />}
-              style={{ background: '#1890ff', borderColor: '#1890ff' }}
-              onClick={exportToExcel}
-            >
-              导出Excel
-            </Button>
-            <Button
-              icon={<ReloadOutlined />}
-              onClick={refreshData}
-              loading={loading}
-            >
-              刷新
-            </Button>
-          </Space>
+    <Layout style={{ minHeight: '100vh' }}>
+      {/* 顶部导航栏 */}
+      <Header style={{
+        background: '#fff',
+        padding: '0 24px',
+        borderBottom: '1px solid #e8e8e8',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: '64px',
+        lineHeight: '64px',
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+      }}>
+        <div style={{ fontSize: 16, fontWeight: 600, color: '#1890ff' }}>
+          AI数字货币投资辅助系统
         </div>
+        <div style={{ display: 'flex', gap: 16 }}>
+          <Button
+            type="text"
+            icon={<HomeOutlined />}
+            onClick={() => history.push('/crypto-ai/dashboard')}
+            style={{ color: '#1890ff', fontWeight: 500 }}
+          >
+            系统概览
+          </Button>
+          <Button
+            type="text"
+            icon={<MessageOutlined />}
+            onClick={() => history.push('/crypto-ai/message-list')}
+            style={{ color: '#666', fontWeight: 500 }}
+          >
+            消息列表
+          </Button>
+          <Button
+            type="text"
+            icon={<BarChartOutlined />}
+            onClick={() => history.push('/crypto-ai/portfolio-data')}
+            style={{ color: '#1890ff', fontWeight: 500 }}
+          >
+            持仓数据
+          </Button>
+          <Button
+            type="text"
+            icon={<FileTextOutlined />}
+            onClick={() => history.push('/crypto-ai/suggestion-report')}
+            style={{ color: '#666', fontWeight: 500 }}
+          >
+            建议报告
+          </Button>
+        </div>
+      </Header>
 
-        {/* 错误提示 */}
-        {error && (
-          <Alert
-            message="数据加载失败"
-            description={error}
-            type="error"
-            showIcon
-            style={{ marginBottom: '24px' }}
-            closable
-            onClose={() => setError('')}
-          />
-        )}
-
-        {/* 加载状态 */}
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '40px 0' }}>
-            <Spin size="large" tip="正在加载数据..." />
-          </div>
-        ) : (
-          <>
-            {/* 资产占比 + 持仓趋势 */}
-            <Row gutter={[24, 24]}>
-              <Col lg={12} md={24} sm={24}>
-                <Card
-                  title={
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>当前资产占比</span>
-                      <div style={{ fontSize: '12px', color: '#999' }}>
-                        数据更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
-                      </div>
-                    </div>
-                  }
-                  bordered={false}
-                  style={{
-                    borderRadius: '8px',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                    height: '100%',
-                  }}
-                  bodyStyle={{ padding: '16px' }}
-                >
-                  <Row gutter={[16, 16]}>
-                    <Col lg={12} sm={24}>
-                      <div style={{ height: '340px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        {assetRatioData.length > 0 ? (
-                          <PieChartWithLines data={assetRatioData} />
-                        ) : (
-                          <div style={{ color: '#999' }}>暂无资产数据</div>
-                        )}
-                      </div>
-                    </Col>
-                    <Col lg={12} sm={24}>
-                      <div style={{ padding: '8px', marginTop: '10px' }}>
-                        {assetRatioData.length > 0 ? (
-                          assetRatioData.map((item) => (
-                            <div key={item.type} style={{ marginBottom: '20px' }}>
-                              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                  <div style={{
-                                    width: '12px',
-                                    height: '12px',
-                                    borderRadius: '2px',
-                                    background: item.color,
-                                  }} />
-                                  <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{item.type}</span>
-                                </div>
-                                <span style={{ fontSize: '16px', fontWeight: 'bold', color: item.color }}>
-                                  {item.value}%
-                                </span>
-                              </div>
-
-                              <Progress
-                                percent={item.value}
-                                showInfo={false}
-                                strokeColor={item.color}
-                                trailColor="#f0f0f0"
-                                strokeWidth={6}
-                                style={{ marginBottom: '8px' }}
-                              />
-
-                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' }}>
-                                <div>
-                                  <div>价值：{item.valueNum}</div>
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                  <div>数量：{item.amount}</div>
-                                </div>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <div style={{ textAlign: 'center', padding: '20px 0', color: '#999' }}>
-                            暂无资产数据
-                          </div>
-                        )}
-                      </div>
-                    </Col>
-                  </Row>
-                </Card>
-              </Col>
-
-              <Col lg={12} md={24} sm={24}>
-                <Card
-                  title={
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{ fontSize: '16px', fontWeight: 'bold' }}>近7日持仓变化</span>
-                      <div>
-                        <Radio.Group
-                          value={timeRange}
-                          onChange={(e) => setTimeRange(e.target.value)}
-                          size="small"
-                          style={{ marginRight: '12px' }}
-                        >
-                          <Radio.Button value="7d">7天</Radio.Button>
-                          <Radio.Button value="30d">30天</Radio.Button>
-                          <Radio.Button value="90d">90天</Radio.Button>
-                        </Radio.Group>
-                      </div>
-                    </div>
-                  }
-                  bordered={false}
-                  style={{
-                    borderRadius: '8px',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-                  }}
-                  bodyStyle={{ paddingBottom: '24px' }}
-                >
-                  <div style={{ height: '300px' }}>
-                    {trendData.length > 0 ? (
-                      <Line {...lineConfig} />
-                    ) : (
-                      <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
-                        暂无趋势数据
-                      </div>
-                    )}
-                  </div>
-
-                  {/* 自定义图例 */}
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    marginTop: '16px',
-                    gap: '24px',
-                    flexWrap: 'wrap'
-                  }}>
-                    {Object.keys(ASSET_COLOR_MAP).map((assetType) => (
-                      <div key={assetType} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{
-                          width: '12px',
-                          height: '12px',
-                          borderRadius: '50%',
-                          backgroundColor: ASSET_COLOR_MAP[assetType as keyof typeof ASSET_COLOR_MAP]
-                        }} />
-                        <span style={{ fontSize: '14px', color: '#333' }}>{assetType}</span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              </Col>
-            </Row>
-
-            {/* 持仓历史记录 */}
-            <Card
-              title={
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '16px', fontWeight: 'bold' }}>持仓历史记录</span>
-                  <div style={{ fontSize: '12px', color: '#999' }}>
-                    共 {historyData.length} 条记录 • 最近更新: {dayjs().format('YYYY-MM-DD HH:mm')}
-                  </div>
-                </div>
-              }
-              bordered={false}
-              style={{
-                marginTop: '24px',
-                borderRadius: '8px',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
-              }}
-            >
-              <Table
-                dataSource={historyData}
-                columns={historyColumns}
-                rowKey="key"
-                size="middle"
-                pagination={{
-                  pageSize: 5,
-                  showSizeChanger: false,
-                  showTotal: (total) => `共 ${total} 条记录`,
-                }}
-                scroll={{ x: 'max-content' }}
-                rowClassName={() => 'hover-row'}
-                locale={{ emptyText: '暂无历史记录' }}
+      {/* 主要内容区域 */}
+      <div style={{ padding: '24px', background: '#f5f5f5', flex: 1 }}>
+        <Card
+          style={{
+            borderRadius: '12px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+            marginBottom: '24px',
+          }}
+        >
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '24px',
+          }}>
+            <div>
+              <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 'bold' }}>持仓数据</h2>
+              <div style={{ color: '#666', marginTop: '4px' }}>
+                总资产规模: <span style={{ color: '#1890ff', fontWeight: 'bold' }}>{formatUsdValue(totalAsset)}</span>
+                <span style={{ marginLeft: '16px', fontSize: '12px', color: '#999' }}>
+                  基于实时汇率计算 • 更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
+                </span>
+              </div>
+            </div>
+            <Space>
+              <DatePicker.RangePicker
+                style={{ width: '240px' }}
+                placeholder={['开始日期', '结束日期']}
               />
-            </Card>
-          </>
-        )}
-      </Card>
+              <Button
+                type="primary"
+                icon={<DownloadOutlined />}
+                style={{ background: '#1890ff', borderColor: '#1890ff' }}
+                onClick={exportToExcel}
+              >
+                导出Excel
+              </Button>
+              <Button
+                icon={<ReloadOutlined />}
+                onClick={refreshData}
+                loading={loading}
+              >
+                刷新
+              </Button>
+            </Space>
+          </div>
 
-      <style>{`
-        .hover-row:hover {
-          background: #fafafa;
-        }
-        .ant-table-thead > tr > th {
-          background: #fafafa;
-          font-weight: 600;
-          border-bottom: 2px solid #f0f0f0;
-        }
-        .ant-card-head {
-          border-bottom: 1px solid #f0f0f0;
-          padding: 16px 24px;
-        }
-        .ant-card-body {
-          padding: 24px;
-        }
-        .ant-btn-primary {
-          box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
-        }
-        .ant-radio-button-wrapper {
-          border-radius: 4px !important;
-        }
-        .ant-radio-button-wrapper:first-child {
-          border-radius: 4px 0 0 4px !important;
-        }
-        .ant-radio-button-wrapper:last-child {
-          border-radius: 0 4px 4px 0 !important;
-        }
-      `}</style>
-    </div>
+          {/* 错误提示 */}
+          {error && (
+            <Alert
+              message="数据加载失败"
+              description={error}
+              type="error"
+              showIcon
+              style={{ marginBottom: '24px' }}
+              closable
+              onClose={() => setError('')}
+            />
+          )}
+
+          {/* 加载状态 */}
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '40px 0' }}>
+              <Spin size="large" tip="正在加载数据..." />
+            </div>
+          ) : (
+            <>
+              {/* 资产占比 + 持仓趋势 */}
+              <Row gutter={[24, 24]}>
+                <Col lg={12} md={24} sm={24}>
+                  <Card
+                    title={
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>当前资产占比</span>
+                        <div style={{ fontSize: '12px', color: '#999' }}>
+                          数据更新时间: {dayjs().format('YYYY-MM-DD HH:mm')}
+                        </div>
+                      </div>
+                    }
+                    bordered={false}
+                    style={{
+                      borderRadius: '8px',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      height: '100%',
+                    }}
+                    bodyStyle={{ padding: '16px' }}
+                  >
+                    <Row gutter={[16, 16]}>
+                      <Col lg={12} sm={24}>
+                        <div style={{ height: '340px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          {assetRatioData.length > 0 ? (
+                            <PieChartWithLines data={assetRatioData} />
+                          ) : (
+                            <div style={{ color: '#999' }}>暂无资产数据</div>
+                          )}
+                        </div>
+                      </Col>
+                      <Col lg={12} sm={24}>
+                        <div style={{ padding: '8px', marginTop: '10px' }}>
+                          {assetRatioData.length > 0 ? (
+                            assetRatioData.map((item) => (
+                              <div key={item.type} style={{ marginBottom: '20px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{
+                                      width: '12px',
+                                      height: '12px',
+                                      borderRadius: '2px',
+                                      background: item.color,
+                                    }} />
+                                    <span style={{ fontWeight: 'bold', fontSize: '14px' }}>{item.type}</span>
+                                  </div>
+                                  <span style={{ fontSize: '16px', fontWeight: 'bold', color: item.color }}>
+                                    {item.value}%
+                                  </span>
+                                </div>
+
+                                <Progress
+                                  percent={item.value}
+                                  showInfo={false}
+                                  strokeColor={item.color}
+                                  trailColor="#f0f0f0"
+                                  strokeWidth={6}
+                                  style={{ marginBottom: '8px' }}
+                                />
+
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#666' }}>
+                                  <div>
+                                    <div>价值：{item.valueNum}</div>
+                                  </div>
+                                  <div style={{ textAlign: 'right' }}>
+                                    <div>数量：{item.amount}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div style={{ textAlign: 'center', padding: '20px 0', color: '#999' }}>
+                              暂无资产数据
+                            </div>
+                          )}
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card>
+                </Col>
+
+                <Col lg={12} md={24} sm={24}>
+                  <Card
+                    title={
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+                          {timeRange === '7d' ? '近7日' : timeRange === '30d' ? '近30日' : '近90日'}持仓变化
+                        </span>
+                        <div>
+                          <Radio.Group
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                            size="small"
+                            style={{ marginRight: '12px' }}
+                          >
+                            <Radio.Button value="7d">7天</Radio.Button>
+                            <Radio.Button value="30d">30天</Radio.Button>
+                            <Radio.Button value="90d">90天</Radio.Button>
+                          </Radio.Group>
+                        </div>
+                      </div>
+                    }
+                    bordered={false}
+                    style={{
+                      borderRadius: '8px',
+                      boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                      height: '100%',
+                    }}
+                    bodyStyle={{ paddingBottom: '24px', height: '100%' }}
+                  >
+                    <div style={{ height: '300px' }}>
+                      {trendData.length > 0 ? (
+                        <Line {...lineConfig} />
+                      ) : (
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#999' }}>
+                          暂无趋势数据
+                        </div>
+                      )}
+                    </div>
+
+                    {/* 自定义图例 */}
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      marginTop: '16px',
+                      gap: '24px',
+                      flexWrap: 'wrap'
+                    }}>
+                      {Object.keys(ASSET_COLOR_MAP).map((assetType) => (
+                        <div key={assetType} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            backgroundColor: ASSET_COLOR_MAP[assetType as keyof typeof ASSET_COLOR_MAP]
+                          }} />
+                          <span style={{ fontSize: '14px', color: '#333' }}>{assetType}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </Card>
+                </Col>
+              </Row>
+
+              {/* 持仓历史记录 */}
+              <Card
+                title={
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '16px', fontWeight: 'bold' }}>持仓历史记录</span>
+                    <div style={{ fontSize: '12px', color: '#999' }}>
+                      共 {historyData.length} 条记录 • 最近更新: {dayjs().format('YYYY-MM-DD HH:mm')}
+                    </div>
+                  </div>
+                }
+                bordered={false}
+                style={{
+                  marginTop: '24px',
+                  borderRadius: '8px',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.04)',
+                }}
+              >
+                <Table
+                  dataSource={historyData}
+                  columns={historyColumns}
+                  rowKey="key"
+                  size="middle"
+                  pagination={{
+                    pageSize: 5,
+                    showSizeChanger: false,
+                    showTotal: (total) => `共 ${total} 条记录`,
+                  }}
+                  scroll={{ x: 'max-content' }}
+                  rowClassName={() => 'hover-row'}
+                  locale={{ emptyText: '暂无历史记录' }}
+                />
+              </Card>
+            </>
+          )}
+        </Card>
+
+        <style>{`
+          .hover-row:hover {
+            background: #fafafa;
+          }
+          .ant-table-thead > tr > th {
+            background: #fafafa;
+            font-weight: 600;
+            border-bottom: 2px solid #f0f0f0;
+          }
+          .ant-card-head {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px 24px;
+          }
+          .ant-card-body {
+            padding: 24px;
+          }
+          .ant-btn-primary {
+            box-shadow: 0 2px 0 rgba(5, 145, 255, 0.1);
+          }
+          .ant-radio-button-wrapper {
+            border-radius: 4px !important;
+          }
+          .ant-radio-button-wrapper:first-child {
+            border-radius: 4px 0 0 4px !important;
+          }
+          .ant-radio-button-wrapper:last-child {
+            border-radius: 0 4px 4px 0 !important;
+          }
+        `}</style>
+      </div>
+    </Layout>
   );
 };
 

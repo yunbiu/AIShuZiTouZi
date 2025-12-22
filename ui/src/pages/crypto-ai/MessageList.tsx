@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Table, Select, Input, Button, Row, Col, Tag, Modal, Spin, message, Badge } from 'antd';
+import { Card, Table, Select, Input, Button, Row, Col, Tag, Modal, Spin, message, Badge,Layout,} from 'antd';
 import { ReloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { request } from '@umijs/max';
-
+import { history } from 'umi';
+import {
+  BellOutlined, FileTextOutlined, DollarOutlined,
+  PieChartOutlined, DownloadOutlined, EyeOutlined,
+  HomeOutlined, MessageOutlined, BarChartOutlined,
+  CheckOutlined
+} from '@ant-design/icons';
 // 定义接口类型 - 消息列表项
 interface MessageItem {
   id: number;
@@ -34,7 +40,7 @@ interface MessageDetailResponse {
   msg: string;
   data: MessageItem;
 }
-
+const { Header } = Layout;
 // 情感倾向标签映射
 const sentimentTag = (sentiment: '利好' | '利空' | '中性') => {
   switch (sentiment) {
@@ -306,6 +312,54 @@ const MessageList: React.FC = () => {
   ];
 
   return (
+      <Layout style={{ height: '100vh' }}>
+    {/* 顶部导航栏 */}
+          <Header style={{
+            background: '#fff',
+            padding: '0 24px',
+            borderBottom: '1px solid #e8e8e8',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <div style={{ fontSize: 16, fontWeight: 600, color: '#1890ff' }}>
+              AI数字货币投资辅助系统
+            </div>
+            <div style={{ display: 'flex', gap: 16 }}>
+              <Button
+                type="text"
+                icon={<HomeOutlined />}
+                onClick={() => history.push('/crypto-ai/dashboard')}
+                style={{ color: '#1890ff', fontWeight: 500 }}
+              >
+                系统概览
+              </Button>
+              <Button
+                type="text"
+                icon={<MessageOutlined />}
+                onClick={() => history.push('/crypto-ai/message-list')}
+                style={{ color: '#666', fontWeight: 500 }}
+              >
+                消息列表
+              </Button>
+              <Button
+                type="text"
+                icon={<BarChartOutlined />}
+                onClick={() => history.push('/crypto-ai/portfolio-data')}
+                style={{ color: '#666', fontWeight: 500 }}
+              >
+                持仓数据
+              </Button>
+              <Button
+                type="text"
+                icon={<FileTextOutlined />}
+                onClick={() => history.push('/crypto-ai/suggestion-report')}
+                style={{ color: '#666', fontWeight: 500 }}
+              >
+                建议报告
+              </Button>
+            </div>
+          </Header>
     <div style={{ padding: 20 }}>
       {/* 筛选区域 */}
       <Card style={{ marginBottom: 16 }}>
@@ -465,6 +519,7 @@ const MessageList: React.FC = () => {
         }
       `}</style>
     </div>
+    </Layout>
   );
 };
 

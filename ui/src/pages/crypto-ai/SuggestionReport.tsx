@@ -1,86 +1,38 @@
-import React, { useState } from 'react';
-import { Card, Table, Tag, Button, Space, Select, DatePicker, Divider, Typography, Descriptions, message, Modal, Slider } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Table, Tag, Button, Space, Select, DatePicker, Divider, Typography, Descriptions, message, Modal, Slider, Spin,Layout } from 'antd';
 import { DownloadOutlined, EyeOutlined, CheckCircleOutlined, CloseCircleOutlined, ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import type { Dayjs } from 'dayjs';
-
+import { getReportList, getReportDetail, approveReport, rejectReport, generateReport, type ReportItem, type ReportDetail } from '@/services/crypto/report';
+import { history } from 'umi';
+import {
+  BellOutlined, FileTextOutlined, DollarOutlined,
+  PieChartOutlined,
+  HomeOutlined, MessageOutlined, BarChartOutlined,
+  CheckOutlined
+} from '@ant-design/icons';
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { Title, Paragraph, Text } = Typography;
-
-// 模拟报告数据
-const reportData = [
-  {
-    id: 'R2024121001',
-    createTime: '2024-12-10 09:30',
-    cryptoTypes: 'BTC, ETH',
-    reportType: '持仓调整',
-    confidenceLevel: 92,
-    status: 'pending',
-    expectedROI: 8.5,
-    analyst: 'AI-System-A',
-  },
-  {
-    id: 'R2024120902',
-    createTime: '2024-12-09 14:15',
-    cryptoTypes: 'SOL',
-    reportType: '持仓维持',
-    confidenceLevel: 86,
-    status: 'approved',
-    expectedROI: 4.2,
-    analyst: 'AI-System-B',
-    approvedBy: 'Zhang Wei',
-    approvedTime: '2024-12-09 16:20',
-  },
-  {
-    id: 'R2024120801',
-    createTime: '2024-12-08 10:45',
-    cryptoTypes: 'ETH, USDT',
-    reportType: '资产配置优化',
-    confidenceLevel: 78,
-    status: 'rejected',
-    expectedROI: 6.3,
-    analyst: 'AI-System-C',
-    rejectedBy: 'Li Ming',
-    rejectedTime: '2024-12-08 11:30',
-    rejectionReason: '市场时机不成熟，建议暂缓调整',
-  },
-  {
-    id: 'R2024120703',
-    createTime: '2024-12-07 16:20',
-    cryptoTypes: 'BTC',
-    reportType: '减持建议',
-    confidenceLevel: 89,
-    status: 'approved',
-    expectedROI: -2.5,
-    analyst: 'AI-System-A',
-    approvedBy: 'Wang Hong',
-    approvedTime: '2024-12-07 17:45',
-  },
-  {
-    id: 'R2024120601',
-    createTime: '2024-12-06 11:40',
-    cryptoTypes: 'ETH',
-    reportType: '增持建议',
-    confidenceLevel: 84,
-    status: 'approved',
-    expectedROI: 9.7,
-    analyst: 'AI-System-B',
-    approvedBy: 'Zhang Wei',
-    approvedTime: '2024-12-06 13:10',
-  },
-];
-
-const statusConfig = {
-  pending: { color: 'orange', text: '待审核' },
-  approved: { color: 'green', text: '已通过' },
-  rejected: { color: 'red', text: '已驳回' },
-};
-
-const reportTypeOptions = ['持仓调整', '持仓维持', '资产配置优化', '减持建议', '增持建议', '全部类型'];
-const statusOptions = ['待审核', '已通过', '已驳回', '全部状态'];
-
+const { Header } = Layout;
+// 报告数据状态管理
 const SuggestionReport: React.FC = () => {
+  const [reportData, setReportData] = useState<ReportItem[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [detailLoading, setDetailLoading] = useState<Record<string, boolean>>({});
+
+  const statusConfig = {
+    pending: { color: 'orange', text: '待审核' },
+    '待审': { color: 'orange', text: '待审核' },
+    approved: { color: 'green', text: '已通过' },
+    '已通过': { color: 'green', text: '已通过' },
+    rejected: { color: 'red', text: '已驳回' },
+    '已驳回': { color: 'red', text: '已驳回' },
+  };
+
+  const reportTypeOptions = ['持仓调整', '持仓维持', '资产配置优化', '减持建议', '增持建议', '全部类型'];
+  const statusOptions = ['待审核', '已通过', '已驳回', '全部状态'];
+
   const [selectedReportType, setSelectedReportType] = useState('全部类型');
   const [selectedStatus, setSelectedStatus] = useState('全部状态');
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
@@ -95,23 +47,75 @@ const SuggestionReport: React.FC = () => {
     confidenceLevel: 80,
   });
 
+  // 加载报告列表数据
+  const loadReportData = async () => {
+    setLoading(true);
+    try {
+      const response = await getReportList();
+      if (response.code === 200) {
+        // 转换API返回的数据格式以匹配组件期望的字段
+        const transformedData = response.data.records.map((item: any) => ({
+          id: item.reportId,
+          createTime: item.generationTime,
+          cryptoTypes: item.involvedCurrencies,
+          reportType: item.suggestionType,
+          confidenceLevel: item.confidence,
+          expectedROI: item.expectedReturn,
+          status: item.status === '待审' ? 'pending' : item.status,
+          analyst: item.analyst
+        }));
+        setReportData(transformedData);
+      } else {
+        message.error(`获取报告列表失败: ${response.msg}`);
+        setReportData([]);
+      }
+    } catch (error) {
+      message.error('获取报告列表失败，请检查网络连接');
+      setReportData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 组件挂载时加载数据
+  useEffect(() => {
+    loadReportData();
+  }, []);
+
   const handleRefresh = () => {
-    // 刷新报告列表
-    console.log('刷新报告列表');
+    loadReportData();
   };
 
   const handleViewDetail = (id: string) => {
     setExpandedReport(expandedReport === id ? null : id);
   };
 
-  const handleApprove = (id: string) => {
-    // 审核通过逻辑
-    console.log(`审核通过报告 ${id}`);
+  const handleApprove = async (id: string) => {
+    try {
+      const response = await approveReport(id);
+      if (response.code === 200) {
+        message.success('报告审核通过');
+        loadReportData(); // 刷新列表
+      } else {
+        message.error(`审核失败: ${response.msg}`);
+      }
+    } catch (error) {
+      message.error('审核失败，请检查网络连接');
+    }
   };
 
-  const handleReject = (id: string) => {
-    // 审核驳回逻辑
-    console.log(`审核驳回报告 ${id}`);
+  const handleReject = async (id: string) => {
+    try {
+      const response = await rejectReport(id);
+      if (response.code === 200) {
+        message.success('报告已驳回');
+        loadReportData(); // 刷新列表
+      } else {
+        message.error(`驳回失败: ${response.msg}`);
+      }
+    } catch (error) {
+      message.error('驳回失败，请检查网络连接');
+    }
   };
 
   const handleDownload = (id: string) => {
@@ -138,39 +142,100 @@ const SuggestionReport: React.FC = () => {
   };
 
   // 新增：处理生成报告
-  const handleGenerate = () => {
-    // 模拟生成过程
-    message.loading('正在生成报告...');
-    
-    // 模拟API调用延迟
-    setTimeout(() => {
-      message.success('报告生成成功！');
-      closeGenerateModal();
+  const handleGenerate = async () => {
+    try {
+      message.loading('正在生成报告...');
       
-      // 这里应该实际添加新生成的报告到列表中
-      // 由于我们使用的是模拟数据，这里只是演示
-    }, 1500);
+      const response = await generateReport({
+        cryptoTypes: generateParams.cryptoTypes,
+        reportType: generateParams.reportType,
+        confidenceLevel: generateParams.confidenceLevel,
+      });
+      
+      if (response.code === 200) {
+        message.success('报告生成成功！');
+        closeGenerateModal();
+        loadReportData(); // 刷新列表
+      } else {
+        message.error(`报告生成失败: ${response.msg}`);
+      }
+    } catch (error) {
+      message.error('报告生成失败，请检查网络连接');
+    }
   };
 
-  // 模拟获取报告详情数据
-  const getReportDetail = (id: string) => {
-    const report = reportData.find(r => r.id === id);
-    return {
-      ...report,
-      summary: '基于市场数据分析和技术指标评估，当前BTC和ETH价格处于上升通道，但存在短期回调风险。建议保持BTC持仓比例，适度增加ETH配置比例以优化组合风险收益比。',
-      marketAnalysis: '比特币近期受美联储政策影响呈现震荡上行趋势，以太坊受益于DeFi生态发展持续走强。整体市场情绪偏乐观，但交易量有所萎缩，需警惕短期回调风险。',
-      technicalIndicators: [
-        { name: 'RSI', value: 68, analysis: '处于中性偏强区间' },
-        { name: 'MACD', value: '金叉', analysis: '短期动能向上' },
-        { name: '移动平均线', value: '多头排列', analysis: '中期趋势向好' },
-      ],
-      recommendedActions: [
-        '保持BTC当前持仓不变',
-        '将ETH配置比例从25%提高到30%',
-        '设置10%止损位保护收益',
-        '建议在回调5%时加仓ETH',
-      ],
-    };
+  // 筛选数据函数
+  const filterReportData = () => {
+    return reportData.filter(item => {
+      // 报告类型筛选 - 支持API返回的简化类型名称
+      if (selectedReportType !== '全部类型') {
+        const typeMap = {
+          '增持建议': ['增持', '增持建议'],
+          '减持建议': ['减持', '减持建议'],
+          '持仓调整': ['持仓调整', '调整'],
+          '持仓维持': ['持仓维持', '维持'],
+          '资产配置优化': ['资产配置优化', '优化']
+        };
+        
+        const targetTypes = typeMap[selectedReportType as keyof typeof typeMap] || [selectedReportType];
+        if (!targetTypes.includes(item.reportType)) {
+          return false;
+        }
+      }
+      
+      // 状态筛选
+      if (selectedStatus !== '全部状态') {
+        const statusMap = {
+          '待审核': ['pending', '待审'],
+          '已通过': ['approved', '已通过'],
+          '已驳回': ['rejected', '已驳回']
+        };
+        const targetStatuses = statusMap[selectedStatus as keyof typeof statusMap];
+        if (!targetStatuses.includes(item.status)) {
+          return false;
+        }
+      }
+      
+      // 置信度筛选
+      if (confidenceThreshold !== '70' && item.confidenceLevel < parseInt(confidenceThreshold)) {
+        return false;
+      }
+      
+      // 日期筛选
+      if (dateRange && dateRange[0] && dateRange[1]) {
+        const itemDate = new Date(item.createTime);
+        const startDate = dateRange[0].toDate();
+        const endDate = dateRange[1].toDate();
+        
+        if (itemDate < startDate || itemDate > endDate) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  };
+
+  // 获取筛选后的数据
+  const filteredData = filterReportData();
+
+  // 获取报告详情数据
+  const fetchReportDetail = async (id: string): Promise<ReportDetail | null> => {
+    setDetailLoading(prev => ({ ...prev, [id]: true }));
+    try {
+      const response = await getReportDetail(id);
+      if (response.code === 200) {
+        return response.data;
+      } else {
+        message.error(`获取报告详情失败: ${response.msg}`);
+        return null;
+      }
+    } catch (error) {
+      message.error('获取报告详情失败，请检查网络连接');
+      return null;
+    } finally {
+      setDetailLoading(prev => ({ ...prev, [id]: false }));
+    }
   };
 
   const columns = [
@@ -195,35 +260,41 @@ const SuggestionReport: React.FC = () => {
       dataIndex: 'reportType',
       key: 'reportType',
     },
-    {
-      title: '置信度',
-      dataIndex: 'confidenceLevel',
-      key: 'confidenceLevel',
-      render: (level: number) => (
-        <Tag color={level >= 90 ? 'green' : level >= 75 ? 'blue' : 'orange'}>
-          {level}%
-        </Tag>
-      ),
-    },
-    {
-      title: '预期收益',
-      dataIndex: 'expectedROI',
-      key: 'expectedROI',
-      render: (roi: number) => (
-        <span style={{ color: roi >= 0 ? 'green' : 'red' }}>
-          {roi >= 0 ? '+' : ''}{roi}%
-        </span>
-      ),
-    },
+    // {
+    //   title: '置信度',
+    //   dataIndex: 'confidenceLevel',
+    //   key: 'confidenceLevel',
+    //   render: (level: number) => (
+    //     <Tag color={level >= 90 ? 'green' : level >= 75 ? 'blue' : 'orange'}>
+    //       {level}%
+    //     </Tag>
+    //   ),
+    // },
+    // {
+    //   title: '预期收益',
+    //   dataIndex: 'expectedROI',
+    //   key: 'expectedROI',
+    //   render: (roi: number) => (
+    //     <span style={{ color: roi >= 0 ? 'green' : 'red' }}>
+    //       {roi >= 0 ? '+' : ''}{roi}%
+    //     </span>
+    //   ),
+    // },
     {
       title: '状态',
       dataIndex: 'status',
       key: 'status',
-      render: (status: string) => (
-        <Tag color={statusConfig[status as keyof typeof statusConfig].color}>
-          {statusConfig[status as keyof typeof statusConfig].text}
-        </Tag>
-      ),
+      render: (status: string) => {
+        const config = statusConfig[status as keyof typeof statusConfig];
+        if (!config) {
+          return <Tag color="default">{status}</Tag>;
+        }
+        return (
+          <Tag color={config.color}>
+            {config.text}
+          </Tag>
+        );
+      },
     },
     {
       title: '分析师',
@@ -235,13 +306,13 @@ const SuggestionReport: React.FC = () => {
       key: 'action',
       render: (_: any, record: any) => (
         <Space>
-          <Button 
+          {/* <Button 
             type="link" 
             icon={<EyeOutlined />} 
             onClick={() => handleViewDetail(record.id)}
           >
             详情
-          </Button>
+          </Button> */}
           <Button 
             type="link" 
             icon={<DownloadOutlined />} 
@@ -275,9 +346,56 @@ const SuggestionReport: React.FC = () => {
   ];
 
   return (
-    <PageContainer title="建议报告">
-      <Card>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 16 }}>
+      <Layout style={{ height: '100vh' }}>
+        {/* 顶部导航栏 */}
+              <Header style={{
+                background: '#fff',
+                padding: '0 24px',
+                borderBottom: '1px solid #e8e8e8',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div style={{ fontSize: 16, fontWeight: 600, color: '#1890ff' }}>
+                  AI数字货币投资辅助系统
+                </div>
+                <div style={{ display: 'flex', gap: 16 }}>
+                  <Button
+                    type="text"
+                    icon={<HomeOutlined />}
+                    onClick={() => history.push('/crypto-ai/dashboard')}
+                    style={{ color: '#1890ff', fontWeight: 500 }}
+                  >
+                    系统概览
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<MessageOutlined />}
+                    onClick={() => history.push('/crypto-ai/message-list')}
+                    style={{ color: '#666', fontWeight: 500 }}
+                  >
+                    消息列表
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<BarChartOutlined />}
+                    onClick={() => history.push('/crypto-ai/portfolio-data')}
+                    style={{ color: '#666', fontWeight: 500 }}
+                  >
+                    持仓数据
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<FileTextOutlined />}
+                    onClick={() => history.push('/crypto-ai/suggestion-report')}
+                    style={{ color: '#666', fontWeight: 500 }}
+                  >
+                    建议报告
+                  </Button>
+                </div>
+              </Header>
+      <Card style={{ margin: 19 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16, flexWrap: 'wrap', gap: 16, padding: 16 }}>
           <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
             <Select 
               style={{ width: 150 }} 
@@ -331,67 +449,94 @@ const SuggestionReport: React.FC = () => {
         
         <Table 
           columns={columns} 
-          dataSource={reportData} 
+         dataSource={filteredData} 
           pagination={{ pageSize: 10 }}
           rowKey="id"
+          loading={loading}
           expandable={{
             expandedRowRender: (record) => {
-              const detail = getReportDetail(record.id);
-              return (
-                <Card title="报告详情" size="small">
-                  <Descriptions column={2} size="small">
-                    <Descriptions.Item label="报告ID">#{detail.id}</Descriptions.Item>
-                    <Descriptions.Item label="生成时间">{detail.createTime}</Descriptions.Item>
-                    <Descriptions.Item label="涉及币种">{detail.cryptoTypes}</Descriptions.Item>
-                    <Descriptions.Item label="建议类型">{detail.reportType}</Descriptions.Item>
-                    <Descriptions.Item label="置信度">
-                      <Tag color={detail.confidenceLevel >= 90 ? 'green' : detail.confidenceLevel >= 75 ? 'blue' : 'orange'}>
-                        {detail.confidenceLevel}%
-                      </Tag>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="预期收益">
-                      <span style={{ color: detail.expectedROI >= 0 ? 'green' : 'red' }}>
-                        {detail.expectedROI >= 0 ? '+' : ''}{detail.expectedROI}%
-                      </span>
-                    </Descriptions.Item>
-                    <Descriptions.Item label="分析师">{detail.analyst}</Descriptions.Item>
-                    {detail.approvedBy && (
-                      <Descriptions.Item label="审核人">{detail.approvedBy}</Descriptions.Item>
-                    )}
-                    {detail.approvedTime && (
-                      <Descriptions.Item label="审核时间">{detail.approvedTime}</Descriptions.Item>
-                    )}
-                    {detail.rejectionReason && (
-                      <Descriptions.Item label="驳回原因" span={2}>{detail.rejectionReason}</Descriptions.Item>
-                    )}
-                  </Descriptions>
-                  
-                  <Divider orientation="left">摘要</Divider>
-                  <Paragraph>{detail.summary}</Paragraph>
-                  
-                  <Divider orientation="left">市场分析</Divider>
-                  <Paragraph>{detail.marketAnalysis}</Paragraph>
-                  
-                  <Divider orientation="left">技术指标</Divider>
-                  <Table 
-                    dataSource={detail.technicalIndicators} 
-                    pagination={false}
-                    columns={[
-                      { title: '指标', dataIndex: 'name' },
-                      { title: '数值', dataIndex: 'value' },
-                      { title: '分析', dataIndex: 'analysis' },
-                    ]}
-                    size="small"
-                  />
-                  
-                  <Divider orientation="left">建议操作</Divider>
-                  <ul>
-                    {detail.recommendedActions.map((action, index) => (
-                      <li key={index} style={{ marginBottom: 8 }}>{action}</li>
-                    ))}
-                  </ul>
-                </Card>
-              );
+              // 创建一个简单的详情组件
+              const DetailComponent = () => {
+                const [detail, setDetail] = useState<ReportDetail | null>(null);
+                
+                useEffect(() => {
+                  if (expandedReport === record.id) {
+                    fetchReportDetail(record.id).then(setDetail);
+                  }
+                }, [expandedReport, record.id]);
+                
+                if (detailLoading[record.id]) {
+                  return <div style={{ textAlign: 'center', padding: '20px' }}><Spin /></div>;
+                }
+                
+                if (!detail) {
+                  return <div style={{ textAlign: 'center', padding: '20px' }}>加载失败</div>;
+                }
+                
+                return (
+                  <Card title="报告详情" size="small">
+                    <Descriptions column={2} size="small">
+                      <Descriptions.Item label="报告ID">#{detail.id}</Descriptions.Item>
+                      <Descriptions.Item label="生成时间">{detail.createTime}</Descriptions.Item>
+                      <Descriptions.Item label="涉及币种">{detail.cryptoTypes}</Descriptions.Item>
+                      <Descriptions.Item label="建议类型">{detail.reportType}</Descriptions.Item>
+                      <Descriptions.Item label="置信度">
+                        <Tag color={detail.confidenceLevel >= 90 ? 'green' : detail.confidenceLevel >= 75 ? 'blue' : 'orange'}>
+                          {detail.confidenceLevel}%
+                        </Tag>
+                      </Descriptions.Item>
+                      <Descriptions.Item label="预期收益">
+                        <span style={{ color: detail.expectedROI >= 0 ? 'green' : 'red' }}>
+                          {detail.expectedROI >= 0 ? '+' : ''}{detail.expectedROI}%
+                        </span>
+                      </Descriptions.Item>
+                      <Descriptions.Item label="分析师">{detail.analyst}</Descriptions.Item>
+                      {detail.approvedBy && (
+                        <Descriptions.Item label="审核人">{detail.approvedBy}</Descriptions.Item>
+                      )}
+                      {detail.approvedTime && (
+                        <Descriptions.Item label="审核时间">{detail.approvedTime}</Descriptions.Item>
+                      )}
+                      {detail.rejectedBy && (
+                        <Descriptions.Item label="驳回人">{detail.rejectedBy}</Descriptions.Item>
+                      )}
+                      {detail.rejectedTime && (
+                        <Descriptions.Item label="驳回时间">{detail.rejectedTime}</Descriptions.Item>
+                      )}
+                      {detail.rejectionReason && (
+                        <Descriptions.Item label="驳回原因" span={2}>{detail.rejectionReason}</Descriptions.Item>
+                      )}
+                    </Descriptions>
+                    
+                    <Divider orientation="left">摘要</Divider>
+                    <Paragraph>{detail.summary}</Paragraph>
+                    
+                    <Divider orientation="left">市场分析</Divider>
+                    <Paragraph>{detail.marketAnalysis}</Paragraph>
+                    
+                    <Divider orientation="left">技术指标</Divider>
+                    <Table 
+                      dataSource={detail.technicalIndicators} 
+                      pagination={false}
+                      columns={[
+                        { title: '指标', dataIndex: 'name' },
+                        { title: '数值', dataIndex: 'value' },
+                        { title: '分析', dataIndex: 'analysis' },
+                      ]}
+                      size="small"
+                    />
+                    
+                    <Divider orientation="left">建议操作</Divider>
+                    <ul>
+                      {detail.recommendedActions.map((action, index) => (
+                        <li key={index} style={{ marginBottom: 8 }}>{action}</li>
+                      ))}
+                    </ul>
+                  </Card>
+                );
+              };
+              
+              return <DetailComponent />;
             },
             rowExpandable: (record) => record.id === expandedReport,
           }}
@@ -459,7 +604,7 @@ const SuggestionReport: React.FC = () => {
           </div>
         </div>
       </Modal>
-    </PageContainer>
+    </Layout>
   );
 };
 
