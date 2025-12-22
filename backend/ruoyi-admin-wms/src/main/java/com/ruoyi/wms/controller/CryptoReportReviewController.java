@@ -87,7 +87,7 @@ public class CryptoReportReviewController {
             row.put("confidence", rv != null ? rv.getConfidence() : null);
             row.put("expectedReturn", rv != null ? rv.getExpectedReturn() : null);
             row.put("status", rv != null ? rv.getStatus() : "待审");
-            row.put("analyst", rv != null ? rv.getAnalyst() : null);
+            row.put("analyst", "Ai分析师");
             records.add(row);
         }
         if (status != null && !"".equals(status)) {

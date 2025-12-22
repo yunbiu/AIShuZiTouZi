@@ -1,18 +1,13 @@
 package com.ruoyi.wms.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.satoken.utils.LoginHelper;
-import com.ruoyi.wms.domain.entity.Portfolio;
 import com.ruoyi.wms.domain.entity.PortfolioHistory;
 import com.ruoyi.wms.domain.query.PortfolioQuery;
 import com.ruoyi.wms.service.PortfolioHistoryService;
 import com.ruoyi.wms.service.PortfolioService;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ruoyi.common.core.domain.R;
 
 import java.util.List;
@@ -53,13 +48,14 @@ public class PortfolioController {
     }
 
     /**
-     * 查询近7天历史持仓详情
+     * 查询近N天历史持仓详情
      * @param historyId 持仓id
+     * @param days 天数（默认7）
      */
-    @GetMapping("/getRecentSevenDaysHistory/{historyId}")
+    @GetMapping("/getRecentHistory/{historyId}")
     @SaIgnore
-    public R<List<PortfolioHistory>> getRecentSevenDaysHistory(@PathVariable Integer historyId){
-        List<PortfolioHistory> portfolioHistory = portfolioHistoryService.getRecentSevenDaysHistory(historyId);
+    public R<List<PortfolioHistory>> getRecentSevenDaysHistory(@PathVariable Integer historyId, @RequestParam(defaultValue = "7") Integer days){
+        List<PortfolioHistory> portfolioHistory = portfolioHistoryService.getRecentHistory(historyId, days);
         return R.ok(portfolioHistory);
     }
 

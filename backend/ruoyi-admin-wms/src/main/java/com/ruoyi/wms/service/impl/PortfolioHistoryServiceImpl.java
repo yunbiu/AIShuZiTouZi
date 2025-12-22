@@ -19,17 +19,18 @@ public class PortfolioHistoryServiceImpl extends ServiceImpl<PortfolioHistoryMap
         return baseMapper.getPortfolioHistoryList(portfolioId);
     }
 
+
     @Override
-    public List<PortfolioHistory> getRecentSevenDaysHistory(Integer historyId) {
-        LocalDateTime sevenDaysAgo = LocalDateTime.now().minusDays(7);
+    public List<PortfolioHistory> getRecentHistory(Integer historyId, Integer days) {
+        int d = (days == null || days <= 0) ? 7 : days;
+        LocalDateTime daysAgo = LocalDateTime.now().minusDays(d);
         QueryWrapper<PortfolioHistory> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
             .eq(PortfolioHistory::getPortfolioId, historyId)
-            .ge(PortfolioHistory::getSnapshotTime, sevenDaysAgo)
+            .ge(PortfolioHistory::getSnapshotTime, daysAgo)
             .orderByDesc(PortfolioHistory::getSnapshotTime);
         return this.list(queryWrapper);
     }
-
 
 
 }
