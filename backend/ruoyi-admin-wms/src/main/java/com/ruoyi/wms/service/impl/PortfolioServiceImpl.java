@@ -15,7 +15,8 @@ public class PortfolioServiceImpl extends ServiceImpl<PortfolioMapper, Portfolio
 
 
     @Override
-    public List<PortfolioQuery> getPortfolioList(Integer userId) {
+    public List<PortfolioQuery> getPortfolioList(Long userId) {
+
         return baseMapper.getPortfolioList(userId);
     }
 }

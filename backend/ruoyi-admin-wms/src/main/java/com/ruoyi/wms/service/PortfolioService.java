@@ -11,7 +11,7 @@ import java.util.List;
 public interface PortfolioService extends IService<Portfolio> {
 
     //查询当前持仓
-    List<PortfolioQuery> getPortfolioList(Integer userId);
+    List<PortfolioQuery> getPortfolioList(Long userId);
 
 
 }

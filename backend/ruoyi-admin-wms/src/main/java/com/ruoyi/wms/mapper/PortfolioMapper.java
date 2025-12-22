@@ -10,6 +10,6 @@ import java.util.List;
 public interface PortfolioMapper extends BaseMapper<Portfolio> {
 
     //查询当前持仓
-    List<PortfolioQuery> getPortfolioList(@Param("userId") Integer userId);
+    List<PortfolioQuery> getPortfolioList(@Param("userId") Long userId);
 
 }

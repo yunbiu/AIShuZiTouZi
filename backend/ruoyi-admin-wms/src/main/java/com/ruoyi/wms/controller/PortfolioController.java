@@ -2,6 +2,7 @@ package com.ruoyi.wms.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.wms.domain.entity.Portfolio;
 import com.ruoyi.wms.domain.entity.PortfolioHistory;
 import com.ruoyi.wms.domain.query.PortfolioQuery;
@@ -34,11 +35,11 @@ public class PortfolioController {
 
     /**
      * 查询持仓详情
-     * @param userId 用户id
+     *
      */
-    @GetMapping("/userId/{userId}")
-    @SaIgnore
-    public R<List<PortfolioQuery>> getPortfolioList(@PathVariable Integer userId){
+    @GetMapping("/userId")
+    public R<List<PortfolioQuery>> getPortfolioList(){
+        Long userId = LoginHelper.getUserId();
         return R.ok(portfolioService.getPortfolioList(userId));
     }
     /**
