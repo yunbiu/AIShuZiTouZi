@@ -1,21 +1,37 @@
 /*
- Navicat Premium Dump SQL
+ Navicat Premium Data Transfer
 
  Source Server         : localhost
  Source Server Type    : MySQL
- Source Server Version : 80400 (8.4.0)
+ Source Server Version : 80030 (8.0.30)
  Source Host           : localhost:3306
  Source Schema         : studyr3q1
 
  Target Server Type    : MySQL
- Target Server Version : 80400 (8.4.0)
+ Target Server Version : 80030 (8.0.30)
  File Encoding         : 65001
 
- Date: 22/12/2025 15:56:34
+ Date: 22/12/2025 23:10:51
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for activity
+-- ----------------------------
+DROP TABLE IF EXISTS `activity`;
+CREATE TABLE `activity`  (
+  `id` int NOT NULL COMMENT '活动id',
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '活动名称',
+  `description` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '活动描述信息',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of activity
+-- ----------------------------
+INSERT INTO `activity` VALUES (1, '活动1', '若依111');
 
 -- ----------------------------
 -- Table structure for ai_keys
@@ -31,6 +47,24 @@ CREATE TABLE `ai_keys`  (
 -- Records of ai_keys
 -- ----------------------------
 INSERT INTO `ai_keys` VALUES (1, 'ENjSyOf82jRnE7vtFXiiBK6s794GHyplqkwULtuPsfM=');
+
+-- ----------------------------
+-- Table structure for asset
+-- ----------------------------
+DROP TABLE IF EXISTS `asset`;
+CREATE TABLE `asset`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `symbol` varchar(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产符号：BTC/ETH/USDT等',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '资产名称',
+  `decimals` int NOT NULL DEFAULT 8 COMMENT '资产精度位数（如BTC为8位）',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `symbol`(`symbol` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '数字资产字典' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of asset
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for comments
@@ -53,6 +87,33 @@ INSERT INTO `comments` VALUES (120, 1, '她是我女票', '2025-10-14 08:43:14')
 INSERT INTO `comments` VALUES (121, 1, '老公', '2025-10-14 08:54:16');
 
 -- ----------------------------
+-- Table structure for crypto_analysis_report
+-- ----------------------------
+DROP TABLE IF EXISTS `crypto_analysis_report`;
+CREATE TABLE `crypto_analysis_report`  (
+  `report_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '报告ID',
+  `generate_time` datetime NOT NULL COMMENT '生成时间',
+  `involved_currency` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '涉及币种',
+  `suggestion_type` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '建议类型',
+  `confidence` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '置信度',
+  `expected_return` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '预期收益',
+  `analyst` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分析师',
+  `reviewer` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '审核人',
+  `review_time` datetime NOT NULL COMMENT '审核时间',
+  `summary` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '摘要',
+  `market_analysis` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '市场分析',
+  `suggested_operation` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '建议操作',
+  PRIMARY KEY (`report_id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密货币投资分析报告表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of crypto_analysis_report
+-- ----------------------------
+INSERT INTO `crypto_analysis_report` VALUES ('#R2024120801', '2024-12-08 10:30:00', 'BTC', '增持', '89%', '+5.7%', 'Li Ming', 'Chen Jun', '2024-12-08 11:45:00', '美联储降息预期升温，BTC资金流入持续增加，技术面突破关键阻力位，建议增持15%持仓以把握上涨行情。', 'BTC近期成交量显著放大，机构资金持续进场，日线级别MACD金叉且均线呈多头排列，市场情绪极度乐观，短期回调风险较低。', '将BTC持仓比例从40%提高到55%\n设置8%止损位\n回调3%时追加增持5%\n密切关注美联储利率决议公告');
+INSERT INTO `crypto_analysis_report` VALUES ('#R2024120902', '2024-12-09 14:15:00', 'SOL', '持仓维持', '86%', '+4.2%', 'AI-System-B', 'Zhang Wei', '2024-12-09 16:20:00', '基于市场数据分析和技术指标评估，当前BTC和ETH价格处于上升通道，但存在短期回调风险。建议保持BTC持仓比例，适度增加ETH配置比例以优化组合风险收益比。', '比特币近期受美联储政策影响呈现震荡上行趋势，以太坊受益于DeFi生态发展持续走强。整体市场情绪偏乐观，但交易量有所萎缩，需警惕短期回调风险。', '保持BTC当前持仓不变\n将ETH配置比例从25%提高到30%\n设置10%止损位保护收益\n建议在回调5%时加仓ETH');
+INSERT INTO `crypto_analysis_report` VALUES ('#R2024120903', '2024-12-09 09:20:00', 'ETH,SOL', '持仓优化', '83%', '+3.9%', 'AI-System-C', 'Zhang Wei', '2024-12-09 11:10:00', 'ETH生态持续繁荣但估值偏高，SOL性价比凸显，建议调整组合比例，降低ETH持仓，增加SOL配置以平衡收益与风险。', 'ETH受DApp活跃度提升支撑价格高位震荡，但市盈率处于历史高位；SOL凭借高性能公链优势，近期生态项目爆发式增长，资金关注度提升，估值相对合理。', 'ETH持仓比例从30%降至22%\nSOL持仓比例从10%提升至18%\n组合整体止损位设置为12%\nSOL上涨15%后止盈20%持仓');
+
+-- ----------------------------
 -- Table structure for crypto_market_data
 -- ----------------------------
 DROP TABLE IF EXISTS `crypto_market_data`;
@@ -65,7 +126,7 @@ CREATE TABLE `crypto_market_data`  (
   `suggestion` int NOT NULL,
   `create_time` datetime NOT NULL COMMENT '入库时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 676 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 676 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_market_data
@@ -652,20 +713,33 @@ CREATE TABLE `crypto_message`  (
   `sentiment` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '情感倾向：利好、利空、中性',
   `source` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息来源',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '消息内容',
-  `publish_time` datetime NOT NULL COMMENT '发布时间',
-  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `publish_time` date NOT NULL COMMENT '发布时间',
+  `status` int NOT NULL COMMENT '是否已读：1已读、0未读',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_coin`(`coin` ASC) USING BTREE,
   INDEX `idx_sentiment`(`sentiment` ASC) USING BTREE,
   INDEX `idx_publish_time`(`publish_time` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密货币消息表' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 75 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '加密货币消息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_message
 -- ----------------------------
-INSERT INTO `crypto_message` VALUES (1, '美联储加息预期降温，比特币市场情绪回暖', 'BTC', '利好', 'CoinGecko', '根据最新数据显示，美联储加息预期有所降温，这对比特币等加密货币市场产生了积极影响。市场分析师认为，随着美元流动性宽松预期增强，资金可能重新流入加密资产领域，比特币价格有望在短期内突破前期阻力位。', '2024-12-10 07:30:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
-INSERT INTO `crypto_message` VALUES (2, '以太坊2.0升级计划推迟，开发者社区引发讨论', 'ETH', '利空', 'Binance公告', '以太坊核心开发团队宣布2.0升级计划将推迟至下个季度，主要原因是为了进一步优化共识机制的安全性和兼容性。这一消息在开发者社区中引发了广泛讨论，部分社区成员担忧推迟可能影响以太坊的市场竞争力，而另一部分则支持团队的审慎决策。', '2024-12-10 06:15:00', '2025-12-01 16:38:05', '2025-12-01 16:38:05');
+INSERT INTO `crypto_message` VALUES (59, '美国家庭股票占净资产比例超房地产', '美股相关', '中性', 'BlockBeats', '据 BlockBeats 报道，12 月 22 日，KobeissiLetter 发布数据，美国股市本轮涨势堪称历史性，美国家庭股票占净资产比例超过房地产，为过去 65 年来第三次。企业股票和共同基金在 2025 年第二季度占净资产比例上升至约 31%，创历史新高。自 2008 年以来，这一比例翻了一番多。美国家庭房地产资产占总净资产比例在第二季度跌破 30%，为 2021 年以来首次，远低于 2006 年房地产泡沫破裂前的 38% 峰值。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (60, 'JPYC与ITCEN GLOBAL合作研究日韩稳定币发展', 'JPYC', '中性', '吴说', '据吴说报道，日本日元稳定币发行方 JPYC 宣布与韩国 IT 巨头 ITCEN GLOBAL 展开稳定币联合研究，探索“日韩稳定币”未来发展可能。双方将共享政策与实务信息，为跨境稳定币与资产代币化创新奠定基础。ITCEN GLOBAL 年营收规模约 5 万亿韩元，并通过旗下 Korda 推进黄金 RWA 项目“K-Gold”，已在日本开展 RWA 与 STO 相关业务。', '2025-12-22', 1);
+INSERT INTO `crypto_message` VALUES (61, '今日恐慌与贪婪指数为29，等级为恐慌', '美股相关', '中性', '币安', '据币安数据显示，今日恐慌与贪婪指数为29（昨日为28），等级为恐慌。', '2025-12-22', 1);
+INSERT INTO `crypto_message` VALUES (62, 'Rabby Wallet 用户成功提取被冻结的 85740 美元 USDC', 'USDC', '利好', 'PANews', '据 PANews 报道，Rabby Wallet 官方消息称，一位用户通过 Rabby 功能成功提取 85740 美元 USDC，此前该资金自 2023 年起因 Multichain 事件被冻结。Rabby 支持用户追踪并提取 DeFi 协议中遗留的资产。2025 年 5 月，新加坡高等法院批准 Multichain 基金会清算申请，并委任 KPMG 为联合清算人。部分被冻结或锁定的资金逐步开放提取。美国法院临时延长冻结约 6300 万美元被盗 USDC 的相关钱包，以协助新加坡清算人识别和追回资产。受影响的 Multichain 用户可通过 Rabby 检查钱包余额并尝试提取资金。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (63, '过去24小时全网爆仓1.73亿美元，其中比特币爆仓4608万美元', 'BTC', '中性', 'Foresight News', '据 Foresight News 报道，CoinAnk 数据显示，过去 24 小时全网爆仓 1.73 亿美元。其中多单爆仓 7726 万美元，空单爆仓 9540 万美元。比特币爆仓 4608 万美元，以太坊爆仓 3803 万美元。', '2025-12-22', 1);
+INSERT INTO `crypto_message` VALUES (64, 'Aave 创始人称 Sky 项目治理投票合法', 'Aave', '中性', 'Odaily星球日报', '据Odaily星球日报报道，Aave 创始人 Stani.eth 表示，Sky 项目的治理投票是合法的。讨论已持续 5 天，并设定了 ARFC 临时检查时间表。Snapshot 投票符合治理框架要求。其他服务提供商如 ACI 也会将提案引入投票环节，因此并无先例被打破。Stani.eth 指出，通过投票是解决问题的最佳方式，呼吁参与者在投票中表达意见。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (65, 'BitMine 再度增持 13,412 枚 ETH', 'ETH', '中性', 'BlockBeats', '据 BlockBeats链上侦探报道，12 月 22 日，Lookonchain 监测显示，以太坊第一加密财库公司 BitMine 在 15 分钟前增持 13,412 枚 ETH。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (66, 'BTC 筹码结构变化：10.11 暴跌后承接区间显现', 'BTC', '中性', 'ChainCatcher', '据 ChainCatcher 报道，链上数据分析师 Murphy 指出，10.11 暴跌为本轮下跌起点，近 2 个月 BTC 筹码成本结构发生重大变化。BTC 堆积最多区间为 8 万至 9 万美元，共计 253.6 万枚，增加 187.4 万枚。上方浮亏筹码共 616.8 万枚，下方浮盈筹码共 746.2 万枚，当前几乎处在筹码结构上下平衡位置。10.11 暴跌至 12 月 20 日，下方获利盘减少 133 万枚，上方套牢盘中成本 11 万美元以上的减少 90.2 万枚。成本在 6 至 7 万区间的 BTC 抛售量最大，多为 2024 年美国总统大选前积累的筹码。7 至 8 万美元为相对“空档区”，仅剩 19 万枚 BTC，或将吸引新增流动性。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (67, 'F2Pool 联创王纯称量子计算短期内不会威胁比特币', 'BTC', '中性', 'BlockBeats', '据 BlockBeats 报道，12 月 22 日，F2Pool 联创王纯表示，他同意 Adam Back 的观点，认为量子计算是个泡沫，短期内不会打破 secp256k1 的限制。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (68, '比特币链上资金流入减弱，市场情绪复苏或需数月', 'BTC', '中性', 'CryptoQuant', '据 BlockBeats 报道，12 月 22 日，CryptoQuant 创始人 Ki Young Ju 引用数据表示，比特币链上资金流入正在减弱。在经历了大约两年半的增长后，已实现价格在过去一个月里停滞不前。市场情绪的复苏可能需要几个月的时间。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (69, '现货白银首次突破 69 美元/盎司，Ondo 代币化 iShares Silver Trust 成交量放大', 'XRP', '中性', 'BlockBeats', '据 BlockBeats 报道，12 月 22 日，今日现货白银首次站上 69 美元/盎司，今年迄今累涨近 139%。Ondo 代币化 iShares Silver Trust 近 24 小时成交量达 139.7 万美元，现报价 62.91 美元。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (70, '美联储征求公众意见以建立特殊用途支付账户', '美股相关', '中性', 'Odaily星球日报', '据Odaily星球日报报道，美联储正在寻求公众对建立特殊用途支付账户的意见。该账户为符合条件的金融机构提供直接访问中央银行支付系统的权限。美联储理事Christopher J. Waller表示，新支付账户将支持创新并确保支付系统安全。该账户不支付利息，不具备透支权限，设有余额上限，审批流程更加精简。此次征求意见期为45天，旨在响应支付方式的演变并提升系统效率。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (71, '香港保险监管局提议新规引导资本投向加密货币', 'XRP', '中性', '深潮TechFlow', '据深潮TechFlow报道，12月22日，香港保险监管局提议一系列新规则，引导保险资本投向包括加密货币和基础设施在内的资产。根据彭博社获得的12月4日的演示文件，保险监管机构拟对加密资产设置100%的风险资本要求。对于稳定币投资，其风险费率将基于香港监管的稳定币所锚定的法定货币而定。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (72, 'XRP现货ETF单周净流入8204万美元，21Shares和Franklin领跑', 'XRP', '中性', '深潮TechFlow', '据深潮TechFlow报道，12月22日，根据SoSoValue数据，上周交易日（美东时间12月15日至12月19日）XRP现货ETF单周净流入8204万美元。上周净流入最多的XRP现货ETF为21Shares XRP ETF TOXR，周度净流入2305万美元，历史总净流入达2305万美元；其次为Franklin XRP ETF XRPZ，周度净流入1717万美元，目前XRPZ历史总净流入达2.02亿美元。截至发稿前，XRP现货ETF总资产净值为12.1亿美元，ETF净资产比率达0.98%，历史累计净流入已达10.7亿美元。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (73, 'Vitalik Buterin 认为预测市场更适合参与', 'ETH', '中性', 'Foresight News', '据 Foresight News 报道，Vitalik Buterin 在 Farcaster 上表示，预测市场比常规市场更适合参与。其价格区间限定在 0 到 1 之间，极少受反射效应和其他行为主导。', '2025-12-22', 0);
+INSERT INTO `crypto_message` VALUES (74, '日经指数因日元走弱和AI投资热潮上涨2%', 'JPYC', '利好', 'PANews', '据 PANews 报道，12月22日，日本日经平均股价因日元走弱和人工智能投资热潮再起而连续第二个交易日上涨。午间收盘，日经225指数涨2%，报50,480.76点。东证股价指数涨0.8%。美股上周五因美光科技的强劲业绩预期而收高，提振了市场对人工智能概念股的乐观情绪。日本主要人工智能领域投资方软银集团股价飙升5.1%。报道称，该公司正争取在年底前敲定对OpenAI的225亿美元投资承诺。', '2025-12-22', 0);
 
 -- ----------------------------
 -- Table structure for crypto_portfolio
@@ -680,7 +754,7 @@ CREATE TABLE `crypto_portfolio`  (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '更新时间',
   `user_id` int NULL DEFAULT NULL COMMENT '关联用户id',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_portfolio
@@ -709,7 +783,7 @@ CREATE TABLE `crypto_portfolio_history`  (
   `usd_value` decimal(15, 2) NOT NULL DEFAULT 0.00 COMMENT '历史美元价值',
   `snapshot_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '快照时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of crypto_portfolio_history
@@ -872,6 +946,66 @@ CREATE TABLE `gen_table_column`  (
 
 -- ----------------------------
 -- Records of gen_table_column
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for holding
+-- ----------------------------
+DROP TABLE IF EXISTS `holding`;
+CREATE TABLE `holding`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `portfolio_id` bigint NOT NULL COMMENT '所属组合ID',
+  `asset_id` bigint NOT NULL COMMENT '资产ID',
+  `quantity` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '当前持仓数量（扣除卖出后剩余）',
+  `avg_cost` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '加权平均成本（按交易维护）',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最近更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_portfolio_asset`(`portfolio_id` ASC, `asset_id` ASC) USING BTREE,
+  INDEX `fk_holding_asset`(`asset_id` ASC) USING BTREE,
+  CONSTRAINT `fk_holding_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_holding_portfolio` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组合的持仓聚合' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of holding
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for market_price
+-- ----------------------------
+DROP TABLE IF EXISTS `market_price`;
+CREATE TABLE `market_price`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `asset_id` bigint NOT NULL COMMENT '资产ID',
+  `price` decimal(32, 16) NOT NULL COMMENT '行情价格',
+  `ts` datetime NOT NULL COMMENT '价格时间戳',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_asset_ts`(`asset_id` ASC, `ts` ASC) USING BTREE,
+  CONSTRAINT `fk_price_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '资产行情价格' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of market_price
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for portfolio
+-- ----------------------------
+DROP TABLE IF EXISTS `portfolio`;
+CREATE TABLE `portfolio`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '所属用户ID',
+  `name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '组合名称，用户内唯一',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '组合备注',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_user_name`(`user_id` ASC, `name` ASC) USING BTREE,
+  CONSTRAINT `fk_portfolio_user` FOREIGN KEY (`user_id`) REFERENCES `user_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户自定义投资组合' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of portfolio
 -- ----------------------------
 
 -- ----------------------------
@@ -1216,6 +1350,9 @@ INSERT INTO `sys_logininfor` VALUES (2002678884344737793, 'admin', '0:0:0:0:0:0:
 INSERT INTO `sys_logininfor` VALUES (2002683155593240577, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-21 18:10:47');
 INSERT INTO `sys_logininfor` VALUES (2002984253977747458, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 14:07:14');
 INSERT INTO `sys_logininfor` VALUES (2002991757210025985, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 14:37:03');
+INSERT INTO `sys_logininfor` VALUES (2003067963552387073, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 19:39:52');
+INSERT INTO `sys_logininfor` VALUES (2003068012361502722, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 19:40:04');
+INSERT INTO `sys_logininfor` VALUES (2003118178636447745, 'admin', '0:0:0:0:0:0:0:1', '内网IP', 'MSEdge', 'Windows 10 or Windows Server 2016', '1', '登录成功', '2025-12-22 22:59:25');
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -2180,7 +2317,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', 'sys_user', 'zccbbg@qq.com', '18888888888', '0', '', '$2a$10$0Z/eg.trTaGUXDnRLNH0pOcGWrqDoatG.VhQTRjsTM1Mz7jyKilSe', '1', '0', '0:0:0:0:0:0:0:1', '2025-12-22 14:37:03', 'admin', '2024-06-13 16:06:25', 'admin', '2025-12-22 14:37:03', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '管理员', 'sys_user', 'zccbbg@qq.com', '18888888888', '0', '', '$2a$10$0Z/eg.trTaGUXDnRLNH0pOcGWrqDoatG.VhQTRjsTM1Mz7jyKilSe', '1', '0', '0:0:0:0:0:0:0:1', '2025-12-22 22:59:25', 'admin', '2024-06-13 16:06:25', 'admin', '2025-12-22 22:59:25', '管理员');
 INSERT INTO `sys_user` VALUES (1829105396288688129, 105, 'kucun', 'kucun', 'sys_user', '', '', '0', '', '$2a$10$jpbgHXxmB9nszkvhixjaQuwQtXcq7XJrqFaFpev/93WvaWa/oEpGy', '1', '0', '127.0.0.1', '2024-08-30 13:54:01', 'admin', '2024-08-29 18:34:44', 'kucun', '2024-08-30 13:54:01', NULL);
 INSERT INTO `sys_user` VALUES (1912506203460673537, 100, '123', '测试人员', 'sys_user', '', '', '0', '', '$2a$10$VkfiPPWiWzgqjCoaz48FUOsegbZAt.09jE.Zg9kjfQ4Cw26MFUeza', '0', '1', '', NULL, 'admin', '2025-04-16 21:59:46', 'admin', '2025-04-16 21:59:46', NULL);
 INSERT INTO `sys_user` VALUES (1912507603993305090, 100, 'ww', '测试人员', 'sys_user', '', '', '0', '', '$2a$10$pD.Byi1Hs82Z/OZjKUe8OOj3rIiEQtotpvot0K8U5kkJFQQzKTvfK', '1', '1', '', NULL, 'admin', '2025-04-16 22:05:20', 'admin', '2025-04-16 22:05:20', NULL);
@@ -2223,6 +2360,32 @@ INSERT INTO `sys_user_role` VALUES (1829105396288688129, 1829105952432427010);
 INSERT INTO `sys_user_role` VALUES (1912865254853877761, 1829105952432427010);
 
 -- ----------------------------
+-- Table structure for transaction
+-- ----------------------------
+DROP TABLE IF EXISTS `transaction`;
+CREATE TABLE `transaction`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `portfolio_id` bigint NOT NULL COMMENT '所属组合ID',
+  `asset_id` bigint NOT NULL COMMENT '资产ID',
+  `tx_type` enum('BUY','SELL') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '交易类型：BUY买入，SELL卖出',
+  `quantity` decimal(32, 16) NOT NULL COMMENT '交易数量（正数）',
+  `price` decimal(32, 16) NOT NULL COMMENT '交易单价（计价为法币或USDT）',
+  `fee` decimal(32, 16) NOT NULL DEFAULT 0.0000000000000000 COMMENT '手续费',
+  `tx_time` datetime NOT NULL COMMENT '交易时间',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '交易备注',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `fk_tx_asset`(`asset_id` ASC) USING BTREE,
+  INDEX `idx_tx_portfolio_time`(`portfolio_id` ASC, `tx_time` ASC) USING BTREE,
+  CONSTRAINT `fk_tx_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_tx_portfolio` FOREIGN KEY (`portfolio_id`) REFERENCES `portfolio` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '组合的交易明细' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of transaction
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for user_account
 -- ----------------------------
 DROP TABLE IF EXISTS `user_account`;
@@ -2243,6 +2406,26 @@ CREATE TABLE `user_account`  (
 -- Records of user_account
 -- ----------------------------
 INSERT INTO `user_account` VALUES (1, '测试用户', 'e10adc3949ba59abbe56e057f20f883e', 'USER', 1, NULL, '2025-11-22 19:49:20', '2025-11-22 19:49:20');
+
+-- ----------------------------
+-- Table structure for watchlist
+-- ----------------------------
+DROP TABLE IF EXISTS `watchlist`;
+CREATE TABLE `watchlist`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint NOT NULL COMMENT '用户ID',
+  `asset_id` bigint NOT NULL COMMENT '资产ID',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE INDEX `uk_user_asset`(`user_id` ASC, `asset_id` ASC) USING BTREE,
+  INDEX `fk_watch_asset`(`asset_id` ASC) USING BTREE,
+  CONSTRAINT `fk_watch_asset` FOREIGN KEY (`asset_id`) REFERENCES `asset` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_watch_user` FOREIGN KEY (`user_id`) REFERENCES `user_account` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户自选资产' ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of watchlist
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for wms_area
