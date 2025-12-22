@@ -276,7 +276,10 @@ const MessageList: React.FC = () => {
           </Col>
         </Row>
 
-        {/* 消息表格 */}
+      </Card>
+
+      {/* 列表区域 */}
+      <Card>
         <Spin spinning={loading}>
           <Table
             rowKey="id"
@@ -292,29 +295,9 @@ const MessageList: React.FC = () => {
               showQuickJumper: true,
               showTotal: (total) => `共 ${total} 条记录`,
             }}
-            scroll={{ x: 800 }} // 横向滚动
+            scroll={{ y: 400 }} // 垂直滚动
           />
         </Spin>
-      </Card>
-
-      {/* 列表区域 */}
-      <Card>
-        <Table
-          rowKey="id"
-          dataSource={messageList}
-          columns={columns}
-          loading={loading}
-          pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            total: total,
-            onChange: handlePageChange,
-            showSizeChanger: false,
-            showQuickJumper: true,
-            showTotal: (total) => `共 ${total} 条记录`,
-          }}
-          scroll={{ x: 800 }} // 横向滚动
-        />
       </Card>
 
       {/* 详情弹窗 */}
